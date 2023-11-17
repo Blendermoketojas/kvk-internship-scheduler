@@ -3,6 +3,8 @@
  *
  * Bootstraps Vuetify and other plugins then mounts the App`
  */
+//devExtreme
+import 'devextreme/dist/css/dx.light.css';
 
 // Plugins
 import { registerPlugins } from '@/plugins'

@@ -4,19 +4,24 @@ import { createRouter, createWebHistory } from "vue-router";
 const routes = [
   {
     path: "/",
-    component: () => import("@/views/Login.vue"),
+    component: () => import("@/views/LoginPage.vue"),
   },
   {
-    path: "/Calendar",
-    component: () => import("@/views/Calendar.vue"),
+    path: "/calendar",
+    component: () => import("@/views/CalendarPage.vue"),
+  },
+
+  {
+    path: "/profile-info",
+    component: () => import("@/views/ProfileInfoPage.vue"),
   },
   {
-    path: "/test",
-    component: () => import("@/views/Home.vue"),
+    path: "/internship-management",
+    component: () => import("@/views/InternshipManagementPage.vue"),
   },
   {
-    path: "/profileinfo",
-    component: () => import("@/views/ProfileInfo.vue"),
+    path: "/registration",
+    component: () => import("@/views/RegistrationPage.vue"),
   },
 ];
 

@@ -1,6 +1,5 @@
 <template>
-  <Sidebar style=" z-index:1000;">
-</Sidebar>
+ <header-nav/>
     <DxScheduler   id="scheduler"  :adaptivity-enabled="true" :views="views" current-view="week" >
 
     </DxScheduler>
@@ -10,14 +9,13 @@
   <script>
   import 'devextreme/dist/css/dx.light.css'; 
   import { DxScheduler} from 'devextreme-vue/scheduler';
-
-  import Sidebar from "@/components/Sidebar.vue";
+  import HeaderNav from "@/components/DesktopHeader.vue";
 
   export default {
    
     components: {
         DxScheduler,
-        Sidebar,
+        HeaderNav
     },
     name: 'CalendarComponent',
     data() {

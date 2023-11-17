@@ -15,14 +15,16 @@ return new class extends Migration
     {
         Schema::create('user_profile', function (Blueprint $table) {
             $table->id();
-            $table->string('username');
             $table->integer('user_id');
-            $table->string('group');
+            $table->integer('company_id');
+            $table->string('student_group_id')->nullable();
+            $table->integer('role_id')->default(0);
             $table->string('first_name');
             $table->string('last_name');
-            $table->integer('role');
-            $table->string('image_path');
-            $table->string('description');
+            $table->string('address')->nullable();
+            $table->string('country')->nullable();
+            $table->string('image_path')->nullable();
+            $table->string('description')->nullable();
             $table->timestamps();
         });
     }

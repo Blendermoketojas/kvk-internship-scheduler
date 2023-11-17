@@ -1,14 +1,16 @@
 <?php
 
 // v1
-use App\Http\Controllers\v1\CompanyController;
-use App\Http\Controllers\v1\InternshipController;
-use App\Http\Controllers\v1\LoginController;
-use App\Http\Controllers\v1\UserInfoController;
+//use App\Http\Controllers\v1\CompanyController;
+//use App\Http\Controllers\v1\InternshipController;
+//use App\Http\Controllers\v1\LoginController;
+//use App\Http\Controllers\v1\UserInfoController;
 
 // v2
+// controllers
 use App\Http\Controllers\v2\AuthController;
 
+// dependencies
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -24,23 +26,31 @@ use Illuminate\Support\Facades\Route;
 */
 
 // v2
+// path -> http://localhost:8000/api/v2/
+// for full route list php artisan route:list in the console
 Route::middleware('api')->prefix('v2')->group(function () {
+
+    // is server working test
+    Route::get('/echo', function (Request $request) {
+        return "A jus dirbat? Dirbam dirbam dirbam";
+    });
 
     // auth
     Route::post('/register', [AuthController::class, 'register'])->name("register");
     Route::post('/login', [AuthController::class, 'login'])->name("login");
 
-    //
+    // routes that are reachable only by authenticated users
+    Route::middleware(['jwt.from.cookie', 'jwt.auth'])->group(function () {
 
-    Route::middleware('jwt.auth')->get('/user', function (Request $request) {
-        return $request->user();
-    });
+        // quick cookie test
+        Route::get('/echo/auth', function (Request $request) {
+            return "Maladec turi sausaini";
+        });
 
-    Route::get('/echo', function (Request $request) {
-       return "Dirbam dirbam dirbam";
-    });
+        // routes that are reachable by roles ...
+        Route::middleware('role.level:1,2,3')->group(function () {
 
-    Route::middleware('role.level:1,2,3')->group(function () {
+        });
 
     });
 });

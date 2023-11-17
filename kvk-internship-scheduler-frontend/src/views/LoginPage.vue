@@ -90,7 +90,7 @@ export default {
     //     const response = await this.$axios.post('http://127.0.0.1:8000/api/LoginCheck', {
     //     username: this.username,
     //     password: this.password
-    //     });
+    //     },{ withCredentials: true });
 
     //     localStorage.setItem('userInfo', JSON.stringify(response.data));
     //   this.userInfo = response.data;

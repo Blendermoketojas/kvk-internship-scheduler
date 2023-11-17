@@ -1,5 +1,5 @@
 <template>
-  <customHeader></customHeader>
+  <custom-header></custom-header>
   <div class="mainProfile">
     <div class="pageDescription">
       <h1>Profilis</h1>
@@ -98,18 +98,23 @@
   </div>
 </template>
 <script setup>
-import customHeader from "@/components/DesktopHeader.vue";
+
 </script>
 <script>
 
 import userIcon from "@/assets/Photos/UserIcon.png";
+import customHeader from "@/components/DesktopHeader.vue";
 export default {
   name: "ProfileInfo",
   data() {
     return {
       userIcon,
+
     };
   },
+  components: {
+       customHeader
+   },
   mounted() {},
 };
 </script>

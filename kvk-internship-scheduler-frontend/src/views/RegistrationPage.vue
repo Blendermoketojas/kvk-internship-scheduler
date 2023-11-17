@@ -22,8 +22,10 @@
     <div class="inputFields">
       <div class="text-subtitle-1 text-bold-emphasis">Kompanija</div>
       <v-select
-        v-model="location"
-        :items="locations"
+        v-model="companies"
+        item-value="id"
+        item-title="company_name"
+        :items="companies"
         label="Pasirinkite kompanija"
       ></v-select>
     </div>
@@ -72,13 +74,7 @@
       Registruotis
     </v-btn>
   </v-card>
-  <!-- <footer>
-    <div class="footerText">
-        <h2 class="footerYears">©2023 </h2>
-        <a class="footerA" href="https://www.kvk.lt/">Klaipėdos valstybinė kolegija</a>
-    </div>
-    <img class='footerLogo' :src="kvkLogo" alt="footerLogo">
-    </footer> -->
+
 </template>
 
 <script>
@@ -92,9 +88,14 @@ export default {
     return {
       visible: false,
       kvkLogo,
+      companies:[],
     };
   },
-};
+ mounted(){
+    this.$axios.get('http://localhost:8000/api/v2/companies',{ withCredentials: true }).then(response=>{this.companies=response.data});
+  }
+  };
+
 </script>
 
 <style scoped>

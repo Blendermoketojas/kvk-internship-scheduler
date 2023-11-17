@@ -4,15 +4,15 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Comment extends Model
 {
     protected $table = "comments";
     use HasFactory;
 
-    public function internship() : HasOne
+    public function internship() : BelongsTo
     {
-        return $this->hasOne(Internship::class);
+        return $this->belongsTo(Internship::class);
     }
 }

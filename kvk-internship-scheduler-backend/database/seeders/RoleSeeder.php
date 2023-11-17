@@ -21,8 +21,8 @@ class RoleSeeder extends Seeder
 
         foreach ($roles as $key => $value) {
             DB::table('roles')->insert([
-                'id' => $key,
-                'role' => $value,
+                'authority_level' => $key,
+                'role_title' => $value,
             ]);
         }
     }

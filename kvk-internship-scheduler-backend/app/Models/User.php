@@ -21,7 +21,6 @@ class User extends Authenticatable implements JWTSubject
      */
     protected $table = 'users';
     protected $fillable = [
-        'name',
         'email',
         'password',
     ];
@@ -44,6 +43,10 @@ class User extends Authenticatable implements JWTSubject
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+    public function userProfile() : HasOne {
+        return $this->hasOne(UserProfile::class);
+    }
 
     public function getJWTIdentifier()
     {

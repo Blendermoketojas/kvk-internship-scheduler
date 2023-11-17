@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -21,13 +22,17 @@ class Internship extends Model
         'is_active'
     ];
 
-    public function userProfile(): HasOne
+    public function userProfile(): BelongsTo
     {
-        return $this->hasOne(UserProfile::class);
+        return $this->BelongsTo(UserProfile::class);
     }
 
     public function comments(): HasMany
     {
         return $this->hasMany(Comment::class);
+    }
+
+    public function company() : BelongsTo {
+        return $this->belongsTo(Company::class);
     }
 }

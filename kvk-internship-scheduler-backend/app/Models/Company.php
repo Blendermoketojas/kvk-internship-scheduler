@@ -12,12 +12,15 @@ class Company extends Model
     protected $table = 'company';
 
     protected $fillable = [
-        'company',
-        'user_id',
+        'company_name',
     ];
 
     public function internships() : HasMany
     {
         return $this->hasMany(Internship::class);
+    }
+
+    public function userProfile() : HasMany {
+        return $this->hasMany(UserProfile::class);
     }
 }

@@ -41,7 +41,7 @@
         @click:append-inner="visible = !visible"></v-text-field>
     </div>
 
-    <v-btn block class="mb-8" color="white" size="large" variant="tonal">
+    <v-btn block class="mb-8" color="white" size="large" variant="tonal" @click="register">
       Registruotis
     </v-btn>
   </v-card>
@@ -72,7 +72,24 @@ export default {
   mounted() {
     this.$axios.get('http://localhost:8000/api/v2/companies', { withCredentials: true })
     .then(response => { this.companies = response.data; this.registrationData.company_id = response.data[0].id });
-  }
+
+  },
+  methods: {
+    async register() {
+    try {
+      const response = await this.$axios.post('http://localhost:8000/api/v2/register', {
+        ...this.registrationData,
+        repeatPassword: this.repeatPassword,
+      }, { withCredentials: true });
+      console.log(response.data);
+
+    } catch (error) {
+      console.error('Registration failed', error);
+   
+    }
+ 
+},
+  },
 };
 
 </script>

@@ -8,7 +8,7 @@
   
   <script>
   import 'devextreme/dist/css/dx.light.css'; 
-  import { DxScheduler} from 'devextreme-vue/scheduler';
+  import { DxScheduler } from 'devextreme-vue/scheduler';
   import HeaderNav from "@/components/DesktopHeader.vue";
 
   export default {

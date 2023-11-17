@@ -17,7 +17,7 @@ class CompanySeeder extends Seeder
     {
         $company_names = ['Klaipėdos valstybinė kolegija', 'BSS IT',
             'Inverta', 'Vlantana', 'Creative Partner',
-            'Cherry Team', 'Oracle', 'Lakštinio superiniai puslapėliai uab'];
+            'Cherry Team', 'Oracle', 'UAB Lakštinio superiniai puslapėliai'];
 
         foreach ($company_names as $value) {
             DB::table('company')->insert([

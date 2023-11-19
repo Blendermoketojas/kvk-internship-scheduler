@@ -35,6 +35,7 @@
         density="compact"
         placeholder="Vardenis"
         variant="outlined"
+        v-model="userData.first_name"
       ></v-text-field>
     </div>
       
@@ -46,6 +47,7 @@
         density="compact"
         placeholder="Pavardenis"
         variant="outlined"
+        v-model="userData.last_name"
       ></v-text-field>
 </div>
 
@@ -57,6 +59,7 @@
         density="compact"
         placeholder="vardenis@kvk.lt"
         variant="outlined"
+        v-model="userData.email"
       ></v-text-field>
 </div>
 
@@ -69,6 +72,7 @@
         density="compact"
         placeholder="Bijunų g. 10A"
         variant="outlined"
+        v-model="userData.address"
       ></v-text-field>
 </div>
 
@@ -108,24 +112,46 @@
   </div>
 </template>
 <script setup>
+import { ref, onMounted } from 'vue';
+import userIcon from "@/assets/Photos/UserIcon.png";
+import customHeader from "@/components/DesktopHeader.vue";
+import apiClient from '@/utils/api-client';
 
+const userData = ref({});
+const countries = ["Lietuva", /* Add other countries as needed */];
+const companies = ["UAB 'Kompanija'", /* Add other companies as needed */];
+
+onMounted(async () => {
+  try {
+    const response = await apiClient.get('/profile');
+    userData.value = response.data;
+  } catch (error) {
+    console.error('Error fetching user data:', error);
+    // Handle the error, e.g., show an error message to the user
+  }
+});
 </script>
 <script>
 
-import userIcon from "@/assets/Photos/UserIcon.png";
-import customHeader from "@/components/DesktopHeader.vue";
+
 export default {
   name: "ProfileInfo",
   data() {
     return {
       userIcon,
-
+  
     };
   },
   components: {
        customHeader
    },
-  mounted() {},
+  mounted() {
+  
+  },
+  methods: {
+  
+
+  },
 };
 </script>
 

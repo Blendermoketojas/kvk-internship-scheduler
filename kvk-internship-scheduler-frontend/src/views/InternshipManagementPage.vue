@@ -17,22 +17,22 @@
       <div class="text-subtitle-1 text-bold-emphasis">
        Grupė
       </div>
-      <v-select
+      <v-autocomplete
       v-model="location"
       :items="locations"
       label="I 17-3"
-    ></v-select>
+    ></v-autocomplete>
     </div>
       
     <div class="fieldDiv">
       <div class="text-subtitle-1 text-bold-emphasis">
         Vardas Pavardė
       </div>
-      <v-select
+      <v-autocomplete
   v-model="location"
   :items="locations"
   label="Vardenis Pavardenis"
-></v-select>
+></v-autocomplete>
 </div>
 
 <div class="fieldDiv">
@@ -55,11 +55,11 @@
   <div class="text-subtitle-1 text-bold-emphasis">
     Kompanija
   </div>
-  <v-select
+  <v-autocomplete
   v-model="location"
   :items="locations"
   label="UAB 'Kompanija'"
-></v-select>
+></v-autocomplete>
 </div>
 
 </div>
@@ -73,9 +73,8 @@
     </div>
   </div>
 </template>
-<script setup>
 
-</script>
+
 <script>
 
 import userIcon from "@/assets/Photos/UserIcon.png";
@@ -85,12 +84,12 @@ export default {
   data() {
     return {
       userIcon,
-
     };
   },
   components: {
        customHeader
    },
+
   mounted() {},
 };
 </script>

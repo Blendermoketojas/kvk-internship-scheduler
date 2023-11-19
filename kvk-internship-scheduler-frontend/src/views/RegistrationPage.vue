@@ -50,6 +50,7 @@
 <script>
 import HeaderNav from "@/components/MobileHeader.vue";
 import kvkLogo from "@/assets/Photos/KVKlogo.png";
+
 export default {
   components: {
     HeaderNav,

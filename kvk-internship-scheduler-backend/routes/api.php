@@ -12,6 +12,7 @@ use App\Http\Controllers\v2\AuthController;
 
 // dependencies
 use App\Http\Controllers\v2\CompanyController;
+use App\Http\Controllers\v2\InternshipController;
 use App\Http\Controllers\v2\StudentController;
 use App\Http\Controllers\v2\UserProfileController;
 use Illuminate\Http\Request;
@@ -67,8 +68,8 @@ Route::middleware('api')->prefix('v2')->group(function () {
         });
 
         // routes that are reachable by roles ...
-        Route::middleware('role.level:1,2,3')->group(function () {
-
+        Route::middleware('role:1')->group(function () {
+            Route::resource('/internships', InternshipController::class);
         });
 
     });

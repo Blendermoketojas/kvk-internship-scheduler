@@ -20,6 +20,7 @@ return new class extends Migration
             $table->date('date_from');
             $table->date('date_to');
             $table->boolean('is_active');
+            $table->timestamps();
         });
     }
 

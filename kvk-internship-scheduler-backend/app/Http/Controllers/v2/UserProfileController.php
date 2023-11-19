@@ -23,7 +23,7 @@ class UserProfileController extends Controller
         $user = auth()->user();
         $userProfile = $user->userProfile;
 
-        if (!strcmp($user->email, $request->input('email'))) {
+        if (!strcmp($userProfile->email, $request->input('email'))) {
             $request->validate([
                 'email' => 'required|string|email|max:255|unique:users',
             ]);

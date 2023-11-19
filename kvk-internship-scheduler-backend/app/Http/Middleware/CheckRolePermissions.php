@@ -17,11 +17,12 @@ class CheckRolePermissions
      */
     public function handle(Request $request, Closure $next, ...$levels)
     {
-        $userRoleLevel = UserProfile::query()->find($request->input('user_id'));
+        $userProfile = auth()->user()->userProfile;
 
-        if(!in_array($userRoleLevel, $levels)) {
+        if(!in_array($userProfile->role_id, $levels)) {
             return response('Unauthorized', 401);
         }
+
         return $next($request);
     }
 }

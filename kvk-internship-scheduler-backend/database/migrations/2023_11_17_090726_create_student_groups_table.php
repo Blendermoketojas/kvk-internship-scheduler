@@ -17,7 +17,6 @@ return new class extends Migration
             $table->id();
             $table->string("group_identifier");
             $table->string('field_of_study');
-            $table->timestamps();
         });
     }
 

@@ -19,6 +19,7 @@ return new class extends Migration
             $table->string('comment');
             $table->date('date_from');
             $table->date('date_to');
+            $table->timestamps();
         });
     }
 

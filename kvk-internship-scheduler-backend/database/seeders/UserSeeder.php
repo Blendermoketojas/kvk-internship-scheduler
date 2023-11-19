@@ -36,6 +36,7 @@ class UserSeeder extends Seeder
                 'role_id' => rand(1, 5),
                 'company_id' => rand(1,  30),
                 'address' => fake()->address,
+                'student_group_id' => rand(1, 5),
                 'country' => fake()->country,
                 'description' => fake()->text,
                 'image_path' => fake()->imageUrl,

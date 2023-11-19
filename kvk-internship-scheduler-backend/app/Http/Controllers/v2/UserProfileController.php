@@ -5,13 +5,31 @@ namespace App\Http\Controllers\v2;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Storage;
 
 class UserProfileController extends Controller
 {
     public function getProfile()
     {
-        $userProfile = auth()->user()->userProfile()->with('user')->get();
+        $userProfile = auth()->user()->userProfile()->with('user')->first();
+
+        if ($userProfile) {
+            $userProfile->profile_picture = Storage::url($userProfile->image_path);
+        }
+
         return response()->json($userProfile);
+    }
+
+    public function updateProfilePicture(Request $request) {
+        $request->validate(['image' => 'required|image|max:2048']);
+
+        $userProfile = auth()->user()->userProfile;
+        $path = $request->file('image')->store('profile_pictures', 'public');
+
+        $userProfile->image_path = $path;
+        $userProfile->save();
+
+        return response()->json(['message' => 'Profile picture updated successfully.']);
     }
 
     public function update(Request $request)
@@ -41,7 +59,6 @@ class UserProfileController extends Controller
             'company_id' => $request->input('company_id'),
             'country' => $request->input('country'),
             'address' => $request->input('address'),
-            'image_path' => $request->input('img_path'),
         ]);
 
         if ($isUpdated) {

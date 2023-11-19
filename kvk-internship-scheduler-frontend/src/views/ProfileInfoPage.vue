@@ -1,6 +1,6 @@
 <template>
   <custom-header></custom-header>
-  <form @submit.prevent="saveChanges" enctype="multipart/form-data">
+  <form @submit.prevent="saveChanges">
     <div class="mainProfile">
       <div class="pageDescription">
         <h1>Profilis</h1>
@@ -28,41 +28,41 @@
           <div class="fieldDiv">
             <div class="text-subtitle-1 text-bold-emphasis">Vardas</div>
             <v-text-field density="compact" placeholder="Vardenis" variant="outlined"
-              v-if="userData && userData[0].first_name !== undefined" v-model="userData[0].first_name"></v-text-field>
+              v-if="userData && userData.first_name !== undefined" v-model="userData.first_name"></v-text-field>
           </div>
 
           <div class="fieldDiv">
             <div class="text-subtitle-1 text-bold-emphasis">Pavardė</div>
             <v-text-field density="compact" placeholder="Pavardenis" variant="outlined"
-              v-if="userData && userData[0].last_name !== undefined" v-model="userData[0].last_name"></v-text-field>
+              v-if="userData && userData.last_name !== undefined" v-model="userData.last_name"></v-text-field>
           </div>
 
           <div class="fieldDiv">
             <div class="text-subtitle-1 text-bold-emphasis">El. paštas</div>
             <v-text-field density="compact" placeholder="vardenis@kvk.lt" variant="outlined"
-              v-if="userData && userData[0].user.email !== undefined" v-model="userData[0].user.email"></v-text-field>
+              v-if="userData && userData.user.email !== undefined" v-model="userData.user.email"></v-text-field>
           </div>
 
           <div class="fieldDiv">
             <div class="text-subtitle-1 text-bold-emphasis">Adresas</div>
             <v-text-field density="compact" placeholder="Bijunų g. 10A" variant="outlined"
-              v-if="userData && userData[0].address !== undefined" v-model="userData[0].address"></v-text-field>
+              v-if="userData && userData.address !== undefined" v-model="userData.address"></v-text-field>
           </div>
 
           <div class="fieldDiv">
             <div class="text-subtitle-1 text-bold-emphasis">Šalis</div>
-            <v-select disabled v-if="userData && userData[0].country !== undefined" v-model="userData[0].country"
+            <v-select disabled v-if="userData && userData.country !== undefined" v-model="userData.country"
               label="Lietuva"></v-select>
           </div>
           <div class="fieldDiv">
             <div class="text-subtitle-1 text-bold-emphasis">Kompanija</div>
             <v-autocomplete v-model="company_id" item-value="id" item-title="company_name" :items="companies"
-              label="Pasirinkite kompanija" v-if="userData && userData[0].description !== undefined"></v-autocomplete>
+              label="Pasirinkite kompanija" v-if="userData && userData.description !== undefined"></v-autocomplete>
           </div>
         </div>
         <div class="text-subtitle-1 text-bold-emphasis">Aprašas</div>
-        <v-textarea label="Aprašymas" v-model="userData[0].description"
-          v-if="userData && userData[0].description !== undefined"></v-textarea>
+        <v-textarea label="Aprašymas" v-model="userData.description"
+          v-if="userData && userData.description !== undefined"></v-textarea>
 
         <div class="bottomButtons">
           <v-btn color="#0D47A1" rounded="xl" variant="elevated" type="submit">Išsaugoti</v-btn>
@@ -97,8 +97,8 @@ export default {
       .get("http://localhost:8000/api/v2/companies", { withCredentials: true })
       .then((response) => {
         this.companies = response.data;
-        this.registrationData.company_id = response.data[0].id;
-        this.company_id = response.data[0].id;
+        this.registrationData.company_id = response.data.id;
+        this.company_id = response.data.id;
       });
 
     this.fetchUserData();
@@ -107,12 +107,13 @@ export default {
     fetchUserData() {
       apiClient.get("/profile", { withCredentials: true }).then((response) => {
         this.userData = response.data;
+        this.userIcon = "http://localhost:8000" + response.data.profile_picture;
       });
     },
     saveChanges() {
       const userDataWithPassword = {
-        ...this.userData[0],
-        email: this.userData[0].user.email,
+        ...this.userData,
+        email: this.userData.user.email,
         password: "password",
       };
 
@@ -124,6 +125,25 @@ export default {
         .catch((error) => {
           console.error("Error saving changes:", error);
         });
+
+      if (this.selectedImage) {
+        let formData = new FormData();
+        formData.append('image', this.selectedImage);
+
+        apiClient
+          .post("/profile/update-picture", formData, {
+            withCredentials: true,
+            headers: {
+              'Content-Type': 'multipart/form-data'
+            }
+          })
+          .then((response) => {
+            console.log("Image changes saved:", response.data);
+          })
+          .catch((error) => {
+            console.error("Error saving changes:", error);
+          });
+      }
     },
     triggerFileInput() {
       this.$refs.fileInput.click();

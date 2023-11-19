@@ -4,6 +4,7 @@ namespace App\Http\Controllers\v2;
 
 use App\Http\Controllers\Controller;
 use App\Models\Internship;
+use App\Models\StudentGroup;
 use Illuminate\Http\Request;
 
 class InternshipController extends Controller
@@ -28,10 +29,44 @@ class InternshipController extends Controller
 
     }
 
+    public function getStudentGroupInternships(Request $request)
+    {
+        $studentGroupInternshipData = $request->validate([
+            'studentGroupId' => 'required|integer',
+        ]);
+
+        $studentGroupId = $studentGroupInternshipData['studentGroupId'];
+
+        $studentGroup = StudentGroup::find($studentGroupId);
+
+        $studentIds = $studentGroup->userProfiles()->pluck('id');
+
+        $internships = Internship::whereIn('user_id', $studentIds)->get();
+
+        return response()->json($internships);
+    }
+
+    public function getStudentGroupActiveInternships(Request $request)
+    {
+        $studentGroupInternshipData = $request->validate([
+            'studentGroupId' => 'required|integer',
+        ]);
+
+        $studentGroupId = $studentGroupInternshipData['studentGroupId'];
+
+        $studentGroup = StudentGroup::find($studentGroupId);
+
+        $studentIds = $studentGroup->userProfiles()->pluck('id');
+
+        $internships = Internship::whereIn('user_id', $studentIds)->where('is_active', true)->get();
+
+        return response()->json($internships);
+    }
+
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param \Illuminate\Http\Request $request
      * @return \Illuminate\Http\JsonResponse
      */
     public function store(Request $request)
@@ -57,18 +92,45 @@ class InternshipController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function show($id)
+    public function show($i)
     {
-        //
+    }
+
+    public function getActiveInternship(Request $request) {
+
+        $userProfile = auth()->user()->userProfile;
+
+        $active_internship = Internship::where('user_id', $userProfile->id)
+            ->where('is_active', true)
+            ->get();
+
+        if ($active_internship == null) {
+            response()->json('User does not currently have an active internship', 404);
+        }
+
+        return response()->json($active_internship);
+    }
+
+    public function getInternship(Request $request) {
+        $internshipData = $request->validate([
+            'internshipId' => 'required|integer',
+        ]);
+
+        $internshipId = $internshipData['internshipId'];
+
+        $internship = Internship::findOr($internshipId, function () {
+            return response()->json(["error" => "Internship by given id not found."]);
+        });
+
+        return response()->json($internship);
     }
 
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  int  $id
+     * @param int $id
      * @return \Illuminate\Http\Response
      */
     public function edit($id)
@@ -79,8 +141,8 @@ class InternshipController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
+     * @param \Illuminate\Http\Request $request
+     * @param int $id
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, $id)
@@ -91,7 +153,7 @@ class InternshipController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int  $id
+     * @param int $id
      * @return \Illuminate\Http\Response
      */
     public function destroy($id)

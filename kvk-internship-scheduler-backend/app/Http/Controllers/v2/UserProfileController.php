@@ -36,11 +36,12 @@ class UserProfileController extends Controller
         $isUpdated = $userProfile->update([
             'first_name' => $request->input('first_name'),
             'last_name' => $request->input('last_name'),
+            'fullname' => $request->input('first_name') . ' ' . $request->input('last_name'),
             'description' => $request->input('description'),
             'company_id' => $request->input('company_id'),
             'country' => $request->input('country'),
             'address' => $request->input('address'),
-            'image_path' => $request->input('img_path')
+            'image_path' => $request->input('img_path'),
         ]);
 
         if ($isUpdated) {

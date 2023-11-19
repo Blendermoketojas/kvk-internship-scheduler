@@ -67,9 +67,16 @@ Route::middleware('api')->prefix('v2')->group(function () {
             return "Maladec turi sausaini";
         });
 
+        // Internships
+
+        Route::post('/internship', [InternshipController::class, 'getInternship']);
+        Route::get('/internship-active', [InternshipController::class, 'getActiveInternship']);
+
         // routes that are reachable by roles ...
         Route::middleware('role:1')->group(function () {
             Route::resource('/internships', InternshipController::class);
+            Route::post('/internships/student-group', [InternshipController::class, 'getStudentGroupInternships']);
+            Route::post('/internships/student-group-active', [InternshipController::class, 'getStudentGroupActiveInternships']);
         });
 
     });

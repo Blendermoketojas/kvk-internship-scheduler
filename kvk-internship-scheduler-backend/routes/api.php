@@ -12,6 +12,7 @@ use App\Http\Controllers\v2\AuthController;
 
 // dependencies
 use App\Http\Controllers\v2\CompanyController;
+use App\Http\Controllers\v2\UserProfileController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -39,10 +40,17 @@ Route::middleware('api')->prefix('v2')->group(function () {
     // auth
     Route::post('/register', [AuthController::class, 'register'])->name("register");
     Route::post('/login', [AuthController::class, 'login'])->name("login");
+
+    // resources
     Route::resource('/companies', CompanyController::class);
 
     // routes that are reachable only by authenticated users
     Route::middleware(['jwt.from.cookie', 'jwt.auth'])->group(function () {
+
+        // User profiles
+
+        Route::get('/profile', [UserProfileController::class, 'getProfile']);
+        Route::put('/profile/update', [UserProfileController::class, 'update']);
 
         // quick cookie test
         Route::get('/echo/auth', function (Request $request) {

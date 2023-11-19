@@ -74,7 +74,7 @@ class AuthController extends Controller
             false,
             true,
             false,
-            'lax'
+            'Lax'
         );
 
 // Create UserProfile and associate it with the User

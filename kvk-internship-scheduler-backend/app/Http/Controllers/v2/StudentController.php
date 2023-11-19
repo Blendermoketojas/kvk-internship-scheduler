@@ -11,6 +11,9 @@ class StudentController extends Controller
 {
     public function searchStudentGroups(Request $request)
     {
+        if ($request->input('groupIdentifier') == null) {
+            return response()->json(['error' => 'No parameters in request object']);
+        }
         $groupIdentifier = $request->input('groupIdentifier');
         $studentGroups = StudentGroup::whereRaw('LOWER(group_identifier) LIKE ?', ['%' . strtolower($groupIdentifier) . '%'])->get();
 
@@ -19,6 +22,9 @@ class StudentController extends Controller
 
     public function searchStudents(Request $request)
     {
+        if ($request->input('fullName') == null) {
+            return response()->json(['error' => 'No parameters in request object']);
+        }
         $fullName = $request->input('fullName');
 
         $query = UserProfile::where('role_id', 5)

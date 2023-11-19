@@ -21,7 +21,7 @@ class CompanySeeder extends Seeder
 
         foreach ($company_names as $value) {
             DB::table('company')->insert([
-                'company_name' => $value,
+                'company_name' => fake()->company,
             ]);
         }
     }

@@ -35,7 +35,8 @@
         density="compact"
         placeholder="Vardenis"
         variant="outlined"
-        v-model="userData.first_name"
+        v-if="userData && userData[0].first_name !== undefined"
+        v-model="userData[0].first_name"
       ></v-text-field>
     </div>
       
@@ -47,7 +48,8 @@
         density="compact"
         placeholder="Pavardenis"
         variant="outlined"
-        v-model="userData.last_name"
+        v-if="userData && userData[0].last_name !== undefined"
+        v-model="userData[0].last_name"
       ></v-text-field>
 </div>
 
@@ -59,7 +61,8 @@
         density="compact"
         placeholder="vardenis@kvk.lt"
         variant="outlined"
-        v-model="userData.email"
+        v-if="userData && userData[0].user.email !== undefined"
+        v-model="userData[0].user.email"
       ></v-text-field>
 </div>
 
@@ -72,7 +75,8 @@
         density="compact"
         placeholder="Bijunų g. 10A"
         variant="outlined"
-        v-model="userData.address"
+        v-if="userData && userData[0].address !== undefined"
+        v-model="userData[0].address"
       ></v-text-field>
 </div>
 
@@ -81,8 +85,9 @@
         Šalis
       </div>
       <v-select
-      v-model="location"
-      :items="locations"
+      disabled
+      v-if="userData && userData[0].country !== undefined"
+     v-model="userData[0].country"
       label="Lietuva"
     ></v-select>
 </div>
@@ -91,8 +96,7 @@
     Kompanija
   </div>
   <v-select
-  v-model="location"
-  :items="locations"
+
   label="UAB 'Kompanija'"
 ></v-select>
 </div>
@@ -101,56 +105,65 @@
     <div class="text-subtitle-1 text-bold-emphasis">
         Aprašas
       </div>
-      <v-textarea label="Aprašymas"></v-textarea>
+      <v-textarea label="Aprašymas" v-model="userData[0].description"    v-if="userData && userData[0].description !== undefined"></v-textarea>
  
 
     <div class="bottomButtons">
-        <v-btn color="#0D47A1" rounded="xl" variant="elevated">Išsaugoti</v-btn>
+        <v-btn color="#0D47A1" rounded="xl" variant="elevated"  @click="saveChanges">Išsaugoti</v-btn>
         <v-btn rounded="xl" variant="outlined">Atšaukti</v-btn>
     </div>
     </div>
   </div>
 </template>
-<script setup>
-import { ref, onMounted } from 'vue';
+
+<script>
 import userIcon from "@/assets/Photos/UserIcon.png";
 import customHeader from "@/components/DesktopHeader.vue";
 import apiClient from '@/utils/api-client';
-
-const userData = ref({});
-const countries = ["Lietuva", /* Add other countries as needed */];
-const companies = ["UAB 'Kompanija'", /* Add other companies as needed */];
-
-onMounted(async () => {
-  try {
-    const response = await apiClient.get('/profile');
-    userData.value = response.data;
-  } catch (error) {
-    console.error('Error fetching user data:', error);
-    // Handle the error, e.g., show an error message to the user
-  }
-});
-</script>
-<script>
-
 
 export default {
   name: "ProfileInfo",
   data() {
     return {
       userIcon,
-  
+      userData: null,
+      countries: ["Lietuva", /* Add other countries as needed */],
+      companies: ["UAB 'Kompanija'", /* Add other companies as needed */],
+      editedUserData: {
+        first_name: "",
+        last_name: "",
+        description: "",
+        email: "",
+        password: "",
+        company_id: "",
+        country: "",
+        address: "",
+        image_path: "",
+      },
     };
   },
   components: {
-       customHeader
-   },
+    customHeader,
+  },
   mounted() {
-  
+   
+   this.fetchUserData();
   },
   methods: {
-  
-
+ fetchUserData() {
+       apiClient.get('/profile',{ withCredentials: true }).then(response=>{ this.userData = response.data; this.editedUserData = { ...response.data[0], email: response.data[0].user.email  } });
+   
+ },
+ saveChanges() {
+      // Send editedUserData to the /profile/update endpoint
+      apiClient.put('/profile/update', this.editedUserData, { withCredentials: true })
+        .then(response => {
+          console.log('Changes saved:', response.data);
+        })
+        .catch(error => {
+          console.error('Error saving changes:', error);
+        });
+    },
   },
 };
 </script>

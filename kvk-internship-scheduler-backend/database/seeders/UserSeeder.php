@@ -16,18 +16,32 @@ class UserSeeder extends Seeder
      */
     public function run()
     {
-        for ($i = 0; $i < 10; $i++) {
+        for ($i = 1; $i < 100; $i++) {
             $firstName = fake()->firstName;
             $lastName = fake()->lastName;
 
             DB::table('users')->insert([
-                'name' => $firstName . ' ' . $lastName,
-                'email' => strtolower($firstName) . '.' . strtolower($lastName) . '@' . fake()->freeEmailDomain,
+                'email' => strtolower($firstName) . '.' . strtolower($lastName) . rand(1, 9999) . '@' . fake()->freeEmailDomain,
+                'email_verified_at' => fake()->dateTime,
                 'password' => Hash::make('password'),
-                'role_id' => rand(1, 4),
-                'company_id' => rand(1, 6),
-                'phone_number' => fake()->phoneNumber,
-                'photo_path' => fake()->imageUrl
+                'created_at' => fake()->dateTime,
+                'updated_at' => fake()->dateTime
+            ]);
+
+            DB::table('user_profile')->insert([
+                'user_id' => $i,
+                'first_name' => $firstName,
+                'last_name' => $lastName,
+                'fullname' => $firstName . ' ' . $lastName,
+                'role_id' => rand(1, 5),
+                'company_id' => rand(1,  30),
+                'address' => fake()->address,
+                'student_group_id' => rand(1, 5),
+                'country' => fake()->country,
+                'description' => fake()->text,
+                'image_path' => fake()->imageUrl,
+                'created_at' => fake()->dateTime,
+                'updated_at' => fake()->dateTime
             ]);
         }
     }

@@ -18,6 +18,7 @@ class MainSeeder extends Seeder
             CompanySeeder::class,
             RoleSeeder::class,
             StudentGroupsSeeder::class,
+            UserSeeder::class,
         ]);
     }
 }

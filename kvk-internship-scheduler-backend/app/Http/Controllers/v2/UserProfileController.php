@@ -17,12 +17,17 @@ class UserProfileController extends Controller
     public function update(Request $request)
     {
         $request->validate([
-            'email' => 'required|string|email|max:255|unique:users',
             'password' => 'required|string|min:6',
         ]);
 
         $user = auth()->user();
         $userProfile = $user->userProfile;
+
+        if (!strcmp($user->email, $request->input('email'))) {
+            $request->validate([
+                'email' => 'required|string|email|max:255|unique:users',
+            ]);
+        }
 
         if (!$userProfile) {
             return response()->json(['error' => 'User profile does not exist'], 404);
@@ -47,6 +52,7 @@ class UserProfileController extends Controller
             }
         }
 
+        $userProfile['user'] = ['email' => $user['email']];
         return response()->json($userProfile);
     }
 }

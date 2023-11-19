@@ -44,6 +44,7 @@ Route::middleware('api')->prefix('v2')->group(function () {
 
     // resources
     Route::resource('/companies', CompanyController::class);
+    Route::post('/search-companies', [CompanyController::class, 'searchCompanies']);
 
     // routes that are reachable only by authenticated users
     Route::middleware(['jwt.from.cookie', 'jwt.auth'])->group(function () {

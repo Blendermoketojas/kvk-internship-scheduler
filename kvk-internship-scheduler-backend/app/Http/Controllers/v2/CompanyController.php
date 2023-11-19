@@ -18,6 +18,16 @@ class CompanyController extends Controller
         return response()->json(Company::all());
     }
 
+    public function searchCompanies(Request $request) {
+        if ($request->input('companyName') == null) {
+            return response()->json(['error' => 'No parameters in request object']);
+        }
+        $companyName = $request->input('companyName');
+        $companies = Company::whereRaw('LOWER(company_name) LIKE ?', ['%' . strtolower($companyName) . '%'])->get();
+
+        return response()->json($companies);
+    }
+
     /**
      * Show the form for creating a new resource.
      *

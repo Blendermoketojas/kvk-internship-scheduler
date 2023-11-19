@@ -21,6 +21,7 @@ return new class extends Migration
             $table->integer('role_id')->default(0);
             $table->string('first_name');
             $table->string('last_name');
+            $table->string('fullname');
             $table->string('address')->nullable();
             $table->string('country')->nullable();
             $table->string('image_path')->nullable();

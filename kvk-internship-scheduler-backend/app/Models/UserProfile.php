@@ -17,6 +17,7 @@ class UserProfile extends Model
         'company_id',
         'first_name',
         'last_name',
+        'fullname',
         'role',
         'image_path',
         'description',

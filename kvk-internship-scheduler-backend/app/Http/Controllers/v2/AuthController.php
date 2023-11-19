@@ -82,6 +82,7 @@ class AuthController extends Controller
             'company_id' => $request->company_id,
             'first_name' => $request->first_name,
             'last_name' => $request->last_name,
+            'full_name' => $request->first_name . ' ' . $request->last_name,
             'email' => $request->email,
         ]);
 

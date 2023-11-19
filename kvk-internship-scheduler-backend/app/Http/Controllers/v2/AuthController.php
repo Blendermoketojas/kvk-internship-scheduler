@@ -29,10 +29,10 @@ class AuthController extends Controller
             60 * 24 * 7,
             '/',
             null,
-            false,
+            true,
             true,
             false,
-            'Lax'
+            'None'
         );
 
         $user = User::find(Auth::id());

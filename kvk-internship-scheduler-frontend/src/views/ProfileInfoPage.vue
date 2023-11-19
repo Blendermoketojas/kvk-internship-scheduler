@@ -82,6 +82,16 @@
       label="Lietuva"
     ></v-select>
 </div>
+<div class="fieldDiv">
+  <div class="text-subtitle-1 text-bold-emphasis">
+    Kompanija
+  </div>
+  <v-select
+  v-model="location"
+  :items="locations"
+  label="UAB 'Kompanija'"
+></v-select>
+</div>
 
 </div>
     <div class="text-subtitle-1 text-bold-emphasis">

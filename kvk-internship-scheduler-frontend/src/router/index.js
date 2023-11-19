@@ -23,6 +23,11 @@ const routes = [
     path: "/registration",
     component: () => import("@/views/RegistrationPage.vue"),
   },
+  {
+    path: "/documents",
+    component: () => import("@/views/DocumentsPage.vue"),
+  },
+  
 ];
 
 const router = createRouter({

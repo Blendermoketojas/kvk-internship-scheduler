@@ -147,6 +147,7 @@ export default {
     saveChanges() {
       const userDataWithPassword = {
         ...this.userData[0],
+        email: this.userData[0].user.email,
         password: "password",
       };
 

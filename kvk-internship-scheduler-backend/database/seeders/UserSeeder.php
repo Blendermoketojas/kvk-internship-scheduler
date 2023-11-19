@@ -16,7 +16,7 @@ class UserSeeder extends Seeder
      */
     public function run()
     {
-        for ($i = 1; $i < 51; $i++) {
+        for ($i = 1; $i < 100; $i++) {
             $firstName = fake()->firstName;
             $lastName = fake()->lastName;
 
@@ -34,7 +34,7 @@ class UserSeeder extends Seeder
                 'last_name' => $lastName,
                 'fullname' => $firstName . ' ' . $lastName,
                 'role_id' => rand(1, 5),
-                'company_id' => rand(1,  25),
+                'company_id' => rand(1,  30),
                 'address' => fake()->address,
                 'country' => fake()->country,
                 'description' => fake()->text,

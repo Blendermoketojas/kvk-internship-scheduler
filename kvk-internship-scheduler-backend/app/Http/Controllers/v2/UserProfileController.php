@@ -10,7 +10,7 @@ class UserProfileController extends Controller
 {
     public function getProfile()
     {
-        $userProfile = auth()->user()->userProfile;
+        $userProfile = auth()->user()->userProfile()->with('user')->get();
         return response()->json($userProfile);
     }
 

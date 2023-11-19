@@ -12,6 +12,7 @@ use App\Http\Controllers\v2\AuthController;
 
 // dependencies
 use App\Http\Controllers\v2\CompanyController;
+use App\Http\Controllers\v2\StudentController;
 use App\Http\Controllers\v2\UserProfileController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -51,8 +52,15 @@ Route::middleware('api')->prefix('v2')->group(function () {
 
         Route::get('/profile', [UserProfileController::class, 'getProfile']);
         Route::put('/profile/update', [UserProfileController::class, 'update']);
+        Route::post('/search-students', []);
+
+        // StudentGroups
+
+        Route::post('/search-student-groups', [StudentController::class, 'searchStudentGroups']);
+        Route::post('/search-students', [StudentController::class, 'searchStudents']);
 
         // quick cookie test
+
         Route::get('/echo/auth', function (Request $request) {
             return "Maladec turi sausaini";
         });

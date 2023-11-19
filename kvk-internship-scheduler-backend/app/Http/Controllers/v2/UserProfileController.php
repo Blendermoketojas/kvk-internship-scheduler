@@ -47,6 +47,7 @@ class UserProfileController extends Controller
             }
         }
 
+        $userProfile['email'] = $user->email;
         return response()->json($userProfile);
     }
 }

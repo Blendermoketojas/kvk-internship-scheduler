@@ -2,6 +2,13 @@
   <custom-header></custom-header>
   <form @submit.prevent="saveChanges">
     <div class="mainProfile">
+      <v-alert
+  v-if="showSuccessAlert"
+  color="success"
+  icon="$success"
+  title="Alert title"
+  text="Profile was successfully updated!"
+></v-alert>
       <div class="pageDescription">
         <h1>Profilis</h1>
         <h2>Čia galite koreguoti asmeninę informaciją, mokslo duomenis</h2>
@@ -56,7 +63,7 @@
           </div>
           <div class="fieldDiv">
             <div class="text-subtitle-1 text-bold-emphasis">Kompanija</div>
-            <v-autocomplete v-model="company_id" item-value="id" item-title="company_name" :items="companies"
+            <v-autocomplete v-model="company_name" item-value="id" item-title="company_name" :items="companies"
               label="Pasirinkite kompanija" v-if="userData && userData.description !== undefined"></v-autocomplete>
           </div>
         </div>
@@ -87,6 +94,7 @@ export default {
       company_id: 0,
       companies: [],
       selectedImage: null,
+      showSuccessAlert: false,
     };
   },
   components: {
@@ -121,6 +129,8 @@ export default {
         .put("/profile/update", userDataWithPassword, { withCredentials: true })
         .then((response) => {
           console.log("Changes saved:", response.data);
+          this.showSuccessAlert = true;  
+      setTimeout(() => this.showSuccessAlert = false, 6000);
         })
         .catch((error) => {
           console.error("Error saving changes:", error);
@@ -213,6 +223,9 @@ export default {
 
 img {
   height: 90%;
+  width: 120px;
+  height: 110px;
+  border-radius: 50%;
 }
 
 h2 {

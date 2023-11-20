@@ -78,6 +78,8 @@
 
 <script>
 import kvkLogo from '@/assets/Photos/KVKlogo.png';
+import router from '@/router';
+
 export default {
     name: 'UserLogin',
   data() {
@@ -95,14 +97,12 @@ export default {
       try {
         this.$axios.post('http://localhost:8000/api/v2/login', 
 this.loginData
-        ,{ withCredentials: true }).then(response=>{ if (response.data.message === 'Login successful') {
-        this.$router.push({ name: 'MainPage', params: { email: this.email } });
+        ,{ withCredentials: true }).then(response=>{ if (response.data.status === 'success') {
+        this.$router.push( '/calendar');
         } else {
         // Handle login error, e.g., showing an error message to the user
         }});
 
-      //   localStorage.setItem('userInfo', JSON.stringify(response.data));
-      // this.userInfo = response.data;
 
       } catch (error) {
         if (error.response && error.response.status === 401) {

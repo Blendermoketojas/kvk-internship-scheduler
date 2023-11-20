@@ -8,6 +8,7 @@ const routes = [
   },
   {
     path: "/calendar",
+    name:"calendar",
     component: () => import("@/views/CalendarPage.vue"),
   },
 

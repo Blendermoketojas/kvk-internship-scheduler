@@ -11,12 +11,12 @@
       <div class="inputDiv">
         <div class="fieldDiv">
           <div class="text-subtitle-1 text-bold-emphasis">Grupė</div>
-          <v-autocomplete
+          <v-text-field
             v-model="selectedGroup"
             :items="groups"
-            @search="searchGroups"
+            @update:modelValue="triggerSearchGroups"
             label="I 17-3"
-          ></v-autocomplete>
+          ></v-text-field>
         </div>
 
         <div class="fieldDiv">
@@ -24,7 +24,7 @@
           <v-autocomplete
             v-model="selectedStudent"
             :items="students"
-            @search="searchStudents"
+            @update:modelValue="triggerSearchStudents"
             label="Vardenis Pavardenis"
           ></v-autocomplete>
         </div>
@@ -42,8 +42,10 @@
         <div class="fieldDiv">
           <div class="text-subtitle-1 text-bold-emphasis">Kompanija</div>
           <v-autocomplete
-            v-model="location"
-            :items="locations"
+            v-model="selectedCompany"
+            :items="companies"
+            item-value="id" 
+            item-title="company_name"
             label="UAB 'Kompanija'"
           ></v-autocomplete>
         </div>
@@ -62,52 +64,73 @@ import userIcon from "@/assets/Photos/UserIcon.png";
 import customHeader from "@/components/DesktopHeader.vue";
 import apiClient from "@/utils/api-client";
 
+const debounce = (func, delay) => {
+  let timeoutId;
+  return (...args) => {
+    clearTimeout(timeoutId);
+    timeoutId = setTimeout(() => {
+      func(...args);
+    }, delay);
+  };
+};
+
 export default {
   name: "ProfileInfo",
   data() {
     return {
       userIcon,
-      selectedStudent: null,
-      selectedGroup: null,
+      selectedStudent: '',
+      selectedGroup: '',
       students: [],
       groups: [],
+      companies: [],
+      selectedCompany: null,
     };
   },
   components: {
     customHeader,
   },
-  
+
   mounted() {
     this.debouncedSearchStudents = debounce(this.searchStudents, 2000);
     this.debouncedSearchGroups = debounce(this.searchGroups, 2000);
+    
+    this.$axios
+      .get("http://localhost:8000/api/v2/companies", { withCredentials: true })
+      .then((response) => {
+        this.companies = response.data;
+        this.registrationData.company_id = response.data.id;
+        this.company_id = response.data.id;
+      });
   },
   methods: {
-    searchStudents(query) {
-      apiClient
-        .post("/search-students", { fullName: query })
-        .then((response) => {
-          this.students = response.data;
-        })
-        .catch((error) => {
-          console.error("Error searching for students:", error);
-        });
+    searchGroups() {
+    apiClient
+      .post("/search-student-groups", { groupIdentifier: this.selectedGroup })
+      .then((response) => {
+        this.groups = response.data;
+      })
+      .catch((error) => {
+        console.error("Error searching for groups:", error);
+      });
+  },
+     searchStudents() {
+    apiClient
+      .post("/search-students", { fullName: this.selectedStudent })
+      .then((response) => {
+        this.students = response.data;
+      })
+      .catch((error) => {
+        console.error("Error searching for students:", error);
+      });
+      
+  },
+  
+    triggerSearchStudents() {
+      this.debouncedSearchStudents(this.selectedStudent);
     },
-    searchGroups(query) {
-      apiClient
-        .post("/search-student-groups", { groupIdentifier: query })
-        .then((response) => {
-          this.groups = response.data;
-        })
-        .catch((error) => {
-          console.error("Error searching for groups:", error);
-        });
-    },
-    // Trigger search methods with debounce
-    triggerSearchStudents(query) {
-      this.debouncedSearchStudents(query);
-    },
-    triggerSearchGroups(query) {
-      this.debouncedSearchGroups(query);
+    triggerSearchGroups() {
+      this.debouncedSearchGroups(this.selectedGroup);
     },
   },
 };

@@ -4,10 +4,10 @@
         <img class="logo" :src="layoutLogo" alt="KVK Logo">
     </div>
       <div class="btn">
-        <a>Mano kalendorius</a>
+        <a @click="goToCalendar">Mano kalendorius</a>
       </div>
       <div class="btn">
-        <a>Dokumentai</a>
+        <a  @click="goToDocuments">Dokumentai</a>
       </div>
       <div class="btn">
         <a>Mano rezultatai</a>
@@ -48,8 +48,19 @@ export default {
       this.userInfo = JSON.parse(userInfoString);
       this.userName=this.userInfo.user.name;
     }
-  }
+  },
+  methods: {
+    goToCalendar() {
+      this.$router.push('/calendar'); 
+    },
+    goToDocuments() {
+      this.$router.push('/documents'); 
+    },
+    goToCalendar() {
+      this.$router.push('/calendar'); 
+    },
 }
+};
 </script>
 
 <style scoped>

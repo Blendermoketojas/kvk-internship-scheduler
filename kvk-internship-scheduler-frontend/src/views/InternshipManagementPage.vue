@@ -11,12 +11,12 @@
       <div class="inputDiv">
         <div class="fieldDiv">
           <div class="text-subtitle-1 text-bold-emphasis">Grupė</div>
-          <v-text-field
+          <v-autocomplete
             v-model="selectedGroup"
             :items="groups"
-            @update:modelValue="triggerSearchGroups"
+            @input="onGroupInput"
             label="I 17-3"
-          ></v-text-field>
+          ></v-autocomplete>
         </div>
 
         <div class="fieldDiv">
@@ -24,7 +24,7 @@
           <v-autocomplete
             v-model="selectedStudent"
             :items="students"
-            @update:modelValue="triggerSearchStudents"
+            @input="onStudentInput"
             label="Vardenis Pavardenis"
           ></v-autocomplete>
         </div>
@@ -42,12 +42,13 @@
         <div class="fieldDiv">
           <div class="text-subtitle-1 text-bold-emphasis">Kompanija</div>
           <v-autocomplete
-            v-model="selectedCompany"
-            :items="companies"
-            item-value="id" 
-            item-title="company_name"
-            label="UAB 'Kompanija'"
-          ></v-autocomplete>
+          v-model="selectedCompany"
+          :items="companies"
+          @input="onCompanyInput"
+          item-value="id"
+          item-title="company_name"
+          label="UAB 'Kompanija'"
+        ></v-autocomplete>
         </div>
       </div>
 
@@ -79,8 +80,8 @@ export default {
   data() {
     return {
       userIcon,
-      selectedStudent: '',
-      selectedGroup: '',
+      selectedStudent: "",
+      selectedGroup: "",
       students: [],
       groups: [],
       companies: [],
@@ -92,40 +93,95 @@ export default {
   },
 
   mounted() {
-    this.debouncedSearchStudents = debounce(this.searchStudents, 2000);
-    this.debouncedSearchGroups = debounce(this.searchGroups, 2000);
-    
-    this.$axios
-      .get("http://localhost:8000/api/v2/companies", { withCredentials: true })
-      .then((response) => {
-        this.companies = response.data;
-        this.registrationData.company_id = response.data.id;
-        this.company_id = response.data.id;
-      });
+    this.debouncedSearchStudents = debounce((studentName) => {
+      this.searchStudents(studentName);
+    }, 2000);
+
+    this.debouncedSearchGroups = debounce((groupName) => {
+      this.searchGroups(groupName);
+    }, 2000);
+
+    this.debouncedSearchCompanies = debounce((companyName) => {
+    this.searchCompanies(companyName);
+  }, 2000);
+   
   },
   methods: {
-    searchGroups() {
+    onStudentInput(value) {
+      const studentName = event.target.value;
+      if (typeof studentName === "string" && studentName.trim() !== "") {
+        this.debouncedSearchStudents(studentName);
+      }
+    },
+
+    onCompanyInput(event) {
+    const companyName = event.target.value;
+    if (typeof companyName === 'string' && companyName.trim() !== '') {
+      this.debouncedSearchCompanies(companyName);
+    }
+  },
+
+  searchCompanies(companyName) {
+    if (typeof companyName !== 'string') {
+      console.error('searchCompanies called with non-string argument:', companyName);
+      return;
+    }
+
+    if (companyName.trim() !== '') {
+      apiClient
+        .post("/search-companies", { companyName: companyName })
+        .then((response) => {
+          this.companies = response.data;
+        })
+        .catch((error) => {
+          console.error("Error searching for companies:", error);
+        });
+    }
+  },
+
+    onGroupInput(event) {
+  const groupName = event.target.value;
+  if (typeof groupName === 'string' && groupName.trim() !== '') {
+    this.debouncedSearchGroups(groupName);
+  }
+    },
+
+    searchGroups(groupName) {
+  if (typeof groupName !== 'string') {
+    console.error('searchGroups called with non-string argument:', groupName);
+    return;
+  }
+  if (groupName.trim() !== '') {
     apiClient
-      .post("/search-student-groups", { groupIdentifier: this.selectedGroup })
+      .post("/search-student-groups", { groupIdentifier: groupName })
       .then((response) => {
         this.groups = response.data;
       })
       .catch((error) => {
         console.error("Error searching for groups:", error);
       });
-  },
-     searchStudents() {
-    apiClient
-      .post("/search-students", { fullName: this.selectedStudent })
-      .then((response) => {
-        this.students = response.data;
-      })
-      .catch((error) => {
-        console.error("Error searching for students:", error);
-      });
-      
-  },
-  
+  }
+    },
+    searchStudents(studentName) {
+      if (typeof studentName !== "string") {
+        console.error(
+          "searchStudents called with non-string argument:",
+          studentName
+        );
+        return;
+      }
+      if (studentName && studentName.trim() !== "") {
+        apiClient
+          .post("/search-students", { fullName: studentName })
+          .then((response) => {
+            this.students = response.data;
+          })
+          .catch((error) => {
+            console.error("Error searching for students:", error);
+          });
+      }
+    },
+
     triggerSearchStudents() {
       this.debouncedSearchStudents(this.selectedStudent);
     },

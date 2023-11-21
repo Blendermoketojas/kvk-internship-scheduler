@@ -2,14 +2,9 @@
 
 namespace App\Services;
 
-use App\Contracts\Roles\RolePermissions;
 use App\Models\UserProfile;
-use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
-use Illuminate\Validation\ValidationException;
-use function Webmozart\Assert\Tests\StaticAnalysis\email;
 
 abstract class BaseService
 {

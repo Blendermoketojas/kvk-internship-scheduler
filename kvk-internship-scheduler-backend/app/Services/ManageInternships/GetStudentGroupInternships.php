@@ -1,22 +1,24 @@
 <?php
 
-namespace App\Services;
+namespace App\Services\ManageInternships;
 
-use App\Contracts\Roles\RolePermissions;
+use App\Models\Internship;
+use App\Models\StudentGroup;
 use App\Services\BaseService;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\ValidationException;
 
-class {{className}} extends BaseService
+class GetStudentGroupInternships extends BaseService
 {
     public function rules(): array
     {
-        return [];
+        return ['studentGroupId' => 'required|integer'];
     }
 
     public function data(): array
     {
-        return [];
+        return ['studentGroupId' => $this->request['studentGroupId']];
     }
 
     public function permissions(): array
@@ -38,7 +40,14 @@ class {{className}} extends BaseService
 
         // logic execution
 
+        $studentGroup = StudentGroup::find($this->data()['studentGroupId']);
+
+        $studentIds = $studentGroup->userProfiles()->pluck('id');
+
+        $internships = Internship::whereIn('user_id', $studentIds)->get();
+
         // response
-        return response()->json('Not implemented');
+
+        return response()->json($internships);
     }
 }

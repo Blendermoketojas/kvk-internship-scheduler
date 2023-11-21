@@ -15,6 +15,11 @@ class Company extends Model
         'company_name',
     ];
 
+    protected $hidden = [
+      'created_at',
+      'updated_at'
+    ];
+
     public function internships() : HasMany
     {
         return $this->hasMany(Internship::class);

@@ -31,16 +31,18 @@ class CreateInternshipService extends BaseService
 
     public function permissions(): array
     {
-        return [RolePermissions::MENTORIUS];
+        return [];
     }
 
     /**
      * @throws ValidationException
      */
-    function execute()
+    function execute() : JsonResponse
     {
-        // validate the rules
-        $this->validateRules();
+        $validation = $this->validateRules();
+        if (!is_bool($validation)) {
+            return $validation;
+        }
 
         // create the record
         $internship = Internship::create($this->data());

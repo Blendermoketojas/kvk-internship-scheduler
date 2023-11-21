@@ -72,34 +72,9 @@ Route::middleware('api')->prefix('v2')->group(function () {
         Route::post('/internship', [InternshipController::class, 'getInternship']);
         Route::get('/internship-active', [InternshipController::class, 'getActiveInternship']);
 
-        // routes that are reachable by roles ...
-        Route::middleware('role:1')->group(function () {
-            Route::resource('/internships', InternshipController::class);
-            Route::post('/internships/student-group', [InternshipController::class, 'getStudentGroupInternships']);
-            Route::post('/internships/student-group-active', [InternshipController::class, 'getStudentGroupActiveInternships']);
-        });
+        Route::resource('/internships', InternshipController::class);
+        Route::post('/internships/student-group', [InternshipController::class, 'getStudentGroupInternships']);
+        Route::post('/internships/student-group-active', [InternshipController::class, 'getStudentGroupActiveInternships']);
 
     });
 });
-
-// v1
-// Route::redirect('/', '/Login');
-// Route::get('/Login', function () {
-//     return view('Login');
-// })->name('auth');
-
-//    Route::post('/LoginCheck', [LoginController::class, 'login'])->name('login');
-//
-//    Route::post('/userinfo', [UserInfoController::class, 'getUserInfo'])->name('userInfo');
-//
-//    // Route::get('/api/user', 'LoginController@login');
-//
-//    route::post('/updateprofile', [UserInfoController::class, 'updateUserInfo'])->name('updateProfile');
-//
-//    route::get('/retrievecompanydata', [CompanyController::class, 'retrieveData'])->name('retrieveCompanyData');
-//
-//    route::post('/sendevent', [InternshipController::class, 'sendEvent'])->name('sendEvent');
-//
-//    route::get('/pullevents', [InternshipController::class, 'pullEvents'])->name('pullEvents');
-//
-//    Route::post('/logout', [LoginController::class, 'logout'])->name('logout');

@@ -29,7 +29,7 @@ class CreateInternshipService extends BaseService
 
     public function permissions(): array
     {
-        return [];
+        return [RolePermissions::PRODEKANAS];
     }
 
     /**
@@ -37,6 +37,8 @@ class CreateInternshipService extends BaseService
      */
     function execute() : JsonResponse
     {
+        // input validation
+
         $validation = $this->validateRules();
         if (!is_bool($validation)) {
             return $validation;

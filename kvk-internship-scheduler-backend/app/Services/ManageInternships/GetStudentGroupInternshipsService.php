@@ -2,19 +2,12 @@
 
 namespace App\Services\ManageInternships;
 
-class GetStudentGroupInternshipsService extends BaseServicefunction
+use App\Services\BaseService;
+
+class GetStudentGroupInternshipsService extends BaseService
 {
-    public function rules() {
-        return [];
-    }
-
-    public function data() {
-        return [];
-    }
-
     function execute()
     {
-
+        // TODO: Implement execute() method.
     }
-    // TODO: Implement execute() method.
 }

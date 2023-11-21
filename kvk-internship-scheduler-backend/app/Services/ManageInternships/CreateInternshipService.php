@@ -6,9 +6,7 @@ use App\Contracts\Roles\RolePermissions;
 use App\Models\Internship;
 use App\Services\BaseService;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\ValidationException;
-use function Webmozart\Assert\Tests\StaticAnalysis\boolean;
 
 class CreateInternshipService extends BaseService
 {

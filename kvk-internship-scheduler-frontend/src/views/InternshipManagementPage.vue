@@ -1,6 +1,13 @@
 <template>
   <custom-header></custom-header>
   <div class="mainManagement">
+    <v-alert
+    v-if="showSuccessAlert"
+    color="success"
+    icon="$success"
+    title="Pavyko!"
+    text="Praktika išsaugota!"
+  ></v-alert>
     <div class="pageDescription">
       <h1>Praktikos priskyrimas</h1>
       <h2>Čia galite priskirti studento praktiką</h2>
@@ -18,7 +25,7 @@
             item-value="id"
             @input="onGroupInput"
             return-object
-            label="I 17-3"
+            label="Įrašykite grupę"
           ></v-autocomplete>
         </div>
 
@@ -31,7 +38,7 @@
             item-value="id"
             @input="onStudentInput"
             return-object
-            label="Vardenis Pavardenis"
+            label="Įrašykite vardą"
           ></v-autocomplete>
         </div>
 
@@ -54,7 +61,7 @@
             item-value="id"
             item-title="company_name"
             return-object
-            label="UAB 'Kompanija'"
+            label="Įrašykite kompaniją"
           ></v-autocomplete>
         </div>
       </div>
@@ -96,6 +103,7 @@ export default {
       selectedCompany: null,
       dateFrom: null,
       dateTo: null,
+      showSuccessAlert: false,
     };
   },
   components: {
@@ -105,15 +113,15 @@ export default {
   mounted() {
     this.debouncedSearchStudents = debounce((studentName) => {
       this.searchStudents(studentName);
-    }, 2000);
+    }, 500);
 
     this.debouncedSearchGroups = debounce((groupName) => {
       this.searchGroups(groupName);
-    }, 2000);
+    }, 500);
 
     this.debouncedSearchCompanies = debounce((companyName) => {
       this.searchCompanies(companyName);
-    }, 2000);
+    }, 500);
   },
   methods: {
     onStudentInput(value) {
@@ -224,7 +232,8 @@ export default {
       apiClient.post("/internships", payload)
         .then(response => {
           console.log("Internship saved:", response.data);
-          // Handle success, maybe clear form or show a success message
+          this.showSuccessAlert = true;  
+          setTimeout(() => this.showSuccessAlert = false, 6000);
         })
         .catch(error => {
           console.error("Error saving internship:", error);

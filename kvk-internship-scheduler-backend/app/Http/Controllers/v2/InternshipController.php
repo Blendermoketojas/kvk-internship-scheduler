@@ -5,6 +5,7 @@ namespace App\Http\Controllers\v2;
 use App\Http\Controllers\Controller;
 use App\Models\Internship;
 use App\Models\StudentGroup;
+use App\Services\ManageInternships\CreateInternshipService;
 use Illuminate\Http\Request;
 
 class InternshipController extends Controller
@@ -69,24 +70,10 @@ class InternshipController extends Controller
      * @param \Illuminate\Http\Request $request
      * @return \Illuminate\Http\JsonResponse
      */
-    public function store(Request $request)
+    public function store(Request $request): \Illuminate\Http\JsonResponse
     {
-        $internshipData = $request->validate([
-            'companyId' => 'required|integer',
-            'userId' => 'required|integer',
-            'dateFrom' => 'required|date',
-            'dateTo' => 'required|date'
-        ]);
-
-        $internship = Internship::create([
-            'company_id' => $internshipData['companyId'],
-            'user_id' => $internshipData['userId'],
-            'date_from' => $internshipData['dateFrom'],
-            'date_to' => $internshipData['dateTo'],
-            'is_active' => 1,
-        ]);
-
-        return response()->json($internship);
+        $service = new CreateInternshipService($request);
+        return $service->execute();
     }
 
     /**

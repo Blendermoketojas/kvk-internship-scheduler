@@ -7,7 +7,7 @@ use Illuminate\Support\ServiceProvider;
 class UserComposerServiceProvider extends ServiceProvider
 {
     /**
-     * Register services.
+     * Register Services.
      *
      * @return void
      */
@@ -17,7 +17,7 @@ class UserComposerServiceProvider extends ServiceProvider
     }
 
     /**
-     * Bootstrap services.
+     * Bootstrap Services.
      *
      * @return void
      */

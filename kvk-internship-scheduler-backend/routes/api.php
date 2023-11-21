@@ -8,15 +8,15 @@
 
 // v2
 // controllers
-use App\Http\Controllers\v2\AuthController;
-
-// dependencies
+use App\Http\Controllers\v2\Auth\AuthController;
 use App\Http\Controllers\v2\CompanyController;
 use App\Http\Controllers\v2\InternshipController;
 use App\Http\Controllers\v2\StudentController;
 use App\Http\Controllers\v2\UserProfileController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+
+// dependencies
 
 /*
 |--------------------------------------------------------------------------

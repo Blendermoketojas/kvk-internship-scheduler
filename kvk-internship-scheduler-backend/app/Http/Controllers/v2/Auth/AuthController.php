@@ -1,17 +1,15 @@
 <?php
 
-namespace App\Http\Controllers\v2;
+namespace App\Http\Controllers\v2\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Models\Company;
 use App\Models\User;
-use App\Models\UserProfile;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cookie;
 use Illuminate\Support\Facades\Hash;
-use \Illuminate\Http\JsonResponse;
-use Illuminate\Support\Facades\Log;
 
 class AuthController extends Controller
 {

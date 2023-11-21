@@ -13,7 +13,9 @@ return new class extends Migration
      */
     public function up()
     {
-        //
+        Schema::create('form_template', function (Blueprint $table) {
+            $table->id();
+        });
     }
 
     /**
@@ -23,6 +25,6 @@ return new class extends Migration
      */
     public function down()
     {
-        //
+        Schema::dropIfExists('form_template');
     }
 };

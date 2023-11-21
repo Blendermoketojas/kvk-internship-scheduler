@@ -14,7 +14,10 @@
           <v-autocomplete
             v-model="selectedGroup"
             :items="groups"
+            item-title="group_identifier"
+            item-value="id"
             @input="onGroupInput"
+            return-object
             label="I 17-3"
           ></v-autocomplete>
         </div>
@@ -24,36 +27,41 @@
           <v-autocomplete
             v-model="selectedStudent"
             :items="students"
+            item-title="fullName"
+            item-value="id"
             @input="onStudentInput"
+            return-object
             label="Vardenis Pavardenis"
           ></v-autocomplete>
         </div>
 
         <div class="fieldDiv">
           <div class="text-subtitle-1 text-bold-emphasis">Nuo:</div>
-          <input type="date" />
+          <input type="date" v-model="dateFrom" />
         </div>
 
         <div class="fieldDiv">
           <div class="text-subtitle-1 text-bold-emphasis">Iki:</div>
-          <input type="date" />
+          <input type="date" v-model="dateTo"/>
         </div>
 
         <div class="fieldDiv">
           <div class="text-subtitle-1 text-bold-emphasis">Kompanija</div>
           <v-autocomplete
-          v-model="selectedCompany"
-          :items="companies"
-          @input="onCompanyInput"
-          item-value="id"
-          item-title="company_name"
-          label="UAB 'Kompanija'"
-        ></v-autocomplete>
+            v-model="selectedCompany"
+            :items="companies"
+            @input="onCompanyInput"
+            item-value="id"
+            item-title="company_name"
+            return-object
+            label="UAB 'Kompanija'"
+          ></v-autocomplete>
         </div>
       </div>
 
       <div class="bottomButtons">
-        <v-btn color="#0D47A1" rounded="xl" variant="elevated">Išsaugoti</v-btn>
+        <v-btn color="#0D47A1" rounded="xl" variant="elevated" @click="submitInternship">Išsaugoti</v-btn>
+        
         <v-btn rounded="xl" variant="outlined">Atšaukti</v-btn>
       </div>
     </div>
@@ -86,6 +94,8 @@ export default {
       groups: [],
       companies: [],
       selectedCompany: null,
+      dateFrom: null,
+      dateTo: null,
     };
   },
   components: {
@@ -102,9 +112,8 @@ export default {
     }, 2000);
 
     this.debouncedSearchCompanies = debounce((companyName) => {
-    this.searchCompanies(companyName);
-  }, 2000);
-   
+      this.searchCompanies(companyName);
+    }, 2000);
   },
   methods: {
     onStudentInput(value) {
@@ -115,52 +124,64 @@ export default {
     },
 
     onCompanyInput(event) {
-    const companyName = event.target.value;
-    if (typeof companyName === 'string' && companyName.trim() !== '') {
-      this.debouncedSearchCompanies(companyName);
-    }
-  },
+      const companyName = event.target.value;
+      if (typeof companyName === "string" && companyName.trim() !== "") {
+        this.debouncedSearchCompanies(companyName);
+      }
+    },
 
-  searchCompanies(companyName) {
-    if (typeof companyName !== 'string') {
-      console.error('searchCompanies called with non-string argument:', companyName);
-      return;
-    }
+    searchCompanies(companyName) {
+      if (typeof companyName !== "string") {
+        console.error(
+          "searchCompanies called with non-string argument:",
+          companyName
+        );
+        return;
+      }
 
-    if (companyName.trim() !== '') {
-      apiClient
-        .post("/search-companies", { companyName: companyName })
-        .then((response) => {
-          this.companies = response.data;
-        })
-        .catch((error) => {
-          console.error("Error searching for companies:", error);
-        });
-    }
-  },
+      if (companyName.trim() !== "") {
+        apiClient
+          .post("/search-companies", { companyName: companyName })
+          .then((response) => {
+            this.companies = response.data.map((company) => ({
+              id: company.id,
+              company_name: company.company_name,
+            }));
+          })
+          .catch((error) => {
+            console.error("Error searching for companies:", error);
+          });
+      }
+    },
 
     onGroupInput(event) {
-  const groupName = event.target.value;
-  if (typeof groupName === 'string' && groupName.trim() !== '') {
-    this.debouncedSearchGroups(groupName);
-  }
+      const groupName = event.target.value;
+      if (typeof groupName === "string" && groupName.trim() !== "") {
+        this.debouncedSearchGroups(groupName);
+      }
     },
 
     searchGroups(groupName) {
-  if (typeof groupName !== 'string') {
-    console.error('searchGroups called with non-string argument:', groupName);
-    return;
-  }
-  if (groupName.trim() !== '') {
-    apiClient
-      .post("/search-student-groups", { groupIdentifier: groupName })
-      .then((response) => {
-        this.groups = response.data;
-      })
-      .catch((error) => {
-        console.error("Error searching for groups:", error);
-      });
-  }
+      if (typeof groupName !== "string") {
+        console.error(
+          "searchGroups called with non-string argument:",
+          groupName
+        );
+        return;
+      }
+      if (groupName.trim() !== "") {
+        apiClient
+          .post("/search-student-groups", { groupIdentifier: groupName })
+          .then((response) => {
+            this.groups = response.data.map((group) => ({
+              id: group.id,
+              group_identifier: group.group_identifier,
+            }));
+          })
+          .catch((error) => {
+            console.error("Error searching for groups:", error);
+          });
+      }
     },
     searchStudents(studentName) {
       if (typeof studentName !== "string") {
@@ -174,7 +195,10 @@ export default {
         apiClient
           .post("/search-students", { fullName: studentName })
           .then((response) => {
-            this.students = response.data;
+            this.students = response.data.map((student) => ({
+              id: student.id,
+              fullName: student.fullname,
+            }));
           })
           .catch((error) => {
             console.error("Error searching for students:", error);
@@ -188,6 +212,29 @@ export default {
     triggerSearchGroups() {
       this.debouncedSearchGroups(this.selectedGroup);
     },
+    submitInternship() {
+    if (this.selectedCompany && this.selectedStudent && this.dateFrom && this.dateTo) {
+      const payload = {
+        companyId: this.selectedCompany.id,
+        userId: this.selectedStudent.id,
+        dateFrom: this.dateFrom,
+        dateTo: this.dateTo,
+      };
+
+      apiClient.post("/internships", payload)
+        .then(response => {
+          console.log("Internship saved:", response.data);
+          // Handle success, maybe clear form or show a success message
+        })
+        .catch(error => {
+          console.error("Error saving internship:", error);
+          // Handle error, show error message to user
+        });
+    } else {
+      // Handle case where not all fields are filled out
+      console.error("All fields are required");
+    }
+  },
   },
 };
 </script>

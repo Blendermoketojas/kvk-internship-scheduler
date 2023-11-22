@@ -14,6 +14,20 @@ class UserProfileController extends Controller
         return response()->json($userProfile);
     }
 
+    public function updateProfilePicture(Request $request) {
+        $request->validate(['image' => 'required|image|max:2048']);
+
+        $userProfile = auth()->user()->userProfile;
+        $path = $request->file('image')->store('profile_pictures', 'public');
+
+        $userProfile->image_path = $path;
+        $userProfile->save();
+
+        return response()->json(['message' => 'Profile picture updated successfully.']);
+        $userProfile = auth()->user()->userProfile()->with('user')->get();
+        return response()->json($userProfile[0]);
+    }
+
     public function update(Request $request)
     {
         $request->validate([

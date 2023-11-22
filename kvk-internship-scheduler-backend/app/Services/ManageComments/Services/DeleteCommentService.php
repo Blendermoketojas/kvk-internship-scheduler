@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Services\ManageComments;
+namespace App\Services\ManageComments\Services;
 
 use App\Contracts\Roles\RolePermissions;
 use App\Exceptions\ModelNotProvidedInServiceException;
@@ -24,22 +24,13 @@ class DeleteCommentService extends BaseService
     public function data(): array
     {
         return [
-            'comment_id' => $this->request['comment_id']
+            'comment_id' => $this->request['commentId']
         ];
     }
 
     public function permissions(): array
     {
-        return [RolePermissions::SELF, RolePermissions::PRODEKANAS];
-    }
-
-    /**
-     * Used for user's record ownership validation
-     * Retrieves model instance. Then can be used with $modelInstance property
-     */
-    protected function retrieveModelInstance(): ?Model {
-        $commentId = $this->request['comment_id'];
-        return Comment::findOrFail($commentId);
+        return [RolePermissions::SELF];
     }
 
     /**
@@ -58,5 +49,14 @@ class DeleteCommentService extends BaseService
 
         // response
         return response()->json(['success' => true]);
+    }
+
+    /**
+     * Used for user's record ownership validation
+     * Retrieves model instance. Then can be used with $modelInstance property
+     */
+    protected function retrieveModelInstance(): ?Model {
+        $commentId = $this->request['commentId'];
+        return Comment::findOrFail($commentId);
     }
 }

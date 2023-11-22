@@ -10,6 +10,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 class Comment extends Model
 {
     use AutoCreatedBy;
+    use HasFactory;
 
     protected $table = "comments";
 
@@ -21,7 +22,9 @@ class Comment extends Model
         'date_to'
     ];
 
-    use HasFactory;
+    protected $hidden = [
+        'created_by'
+    ];
 
     public function internship(): BelongsTo
     {

@@ -1,8 +1,7 @@
 <?php
 
-namespace App\Services\ManageComments;
+namespace App\Services\ManageComments\Services;
 
-use App\Contracts\Roles\RolePermissions;
 use App\Helpers\Date\DateHelper;
 use App\Models\Internship;
 use App\Services\BaseService;

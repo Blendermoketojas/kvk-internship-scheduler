@@ -85,6 +85,8 @@ Route::middleware('api')->prefix('v2')->group(function () {
 
         Route::post('/comments', [CommentController::class, 'createComment']);
         Route::delete('/comments', [CommentController::class, 'deleteComment']);
+        Route::put('/comments', [CommentController::class, 'updateComment']);
+        Route::post('/internship/comments', [CommentController::class, 'getAllInternshipComments']);
 
     });
 });

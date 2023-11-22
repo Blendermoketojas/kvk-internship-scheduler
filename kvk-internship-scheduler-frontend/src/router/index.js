@@ -8,7 +8,7 @@ const routes = [
   },
   {
     path: "/calendar",
-    name:"calendar",
+    name: "calendar",
     component: () => import("@/views/CalendarPage.vue"),
   },
 
@@ -29,10 +29,13 @@ const routes = [
     component: () => import("@/views/DocumentsPage.vue"),
   },
   {
-path:"/internship-view",
-component:()=>import("@/views/InternshipViewPage.vue"),
+    path: "/internship-view",
+    component: () => import("@/views/InternshipViewPage.vue"),
   },
-
+  {
+    path: "/document-upload",
+    component: () => import("@/views/DocumentUploadPage.vue"),
+  },
 ];
 
 const router = createRouter({

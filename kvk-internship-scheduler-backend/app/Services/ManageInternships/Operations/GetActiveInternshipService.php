@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Services\ManageInternships;
+namespace App\Services\ManageInternships\Operations;
 
 use App\Models\Internship;
 use App\Services\BaseService;

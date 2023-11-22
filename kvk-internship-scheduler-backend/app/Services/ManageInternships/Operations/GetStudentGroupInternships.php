@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Services\ManageInternships;
+namespace App\Services\ManageInternships\Operations;
 
 use App\Models\Internship;
 use App\Models\StudentGroup;
@@ -8,7 +8,7 @@ use App\Services\BaseService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Validation\ValidationException;
 
-class GetStudentGroupActiveInternships extends BaseService
+class GetStudentGroupInternships extends BaseService
 {
     public function rules(): array
     {
@@ -43,8 +43,7 @@ class GetStudentGroupActiveInternships extends BaseService
 
         $studentIds = $studentGroup->userProfiles()->pluck('id');
 
-        $internships = Internship::whereIn('user_id', $studentIds)->where('is_active', true)->get();
-
+        $internships = Internship::whereIn('user_id', $studentIds)->get();
 
         // response
 

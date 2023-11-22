@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Services\ManageInternships;
+namespace App\Services\ManageInternships\Operations;
 
 use App\Contracts\Roles\RolePermissions;
 use App\Models\Internship;
@@ -43,9 +43,10 @@ class GetInternshipService extends BaseService
 
         if($internship = Internship::find($this->data())) {
             $internship->load('company');
+            $internship->load('userProfile');
         }
 
         // response
-        return response()->json($internship);
+        return response()->json($internship[0]);
     }
 }

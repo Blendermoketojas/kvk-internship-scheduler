@@ -3,9 +3,14 @@
 namespace App\Http\Controllers\v2;
 
 use App\Http\Controllers\Controller;
-use App\Models\Internship;
-use App\Models\StudentGroup;
+use App\Services\ManageInternships\Operations\CreateInternshipService;
+use App\Services\ManageInternships\Operations\GetActiveInternshipService;
+use App\Services\ManageInternships\Operations\GetInternshipService;
+use App\Services\ManageInternships\Operations\GetStudentGroupActiveInternships;
+use App\Services\ManageInternships\Operations\GetStudentGroupInternships;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Validation\ValidationException;
 
 class InternshipController extends Controller
 {
@@ -29,38 +34,20 @@ class InternshipController extends Controller
 
     }
 
+    /**
+     * @throws ValidationException
+     */
     public function getStudentGroupInternships(Request $request)
     {
-        $studentGroupInternshipData = $request->validate([
-            'studentGroupId' => 'required|integer',
-        ]);
-
-        $studentGroupId = $studentGroupInternshipData['studentGroupId'];
-
-        $studentGroup = StudentGroup::find($studentGroupId);
-
-        $studentIds = $studentGroup->userProfiles()->pluck('id');
-
-        $internships = Internship::whereIn('user_id', $studentIds)->get();
-
-        return response()->json($internships);
+        return (new GetStudentGroupInternships($request))->execute();
     }
 
+    /**
+     * @throws ValidationException
+     */
     public function getStudentGroupActiveInternships(Request $request)
     {
-        $studentGroupInternshipData = $request->validate([
-            'studentGroupId' => 'required|integer',
-        ]);
-
-        $studentGroupId = $studentGroupInternshipData['studentGroupId'];
-
-        $studentGroup = StudentGroup::find($studentGroupId);
-
-        $studentIds = $studentGroup->userProfiles()->pluck('id');
-
-        $internships = Internship::whereIn('user_id', $studentIds)->where('is_active', true)->get();
-
-        return response()->json($internships);
+        return (new GetStudentGroupActiveInternships($request))->execute();
     }
 
     /**
@@ -69,24 +56,9 @@ class InternshipController extends Controller
      * @param \Illuminate\Http\Request $request
      * @return \Illuminate\Http\JsonResponse
      */
-    public function store(Request $request)
+    public function store(Request $request): \Illuminate\Http\JsonResponse
     {
-        $internshipData = $request->validate([
-            'companyId' => 'required|integer',
-            'userId' => 'required|integer',
-            'dateFrom' => 'required|date',
-            'dateTo' => 'required|date'
-        ]);
-
-        $internship = Internship::create([
-            'company_id' => $internshipData['companyId'],
-            'user_id' => $internshipData['userId'],
-            'date_from' => $internshipData['dateFrom'],
-            'date_to' => $internshipData['dateTo'],
-            'is_active' => 1,
-        ]);
-
-        return response()->json($internship);
+        return (new CreateInternshipService($request))->execute();
     }
 
     /**
@@ -98,33 +70,16 @@ class InternshipController extends Controller
     {
     }
 
-    public function getActiveInternship(Request $request) {
-
-        $userProfile = auth()->user()->userProfile;
-
-        $active_internship = Internship::where('user_id', $userProfile->id)
-            ->where('is_active', true)
-            ->get();
-
-        if ($active_internship == null) {
-            response()->json('User does not currently have an active internship', 404);
-        }
-
-        return response()->json($active_internship);
+    public function getActiveInternship(Request $request): JsonResponse
+    {
+        return (new GetActiveInternshipService($request))->execute();
     }
 
+    /**
+     * @throws ValidationException
+     */
     public function getInternship(Request $request) {
-        $internshipData = $request->validate([
-            'internshipId' => 'required|integer',
-        ]);
-
-        $internshipId = $internshipData['internshipId'];
-
-        $internship = Internship::findOr($internshipId, function () {
-            return response()->json(["error" => "Internship by given id not found."]);
-        });
-
-        return response()->json($internship);
+        return (new GetInternshipService($request))->execute();
     }
 
     /**

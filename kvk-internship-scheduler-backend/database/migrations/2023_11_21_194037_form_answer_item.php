@@ -13,14 +13,10 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('comments', function (Blueprint $table) {
+        Schema::create('form_answer_item', function (Blueprint $table) {
             $table->id();
-            $table->integer('internship_id');
-            $table->integer('user_profile_id');
-            $table->string('comment');
-            $table->date('date_from');
-            $table->date('date_to');
-            $table->timestamps();
+            $table->integer("question_id");
+            $table->integer("answer_id");
         });
     }
 
@@ -31,6 +27,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('comments');
+        Schema::dropIfExists('form_answer_item');
     }
 };

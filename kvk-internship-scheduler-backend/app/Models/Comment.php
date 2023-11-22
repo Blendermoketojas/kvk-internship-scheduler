@@ -15,4 +15,9 @@ class Comment extends Model
     {
         return $this->belongsTo(Internship::class);
     }
+
+    public function userProfile() : BelongsTo
+    {
+        return $this->belongsTo(UserProfile::class, 'user_id');
+    }
 }

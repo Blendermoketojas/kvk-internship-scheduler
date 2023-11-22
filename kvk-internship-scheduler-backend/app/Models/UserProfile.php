@@ -24,6 +24,12 @@ class UserProfile extends Model
         'country',
         'address'
     ];
+
+    protected $hidden = [
+        'role_id',
+        'student_group_id'
+    ];
+
     public function internships(): HasMany
     {
         return $this->hasMany(Internship::class);
@@ -42,5 +48,9 @@ class UserProfile extends Model
     public function studentGroup() : BelongsTo
     {
         return $this->belongsTo(StudentGroup::class);
+    }
+
+    public function comments() : HasMany {
+        return $this->hasMany(Comment::class);
     }
 }

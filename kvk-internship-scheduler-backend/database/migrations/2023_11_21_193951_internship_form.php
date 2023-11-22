@@ -13,14 +13,12 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('comments', function (Blueprint $table) {
+        Schema::create('internship_form', function (Blueprint $table) {
             $table->id();
-            $table->integer('internship_id');
-            $table->integer('user_profile_id');
-            $table->string('comment');
-            $table->date('date_from');
-            $table->date('date_to');
-            $table->timestamps();
+            $table->integer("form_id");
+            $table->integer("form_answer_id")->nullable();
+            $table->integer("internship_id");
+            $table->integer("sequence");
         });
     }
 
@@ -31,6 +29,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('comments');
+        Schema::dropIfExists('internship_form');
     }
 };

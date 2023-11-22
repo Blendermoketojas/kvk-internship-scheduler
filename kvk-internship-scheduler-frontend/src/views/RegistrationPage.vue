@@ -4,18 +4,18 @@
 
     <div class="inputFields">
       <div class="text-subtitle-1 text-medium-emphasis">Vardas</div>
-      <v-text-field v-model="registrationData.first_name" density="compact" placeholder="Vardenis"
+      <v-text-field v-model="registrationData.firstName" density="compact" placeholder="Vardenis"
         variant="outlined"></v-text-field>
     </div>
     <div class="inputFields">
       <div class="text-subtitle-1 text-medium-emphasis">Pavardė</div>
 
-      <v-text-field v-model="registrationData.last_name" density="compact" placeholder="Pavardenis"
+      <v-text-field v-model="registrationData.lastName" density="compact" placeholder="Pavardenis"
         variant="outlined"></v-text-field>
     </div>
     <div class="inputFields">
       <div class="text-subtitle-1 text-bold-emphasis">Kompanija</div>
-      <v-select v-model="registrationData.company_id" item-value="id" item-title="company_name" :items="companies"
+      <v-select v-model="registrationData.companyId" item-value="id" item-title="company_name" :items="companies"
         label="Pasirinkite kompanija"></v-select>
     </div>
     <div class="inputFields">
@@ -61,9 +61,9 @@ export default {
       kvkLogo,
       companies: [],
       registrationData: {
-        company_id: 0,
-        first_name: '',
-        last_name: '',
+        companyId: 0,
+        firstName: '',
+        lastName: '',
         email: '',
         password: '',
       },
@@ -72,7 +72,7 @@ export default {
   },
   mounted() {
     this.$axios.get('http://localhost:8000/api/v2/companies', { withCredentials: true })
-    .then(response => { this.companies = response.data; this.registrationData.company_id = response.data[0].id });
+    .then(response => { this.companies = response.data; this.registrationData.companyId = response.data[0].id });
 
   },
   methods: {

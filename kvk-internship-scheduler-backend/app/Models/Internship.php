@@ -22,9 +22,13 @@ class Internship extends Model
         'is_active'
     ];
 
+    protected $casts = [
+        'is_active' => 'boolean'
+    ];
+
     public function userProfile(): BelongsTo
     {
-        return $this->BelongsTo(UserProfile::class);
+        return $this->BelongsTo(UserProfile::class, 'user_id');
     }
 
     public function comments(): HasMany

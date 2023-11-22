@@ -115,7 +115,7 @@ export default {
     fetchUserData() {
       apiClient.get("/profile", { withCredentials: true }).then((response) => {
         this.userData = response.data;
-        this.userIcon = "http://localhost:8000" + response.data.profile_picture;
+        this.userIcon = "http://localhost:8000" + response.data.image_path;
       });
     },
     saveChanges() {

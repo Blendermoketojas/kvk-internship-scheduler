@@ -16,7 +16,7 @@
       <div class="selections"></div>
 
       <div class="inputDiv">
-        <div class="fieldDiv">
+        <!-- <div class="fieldDiv">
           <div class="text-subtitle-1 text-bold-emphasis">Grupė</div>
           <v-autocomplete
             v-model="selectedGroup"
@@ -27,7 +27,7 @@
             return-object
             label="Įrašykite grupę"
           ></v-autocomplete>
-        </div>
+        </div> -->
 
         <div class="fieldDiv">
           <div class="text-subtitle-1 text-bold-emphasis">Vardas Pavardė</div>
@@ -115,9 +115,9 @@ export default {
       this.searchStudents(studentName);
     }, 500);
 
-    this.debouncedSearchGroups = debounce((groupName) => {
-      this.searchGroups(groupName);
-    }, 500);
+    // this.debouncedSearchGroups = debounce((groupName) => {
+    //   this.searchGroups(groupName);
+    // }, 500);
 
     this.debouncedSearchCompanies = debounce((companyName) => {
       this.searchCompanies(companyName);
@@ -162,35 +162,35 @@ export default {
       }
     },
 
-    onGroupInput(event) {
-      const groupName = event.target.value;
-      if (typeof groupName === "string" && groupName.trim() !== "") {
-        this.debouncedSearchGroups(groupName);
-      }
-    },
+    // onGroupInput(event) {
+    //   const groupName = event.target.value;
+    //   if (typeof groupName === "string" && groupName.trim() !== "") {
+    //     this.debouncedSearchGroups(groupName);
+    //   }
+    // },
 
-    searchGroups(groupName) {
-      if (typeof groupName !== "string") {
-        console.error(
-          "searchGroups called with non-string argument:",
-          groupName
-        );
-        return;
-      }
-      if (groupName.trim() !== "") {
-        apiClient
-          .post("/search-student-groups", { groupIdentifier: groupName })
-          .then((response) => {
-            this.groups = response.data.map((group) => ({
-              id: group.id,
-              group_identifier: group.group_identifier,
-            }));
-          })
-          .catch((error) => {
-            console.error("Error searching for groups:", error);
-          });
-      }
-    },
+    // searchGroups(groupName) {
+    //   if (typeof groupName !== "string") {
+    //     console.error(
+    //       "searchGroups called with non-string argument:",
+    //       groupName
+    //     );
+    //     return;
+    //   }
+    //   if (groupName.trim() !== "") {
+    //     apiClient
+    //       .post("/search-student-groups", { groupIdentifier: groupName })
+    //       .then((response) => {
+    //         this.groups = response.data.map((group) => ({
+    //           id: group.id,
+    //           group_identifier: group.group_identifier,
+    //         }));
+    //       })
+    //       .catch((error) => {
+    //         console.error("Error searching for groups:", error);
+    //       });
+    //   }
+    // },
     searchStudents(studentName) {
       if (typeof studentName !== "string") {
         console.error(

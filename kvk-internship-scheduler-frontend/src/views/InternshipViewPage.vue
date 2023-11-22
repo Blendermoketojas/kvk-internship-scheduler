@@ -11,23 +11,25 @@
 <v-data-table-server
 :search="search"
 :headers="headers"
-:items="serverItems"
+:items="internships"
+item-key="id"
 :loading="loading"
 item-value="name"
 >
-<template v-slot:tfoot>
+<!-- <template v-slot:tfoot>
     <tr>
       <td>
         <v-text-field
-          v-model="name"
+          v-model="search"
           hide-details
           placeholder="Ieškoti pagal vardą"
           class="ma-2"
           density="compact"
+          @input="filterInternships"
         ></v-text-field>
         </td>
         </tr>
-    </template>
+    </template> -->
     </v-data-table-server>
 
 </div>
@@ -44,6 +46,8 @@ export default {
   name: "InternshipView",
   data() {
     return {
+      internships:[],
+      // search: '',
         headers: [
         {
           title: 'Vardas',
@@ -67,9 +71,12 @@ export default {
         apiClient
           .post("/internships/student-group-active", { studentGroupId: groupId })
           .then((response) => {
-            this.groups = response.data.map((group) => ({
-              id: group.id,
-            //   group_name: group.fullname,
+            this.internships = response.data.map(internship => ({
+          name: internship.user_profile.fullname,
+          group: internship.user_profile.company_id,
+          dateFrom: internship.date_from,
+          dateTo: internship.date_to,
+          company: internship.company.company_name,
             }));
           })
           .catch((error) => {
@@ -77,6 +84,10 @@ export default {
           });
       console.log(groupId);
     },
+   
+  },
+  mounted() {
+  this.handleSelectedGroupId();
   },
 }
 

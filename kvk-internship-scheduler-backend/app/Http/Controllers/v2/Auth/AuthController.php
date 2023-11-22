@@ -5,112 +5,47 @@ namespace App\Http\Controllers\v2\Auth;
 use App\Http\Controllers\Controller;
 use App\Models\Company;
 use App\Models\User;
+use App\Services\ManageAuth\LoginService;
+use App\Services\ManageAuth\RegisterService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cookie;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Validation\ValidationException;
+use Tymon\JWTAuth\Facades\JWTAuth;
 
 class AuthController extends Controller
 {
+    /**
+     * @throws ValidationException
+     */
     public function login(Request $request): JsonResponse
     {
-        $credentials = $request->only(['email', 'password']);
-
-        if (!$token = auth()->attempt($credentials)) {
-            return response()->json(['error' => 'Unauthorized'], 401);
-        }
-
-        $cookie = Cookie::make(
-            'jwt',
-            $token,
-            60 * 24 * 7,
-            '/',
-            null,
-            true,
-            true,
-            false,
-            'None'
-        );
-
-        $user = User::find(Auth::id());
-        return $this->respondWithToken($token, $user->userProfile)->withCookie($cookie);
+        return (new LoginService($request))->execute();
     }
 
+    /**
+     * @throws ValidationException
+     */
     public function register(Request $request) : JsonResponse
     {
-        $credentials = $request->validate([
-            'first_name' => 'required|string|max:255',
-            'last_name' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:users',
-            'password' => 'required|string|min:6',
-            'company_id' => 'required',
-        ]);
-
-        $company = Company::find($request->company_id);
-
-        if ($company == null) {
-            return response()->json(['error' => 'User must be assigned to an organization']);
-        }
-
-        $user = User::create([
-            'email' => $request->email,
-            'password' => Hash::make($request->password),
-        ]);
-
-        if (!$user) {
-            return response()->json(['error' => 'User creation was unsuccessful for unknown reasons']);
-        }
-
-        $token = auth()->login($user);
-        $cookie = Cookie::make(
-            'jwt',
-            $token,
-            60 * 24 * 7,
-            '/',
-            null,
-            false,
-            true,
-            false,
-            'Lax'
-        );
-
-// Create UserProfile and associate it with the User
-        $userProfile = $user->userProfile()->create([
-            'company_id' => $request->company_id,
-            'first_name' => $request->first_name,
-            'last_name' => $request->last_name,
-            'full_name' => $request->first_name . ' ' . $request->last_name,
-            'email' => $request->email,
-        ]);
-
-        $userProfile->company()->associate($company);
-        $userProfile->save();
-
-        return $this->respondWithToken($token, $userProfile)->withCookie($cookie);
+        return (new RegisterService($request))->execute();
     }
 
-    public function checkAuth(Request $request)
+    public function logout(): JsonResponse
     {
-        // Attempt to get the authenticated user using the jwt guard
-        $user = auth('api')->user();
+        try {
+            // Get the token from the request
+            $token = JWTAuth::getToken();
 
-        // Check if a user was found
-        $isAuthenticated = $user !== null;
+            // Invalidate the token
+            JWTAuth::invalidate($token);
 
-        return response()->json([
-            'isAuthenticated' => $isAuthenticated
-        ]);
-    }
-
-    protected function respondWithToken($token, $user): JsonResponse
-    {
-        return response()->json([
-            'access_token' => $token,
-            'token_type' => 'bearer',
-            'status' => 'success',
-            'expires_in' => auth('api')->factory()->getTTL() * 60,
-            'user' => $user
-        ]);
+            return response()->json(['success' => true, 'message' => 'Successfully logged out']);
+        } catch (\Exception $e) {
+            // Something went wrong whilst attempting to encode the token
+            return response()->json(['success' => false, 'error' => 'Failed to logout, please try again.'], 500);
+        }
     }
 }

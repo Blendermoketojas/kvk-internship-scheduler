@@ -39,8 +39,7 @@ class InternshipController extends Controller
      */
     public function getStudentGroupInternships(Request $request)
     {
-        $service = new GetStudentGroupInternships($request);
-        return $service->execute();
+        return (new GetStudentGroupInternships($request))->execute();
     }
 
     /**
@@ -48,8 +47,7 @@ class InternshipController extends Controller
      */
     public function getStudentGroupActiveInternships(Request $request)
     {
-        $service = new GetStudentGroupActiveInternships($request);
-        return $service->execute();
+        return (new GetStudentGroupActiveInternships($request))->execute();
     }
 
     /**
@@ -60,8 +58,7 @@ class InternshipController extends Controller
      */
     public function store(Request $request): \Illuminate\Http\JsonResponse
     {
-        $service = new CreateInternshipService($request);
-        return $service->execute();
+        return (new CreateInternshipService($request))->execute();
     }
 
     /**
@@ -75,16 +72,14 @@ class InternshipController extends Controller
 
     public function getActiveInternship(Request $request): JsonResponse
     {
-        $service = new GetActiveInternshipService($request);
-        return $service->execute();
+        return (new GetActiveInternshipService($request))->execute();
     }
 
     /**
      * @throws ValidationException
      */
     public function getInternship(Request $request) {
-        $service = new GetInternshipService($request);
-        return $service->execute();
+        return (new GetInternshipService($request))->execute();
     }
 
     /**

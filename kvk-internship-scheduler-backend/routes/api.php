@@ -40,8 +40,8 @@ Route::middleware('api')->prefix('v2')->group(function () {
     });
 
     // auth
-    Route::post('/register', [AuthController::class, 'register'])->name("register");
-    Route::post('/login', [AuthController::class, 'login'])->name("login");
+    Route::post('/register', [AuthController::class, 'register']);
+    Route::post('/login', [AuthController::class, 'login']);
 
     // resources
     Route::resource('/companies', CompanyController::class);
@@ -49,6 +49,9 @@ Route::middleware('api')->prefix('v2')->group(function () {
 
     // routes that are reachable only by authenticated users
     Route::middleware(['jwt.from.cookie', 'jwt.auth'])->group(function () {
+
+        // Logout
+        Route::post('/logout', [AuthController::class, 'logout']);
 
         // User profiles
 

@@ -9,6 +9,7 @@
         item-title="group_identifier"
         item-value="id"
         @input="onGroupInput"
+        @change="onGroupChange"
         return-object
         label="Įrašykite grupę"
       ></v-autocomplete>
@@ -123,10 +124,15 @@ export default {
       const groupName = event.target.value;
       if (typeof groupName === "string" && groupName.trim() !== "") {
         this.debouncedSearchGroups(groupName);
-        this.$emit('update:selectedGroupId', this.selectedGroup.id);
+     
       }
     },
-
+onGroupChange(event){
+  const groupName = event.target.value;
+      if (typeof groupName === "string" && groupName.trim() !== "") {
+        this.$emit('update:selectedGroupId', this.selectedGroup.id);
+      }
+},
     searchGroups(groupName) {
       if (typeof groupName !== "string") {
         console.error(

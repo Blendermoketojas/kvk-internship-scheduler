@@ -65,7 +65,7 @@ export default {
   methods: {
     handleSelectedGroupId(groupId) {
         apiClient
-          .post("/student-group-active", { studentGroupId: groupId })
+          .post("/internships/student-group-active", { studentGroupId: groupId })
           .then((response) => {
             this.groups = response.data.map((group) => ({
               id: group.id,

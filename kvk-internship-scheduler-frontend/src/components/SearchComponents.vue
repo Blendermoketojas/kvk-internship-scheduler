@@ -15,7 +15,7 @@
       ></v-autocomplete>
       </div>
 
-    <div class="fieldDiv">
+    <!-- <div class="fieldDiv">
         <div class="text-subtitle-1 text-bold-emphasis">Vardas Pavardė</div>
         <v-autocomplete
           v-model="selectedStudent"
@@ -39,7 +39,7 @@
           return-object
           label="Įrašykite kompanija"
         ></v-autocomplete>
-        </div>
+        </div> -->
 
 </template>
 

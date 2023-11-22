@@ -6,7 +6,7 @@
         <h2>Čia galite peržiūrėti studentų praktiką</h2>
       </div>
       <div class="viewInformation">
-<search-components  @update:selectedGroupId="handleSelectedGroupId"></search-components>
+<group-search  @update:selectedGroupId="handleSelectedGroupId"></group-search>
 </div>
 <v-data-table-server
 :search="search"
@@ -16,7 +16,7 @@ item-key="id"
 :loading="loading"
 item-value="name"
 >
-<!-- <template v-slot:tfoot>
+<template v-slot:tfoot>
     <tr>
       <td>
         <v-text-field
@@ -29,7 +29,7 @@ item-value="name"
         ></v-text-field>
         </td>
         </tr>
-    </template> -->
+    </template>
     </v-data-table-server>
 
 </div>
@@ -38,8 +38,8 @@ item-value="name"
 
 <script>
 import customHeader from "@/components/DesktopHeader.vue";
-import searchComponents from "@/components/SearchComponents.vue";
 import apiClient from "@/utils/api-client";
+import groupSearch from "@/components/GroupSearch.vue";
 
 
 export default {
@@ -47,7 +47,7 @@ export default {
   data() {
     return {
       internships:[],
-      // search: '',
+  
         headers: [
         {
           title: 'Vardas',
@@ -64,7 +64,7 @@ export default {
   },
   components: {
     customHeader,
-    searchComponents,
+    groupSearch
   },
   methods: {
     handleSelectedGroupId(groupId) {
@@ -87,7 +87,7 @@ export default {
    
   },
   mounted() {
-  this.handleSelectedGroupId();
+ 
   },
 }
 
@@ -119,7 +119,7 @@ export default {
     padding: 30px 150px;
     display: flex;
     flex-direction: row;
-    justify-content: space-between;
+    justify-content: center;
   }
 
 </style>

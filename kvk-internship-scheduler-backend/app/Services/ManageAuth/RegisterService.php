@@ -7,14 +7,16 @@ use App\Helpers\TokenHelper\TokenHelper;
 use App\Models\Company;
 use App\Models\User;
 use App\Services\BaseService;
-use App\Services\ManageAuth\Base\AuthService;
+use App\Services\NoAuthBaseService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\ValidationException;
 
-class RegisterService extends AuthService
+class RegisterService extends BaseService
 {
+    protected bool $authentication = false;
+
     public function rules(): array
     {
         return ['first_name' => 'required|string|max:255',

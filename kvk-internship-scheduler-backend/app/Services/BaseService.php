@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Models\UserProfile;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 
 abstract class BaseService
@@ -11,13 +12,19 @@ abstract class BaseService
     /**
      * The user who calls the service.
      */
-    public UserProfile $user;
+    protected UserProfile $user;
 
     protected Request $request;
 
+    /**
+     * If resource does not require user to be authenticated.
+     * Default - true (needs to be authenticated)
+     */
+    protected bool $authentication = true;
+
     function __construct(Request $request)
     {
-        $this->user = auth()->user()->userProfile;
+        if ($this->authentication) $this->user = auth()->user()->userProfile;
         $this->request = $request;
     }
 

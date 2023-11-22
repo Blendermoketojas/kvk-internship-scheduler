@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Services\ManageInternships\Operations;
+namespace App\Services\ManageInternships\Services;
 
 use App\Contracts\Roles\RolePermissions;
 use App\Models\Internship;

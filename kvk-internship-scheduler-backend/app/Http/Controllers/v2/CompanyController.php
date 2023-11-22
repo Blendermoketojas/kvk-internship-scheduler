@@ -4,7 +4,10 @@ namespace App\Http\Controllers\v2;
 
 use App\Http\Controllers\Controller;
 use App\Models\Company;
+use App\Services\ManageCompanies\SearchCompaniesService;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Validation\ValidationException;
 
 class CompanyController extends Controller
 {
@@ -18,14 +21,12 @@ class CompanyController extends Controller
         return response()->json(Company::all());
     }
 
-    public function searchCompanies(Request $request) {
-        if ($request->input('companyName') == null) {
-            return response()->json(['error' => 'No parameters in request object']);
-        }
-        $companyName = $request->input('companyName');
-        $companies = Company::whereRaw('LOWER(company_name) LIKE ?', ['%' . strtolower($companyName) . '%'])->get();
-
-        return response()->json($companies);
+    /**
+     * @throws ValidationException
+     */
+    public function searchCompanies(Request $request): JsonResponse
+    {
+        return (new SearchCompaniesService($request))->execute();
     }
 
     /**

@@ -57,7 +57,7 @@ Route::middleware('api')->prefix('v2')->group(function () {
 
         Route::get('/profile', [UserProfileController::class, 'getProfile']);
         Route::put('/profile/update', [UserProfileController::class, 'update']);
-        Route::post('/search-students', []);
+        Route::post('/profile/update-picture', [UserProfileController::class, 'updateProfilePicture']);
 
         // StudentGroups
 

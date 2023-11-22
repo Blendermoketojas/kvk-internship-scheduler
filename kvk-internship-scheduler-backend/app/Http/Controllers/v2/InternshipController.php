@@ -3,11 +3,11 @@
 namespace App\Http\Controllers\v2;
 
 use App\Http\Controllers\Controller;
-use App\Services\ManageInternships\Operations\CreateInternshipService;
-use App\Services\ManageInternships\Operations\GetActiveInternshipService;
-use App\Services\ManageInternships\Operations\GetInternshipService;
-use App\Services\ManageInternships\Operations\GetStudentGroupActiveInternships;
-use App\Services\ManageInternships\Operations\GetStudentGroupInternships;
+use App\Services\ManageInternships\Services\CreateInternshipService;
+use App\Services\ManageInternships\Services\GetActiveInternshipService;
+use App\Services\ManageInternships\Services\GetInternshipService;
+use App\Services\ManageInternships\Services\GetStudentGroupActiveInternships;
+use App\Services\ManageInternships\Services\GetStudentGroupInternships;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;

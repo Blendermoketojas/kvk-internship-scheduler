@@ -1,30 +1,29 @@
 <?php
 
-namespace App\Services\ManageInternships\Operations;
+namespace App\Services\ManageStudents;
 
-use App\Contracts\Roles\RolePermissions;
-use App\Models\Internship;
+use App\Models\StudentGroup;
 use App\Services\BaseService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Validation\ValidationException;
 
-class GetInternshipService extends BaseService
+class SearchStudentGroupsService extends BaseService
 {
     public function rules(): array
     {
-        return ['internshipId' => 'required|integer'];
+        return [
+            'groupIdentifier' => 'required|string'
+        ];
     }
 
     public function data(): array
     {
-        return [
-            'internshipId' => $this->request['internshipId']
-        ];
+        return ['groupIdentifier' => $this->request['groupIdentifier']];
     }
 
     public function permissions(): array
     {
-        return [RolePermissions::PRODEKANAS];
+        return [];
     }
 
     /**
@@ -41,12 +40,10 @@ class GetInternshipService extends BaseService
 
         // logic execution
 
-        if($internship = Internship::find($this->data())) {
-            $internship->load('company');
-            $internship->load('userProfile');
-        }
+        $groupIdentifier = $this->data()['groupIdentifier'];
+        $studentGroups = StudentGroup::whereRaw('LOWER(group_identifier) LIKE ?', ['%' . $groupIdentifier . '%'])->get();
 
         // response
-        return response()->json($internship[0]);
+        return response()->json($studentGroups);
     }
 }

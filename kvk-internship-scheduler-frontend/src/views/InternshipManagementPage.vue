@@ -2,12 +2,12 @@
   <custom-header></custom-header>
   <div class="mainManagement">
     <v-alert
-    v-if="showSuccessAlert"
-    color="success"
-    icon="$success"
-    title="Pavyko!"
-    text="Praktika išsaugota!"
-  ></v-alert>
+      v-if="showSuccessAlert"
+      color="success"
+      icon="$success"
+      title="Pavyko!"
+      text="Praktika išsaugota!"
+    ></v-alert>
     <div class="pageDescription">
       <h1>Praktikos priskyrimas</h1>
       <h2>Čia galite priskirti studento praktiką</h2>
@@ -42,14 +42,17 @@
           ></v-autocomplete>
         </div>
 
-        <div class="fieldDiv">
-          <div class="text-subtitle-1 text-bold-emphasis">Nuo:</div>
-          <input type="date" v-model="dateFrom" />
+        <div class="fieldDivDate">
+         
+          <div class="d-inline-block dateInput">
+            <div class="text-subtitle-1 text-bold-emphasis">Nuo:</div>
+            <input type="date" v-model="dateFrom" />
+          </div>
+          <div class="d-inline-block dateInput">
+            <div class="text-subtitle-1 text-bold-emphasis">Iki:</div>
+            <input type="date" v-model="dateTo" />
+    
         </div>
-
-        <div class="fieldDiv">
-          <div class="text-subtitle-1 text-bold-emphasis">Iki:</div>
-          <input type="date" v-model="dateTo"/>
         </div>
 
         <div class="fieldDiv">
@@ -67,8 +70,14 @@
       </div>
 
       <div class="bottomButtons">
-        <v-btn color="#0D47A1" rounded="xl" variant="elevated" @click="submitInternship">Išsaugoti</v-btn>
-        
+        <v-btn
+          color="#0D47A1"
+          rounded="xl"
+          variant="elevated"
+          @click="submitInternship"
+          >Išsaugoti</v-btn
+        >
+
         <v-btn rounded="xl" variant="outlined">Atšaukti</v-btn>
       </div>
     </div>
@@ -115,10 +124,6 @@ export default {
       this.searchStudents(studentName);
     }, 500);
 
-    // this.debouncedSearchGroups = debounce((groupName) => {
-    //   this.searchGroups(groupName);
-    // }, 500);
-
     this.debouncedSearchCompanies = debounce((companyName) => {
       this.searchCompanies(companyName);
     }, 500);
@@ -162,35 +167,6 @@ export default {
       }
     },
 
-    // onGroupInput(event) {
-    //   const groupName = event.target.value;
-    //   if (typeof groupName === "string" && groupName.trim() !== "") {
-    //     this.debouncedSearchGroups(groupName);
-    //   }
-    // },
-
-    // searchGroups(groupName) {
-    //   if (typeof groupName !== "string") {
-    //     console.error(
-    //       "searchGroups called with non-string argument:",
-    //       groupName
-    //     );
-    //     return;
-    //   }
-    //   if (groupName.trim() !== "") {
-    //     apiClient
-    //       .post("/search-student-groups", { groupIdentifier: groupName })
-    //       .then((response) => {
-    //         this.groups = response.data.map((group) => ({
-    //           id: group.id,
-    //           group_identifier: group.group_identifier,
-    //         }));
-    //       })
-    //       .catch((error) => {
-    //         console.error("Error searching for groups:", error);
-    //       });
-    //   }
-    // },
     searchStudents(studentName) {
       if (typeof studentName !== "string") {
         console.error(
@@ -221,41 +197,57 @@ export default {
       this.debouncedSearchGroups(this.selectedGroup);
     },
     submitInternship() {
-    if (this.selectedCompany && this.selectedStudent && this.dateFrom && this.dateTo) {
-      const payload = {
-        companyId: this.selectedCompany.id,
-        userId: this.selectedStudent.id,
-        dateFrom: this.dateFrom,
-        dateTo: this.dateTo,
-      };
+      if (
+        this.selectedCompany &&
+        this.selectedStudent &&
+        this.dateFrom &&
+        this.dateTo
+      ) {
+        const payload = {
+          companyId: this.selectedCompany.id,
+          userId: this.selectedStudent.id,
+          dateFrom: this.dateFrom,
+          dateTo: this.dateTo,
+        };
 
-      apiClient.post("/internships", payload)
-        .then(response => {
-          console.log("Internship saved:", response.data);
-          this.showSuccessAlert = true;  
-          setTimeout(() => this.showSuccessAlert = false, 6000);
-        })
-        .catch(error => {
-          console.error("Error saving internship:", error);
-          // Handle error, show error message to user
-        });
-    } else {
-      // Handle case where not all fields are filled out
-      console.error("All fields are required");
-    }
-  },
+        apiClient
+          .post("/internships", payload)
+          .then((response) => {
+            console.log("Internship saved:", response.data);
+            this.showSuccessAlert = true;
+            setTimeout(() => (this.showSuccessAlert = false), 6000);
+          })
+          .catch((error) => {
+            console.error("Error saving internship:", error);
+            // Handle error, show error message to user
+          });
+      } else {
+        // Handle case where not all fields are filled out
+        console.error("All fields are required");
+      }
+    },
   },
 };
 </script>
 
 <style scoped>
+
+.fieldDivDate{
+  width: 450px;
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 22px;
+}
+.dateInput{
+  width: 49%;
+}
 .fieldDiv {
   width: 450px;
   display: inline-block;
 }
 .inputDiv {
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
   flex-wrap: wrap;
   align-items: center;
   justify-content: space-between;
@@ -308,6 +300,7 @@ input[type="date"] {
   padding: 5px;
   display: inline-block !important;
   visibility: visible !important;
+  width: 100%;
 }
 
 input[type="date"],

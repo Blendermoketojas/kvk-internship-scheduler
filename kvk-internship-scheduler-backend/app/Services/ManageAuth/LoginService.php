@@ -5,13 +5,15 @@ namespace App\Services\ManageAuth;
 use App\Helpers\Cookie\CookieHelper;
 use App\Helpers\TokenHelper\TokenHelper;
 use App\Models\User;
-use App\Services\ManageAuth\Base\AuthService;
+use App\Services\BaseService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\ValidationException;
 
-class LoginService extends AuthService
+class LoginService extends BaseService
 {
+    protected bool $authentication = false;
+
     public function rules(): array
     {
         return ['email' => 'required|string|email|max:255',

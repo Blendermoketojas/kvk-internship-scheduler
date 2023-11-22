@@ -1,30 +1,33 @@
 <?php
 
-namespace App\Services\ManageInternships\Operations;
+namespace App\Services\ManageCompanies;
 
-use App\Contracts\Roles\RolePermissions;
-use App\Models\Internship;
+use App\Models\Company;
 use App\Services\BaseService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Validation\ValidationException;
 
-class GetInternshipService extends BaseService
+class SearchCompaniesService extends BaseService
 {
+    protected bool $authentication = false;
+
     public function rules(): array
     {
-        return ['internshipId' => 'required|integer'];
+        return [
+            'companyName' => 'required|string'
+        ];
     }
 
     public function data(): array
     {
         return [
-            'internshipId' => $this->request['internshipId']
+            'companyName' => $this->request['companyName']
         ];
     }
 
     public function permissions(): array
     {
-        return [RolePermissions::PRODEKANAS];
+        return [];
     }
 
     /**
@@ -41,12 +44,10 @@ class GetInternshipService extends BaseService
 
         // logic execution
 
-        if($internship = Internship::find($this->data())) {
-            $internship->load('company');
-            $internship->load('userProfile');
-        }
+        $companies = Company::whereRaw('LOWER(company_name) LIKE ?',
+            ['%' . strtolower($this->data()['companyName']) . '%'])->get();
 
         // response
-        return response()->json($internship[0]);
+        return response()->json($companies);
     }
 }

@@ -5,6 +5,7 @@ namespace App\Services\ManageInternships\Services;
 use App\Contracts\Roles\RolePermissions;
 use App\Models\Internship;
 use App\Services\BaseService;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Validation\ValidationException;
 
@@ -38,11 +39,8 @@ class CreateInternshipService extends BaseService
     function execute() : JsonResponse
     {
         // input validation
+        if (!$this->validateRules()) return response()->json("Action not allowed", 401);
 
-        $validation = $this->validateRules();
-        if (!is_bool($validation)) {
-            return $validation;
-        }
 
         // create the record
         $internship = Internship::create($this->data());

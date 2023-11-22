@@ -1,25 +1,22 @@
 <?php
 
-namespace App\Services\ManageStudents;
+namespace App\Services\ManageComments;
 
-use App\Models\StudentGroup;
 use App\Services\BaseService;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Validation\ValidationException;
 
-class SearchStudentGroupsService extends BaseService
+class EditCommentService extends BaseService
 {
     public function rules(): array
     {
-        return [
-            'groupIdentifier' => 'required|string'
-        ];
+        return [];
     }
 
     public function data(): array
     {
-        return ['groupIdentifier' => $this->request['groupIdentifier']];
+        return [];
     }
 
     public function permissions(): array
@@ -38,10 +35,7 @@ class SearchStudentGroupsService extends BaseService
 
         // logic execution
 
-        $groupIdentifier = $this->data()['groupIdentifier'];
-        $studentGroups = StudentGroup::whereRaw('LOWER(group_identifier) LIKE ?', ['%' . $groupIdentifier . '%'])->get();
-
         // response
-        return response()->json($studentGroups);
+        return response()->json('Not implemented');
     }
 }

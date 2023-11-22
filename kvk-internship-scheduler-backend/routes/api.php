@@ -9,6 +9,7 @@
 // v2
 // controllers
 use App\Http\Controllers\v2\Auth\AuthController;
+use App\Http\Controllers\v2\CommentController;
 use App\Http\Controllers\v2\CompanyController;
 use App\Http\Controllers\v2\InternshipController;
 use App\Http\Controllers\v2\StudentController;
@@ -56,6 +57,7 @@ Route::middleware('api')->prefix('v2')->group(function () {
         // User profiles
 
         Route::get('/profile', [UserProfileController::class, 'getProfile']);
+        Route::post('/search-profiles', [UserProfileController::class, 'searchProfiles']);
         Route::put('/profile/update', [UserProfileController::class, 'update']);
         Route::post('/profile/update-picture', [UserProfileController::class, 'updateProfilePicture']);
 
@@ -78,6 +80,11 @@ Route::middleware('api')->prefix('v2')->group(function () {
         Route::resource('/internships', InternshipController::class);
         Route::post('/internships/student-group', [InternshipController::class, 'getStudentGroupInternships']);
         Route::post('/internships/student-group-active', [InternshipController::class, 'getStudentGroupActiveInternships']);
+
+        // Comments
+
+        Route::post('/comments', [CommentController::class, 'createComment']);
+        Route::delete('/comments', [CommentController::class, 'deleteComment']);
 
     });
 });

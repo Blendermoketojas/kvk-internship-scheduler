@@ -2,8 +2,8 @@
 
 namespace App\Models;
 
+use App\Traits\AutoCreatedBy;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -11,9 +11,12 @@ use Illuminate\Database\Eloquent\Model;
 class Internship extends Model
 {
     use HasFactory;
+    use AutoCreatedBy;
 
     public $timestamps = true;
+
     protected $table = 'internship';
+
     protected $fillable = [
         'user_id',
         'company_id',

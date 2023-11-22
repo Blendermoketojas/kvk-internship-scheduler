@@ -1,6 +1,8 @@
 <?php
 
 namespace App\Models;
+
+use App\Traits\AutoCreatedBy;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -8,8 +10,9 @@ use Illuminate\Database\Eloquent\Model;
 class FormQuestion extends Model
 {
     use HasFactory;
+    use AutoCreatedBy;
 
-    protected $table ='form_question';
+    protected $table = 'form_question';
 
     protected $fillable = [
         'question'

@@ -15,6 +15,8 @@ return new class extends Migration
     {
         Schema::create('form_template', function (Blueprint $table) {
             $table->id();
+            $table->unsignedBigInteger('created_by')->nullable();
+            $table->foreign('created_by')->references('id')->on('users')->onDelete('set null');
         });
     }
 

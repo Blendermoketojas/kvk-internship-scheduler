@@ -30,11 +30,7 @@ class {{className}} extends BaseService
     function execute() : JsonResponse
     {
         // input validation
-
-        $validation = $this->validateRules();
-        if (!is_bool($validation)) {
-            return $validation;
-        }
+        if (!$this->validateRules()) return response()->json("Action not allowed", 401);
 
         // logic execution
 

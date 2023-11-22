@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Contracts\Roles\RolePermissions;
 use App\Services\BaseService;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Validation\ValidationException;
 
@@ -29,10 +30,8 @@ class CreateFormTemplateService extends BaseService
      */
     function execute() : JsonResponse
     {
-        $validation = $this->validateRules();
-        if (!is_bool($validation)) {
-            return $validation;
-        }
+        // input validation
+        if (!$this->validateRules()) return response()->json("Action not allowed", 401);
 
         // logic execution
 

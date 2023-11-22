@@ -6,6 +6,7 @@ use App\Models\Internship;
 use App\Models\StudentGroup;
 use App\Services\BaseService;
 use App\Services\ManageInternships\ResponseResources\GetActiveInternshipResource;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Validation\ValidationException;
 
@@ -32,11 +33,7 @@ class GetStudentGroupActiveInternships extends BaseService
     function execute() : JsonResponse
     {
         // input validation
-
-        $validation = $this->validateRules();
-        if (!is_bool($validation)) {
-            return $validation;
-        }
+        if (!$this->validateRules()) return response()->json("Action not allowed", 401);
 
         // logic execution
 

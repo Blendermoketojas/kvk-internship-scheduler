@@ -1,33 +1,35 @@
 <?php
 
-namespace App\Services\ManageStudents;
+namespace App\Services\ManageUserProfile;
 
 use App\Contracts\Roles\RolePermissions;
+use App\Http\Resources\Response\UserProfileResource;
 use App\Models\UserProfile;
 use App\Services\BaseService;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Validation\ValidationException;
 
-class SearchStudentsService extends BaseService
+class SearchUserProfilesService extends BaseService
 {
     public function rules(): array
     {
-        return [
-            'fullName' => 'required|string'
+        return ['fullName' => 'required|string',
+            'role_id' => 'required|integer'
         ];
     }
 
     public function data(): array
     {
         return [
-            'fullName' => $this->request['fullName']
+            'fullName' => $this->request['fullName'],
+            'role_id' => $this->request['roleId']
         ];
     }
 
     public function permissions(): array
     {
-        return [];
+        return [RolePermissions::PRODEKANAS];
     }
 
     /**
@@ -41,11 +43,11 @@ class SearchStudentsService extends BaseService
 
         // logic execution
 
-        $query = UserProfile::where('role_id', RolePermissions::STUDENTAS->value)
+        $query = UserProfile::where('role_id', $this->data()['role_id'])
             ->whereRaw('LOWER(fullname) LIKE ?', ['%' . strtolower($this->data()['fullName']) . '%'])
             ->get();
 
         // response
-        return response()->json($query);
+        return response()->json(UserProfileResource::collection($query));
     }
 }

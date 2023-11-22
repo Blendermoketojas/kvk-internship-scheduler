@@ -3,6 +3,7 @@
 namespace App\Contracts\Roles;
 enum RolePermissions: int
 {
+    case SELF = 0;
     case PRODEKANAS = 1;
     case KATEDROS_VEDEJAS = 2;
     case PRAKTIKOS_VADOVAS = 3;

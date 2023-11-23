@@ -13,11 +13,9 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('template_question', function (Blueprint $table) {
+        Schema::create('form_template', function (Blueprint $table) {
             $table->id();
-            $table->integer("template_id");
-            $table->integer("question_id");
-            $table->integer("sequence");
+            $table->string('name');
             $table->unsignedBigInteger('created_by')->nullable();
             $table->foreign('created_by')->references('id')->on('users')->onDelete('set null');
         });
@@ -30,6 +28,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('template_question');
+        Schema::dropIfExists('form_template');
     }
 };

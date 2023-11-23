@@ -14,7 +14,7 @@ class FormTemplate extends Model
     protected $table = 'form_template';
 
     protected $fillable = [
-
+        'name'
     ];
 
     public function templateQuestions(): HasMany

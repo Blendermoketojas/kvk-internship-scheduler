@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Traits\AutoCreatedBy;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -15,7 +16,7 @@ class Internship extends Model
 
     public $timestamps = true;
 
-    protected $table = 'internship';
+    protected $table = 'internships';
 
     protected $fillable = [
         'user_id',
@@ -29,9 +30,10 @@ class Internship extends Model
         'is_active' => 'boolean'
     ];
 
-    public function userProfile(): BelongsTo
+    public function userProfiles(): BelongsToMany
     {
-        return $this->BelongsTo(UserProfile::class, 'user_id');
+        return $this->BelongsToMany(UserProfile::class, 'internship_user',
+            'internship_id', 'user_id');
     }
 
     public function comments(): HasMany

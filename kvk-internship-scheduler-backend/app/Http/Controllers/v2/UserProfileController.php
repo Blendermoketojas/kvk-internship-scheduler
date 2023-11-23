@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\v2;
 
 use App\Http\Controllers\Controller;
+use App\Services\ManageUserProfile\SearchUserProfilesByRoleService;
 use App\Services\ManageUserProfile\SearchUserProfilesService;
 use App\Services\ManageUserProfile\UpdateUserProfilePictureService;
 use App\Services\ManageUserProfile\UpdateUserProfileService;
@@ -22,7 +23,15 @@ class UserProfileController extends Controller
     /**
      * @throws ValidationException
      */
-    public function searchProfiles(Request $request): JsonResponse
+    public function searchProfilesByRole(Request $request): JsonResponse
+    {
+        return (new SearchUserProfilesByRoleService($request))->execute();
+    }
+
+    /**
+     * @throws ValidationException
+     */
+    public function searchUserProfiles(Request $request): JsonResponse
     {
         return (new SearchUserProfilesService($request))->execute();
     }

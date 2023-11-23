@@ -13,7 +13,7 @@ class GetAllInternshipCommentsService extends BaseService
     public function rules(): array
     {
         return [
-            'internship_id' => 'required|integer|exists:internship,id'
+            'internship_id' => 'required|integer|exists:internships,id'
         ];
     }
 

@@ -13,7 +13,7 @@ class CreateCommentService extends BaseService
     public function rules(): array
     {
         return [
-            'internship_id' => 'required|integer|exists:internship,id',
+            'internship_id' => 'required|integer|exists:internships,id',
             'comment' => 'required|string|min:1|max:512',
             'date_from' => 'required|date',
             'date_to' => 'required|date'

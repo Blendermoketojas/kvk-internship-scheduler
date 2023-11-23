@@ -12,7 +12,7 @@ class Company extends Model
     use AutoCreatedBy;
     use HasFactory;
 
-    protected $table = 'company';
+    protected $table = 'companies';
 
     protected $fillable = [
         'company_name',

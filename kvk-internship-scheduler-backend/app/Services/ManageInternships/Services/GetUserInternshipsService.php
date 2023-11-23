@@ -3,22 +3,20 @@
 namespace App\Services\ManageInternships\Services;
 
 use App\Models\Internship;
-use App\Models\StudentGroup;
 use App\Services\BaseService;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Validation\ValidationException;
 
-class GetStudentGroupInternships extends BaseService
+class GetUserInternshipsService extends BaseService
 {
     public function rules(): array
     {
-        return ['studentGroupId' => 'required|integer'];
+        return [];
     }
 
     public function data(): array
     {
-        return ['studentGroupId' => $this->request['studentGroupId']];
+        return [];
     }
 
     public function permissions(): array
@@ -34,20 +32,13 @@ class GetStudentGroupInternships extends BaseService
         // input validation
         if (!$this->validateRules()) return response()->json("Action not allowed", 401);
 
-
         // logic execution
 
-        $studentGroup = StudentGroup::find($this->data()['studentGroupId']);
+        $internships = $this->user->internships;
 
-        $studentIds = $studentGroup->userProfiles()->pluck('id');
-
-        $internships = Internship::whereHas('userProfiles', function($query) use ($studentIds) {
-            $query->whereIn('id', $studentIds);
-        })->with('userProfiles')->get();
 
 
         // response
-
         return response()->json($internships);
     }
 }

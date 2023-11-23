@@ -57,8 +57,11 @@ Route::middleware('api')->prefix('v2')->group(function () {
         // User profiles
 
         Route::get('/profile', [UserProfileController::class, 'getProfile']);
-        Route::post('/search-profiles', [UserProfileController::class, 'searchProfiles']);
+
         Route::put('/profile/update', [UserProfileController::class, 'update']);
+
+        Route::post('/search-profiles-role', [UserProfileController::class, 'searchProfilesByRole']);
+        Route::post('/search-profiles', [UserProfileController::class, 'searchUserProfiles']);
         Route::post('/profile/update-picture', [UserProfileController::class, 'updateProfilePicture']);
 
         // StudentGroups
@@ -74,19 +77,26 @@ Route::middleware('api')->prefix('v2')->group(function () {
 
         // Internships
 
-        Route::post('/internship', [InternshipController::class, 'getInternship']);
         Route::get('/internship-active', [InternshipController::class, 'getActiveInternship']);
+        Route::get('/internships', [InternshipController::class, 'getUserInternships']);
 
-        Route::resource('/internships', InternshipController::class);
+        Route::post('/internship', [InternshipController::class, 'getInternship']);
+        Route::post('/internships', [InternshipController::class, 'createInternship']);
         Route::post('/internships/student-group', [InternshipController::class, 'getStudentGroupInternships']);
         Route::post('/internships/student-group-active', [InternshipController::class, 'getStudentGroupActiveInternships']);
 
+        Route::put('/internship-update', [InternshipController::class, 'updateInternship']);
+
+        Route::delete('/internship-delete', [InternshipController::class, 'deleteInternship']);
+
         // Comments
 
-        Route::post('/comments', [CommentController::class, 'createComment']);
-        Route::delete('/comments', [CommentController::class, 'deleteComment']);
-        Route::put('/comments', [CommentController::class, 'updateComment']);
         Route::post('/internship/comments', [CommentController::class, 'getAllInternshipComments']);
+        Route::post('/comments', [CommentController::class, 'createComment']);
+
+        Route::delete('/comments', [CommentController::class, 'deleteComment']);
+
+        Route::put('/comments', [CommentController::class, 'updateComment']);
 
     });
 });

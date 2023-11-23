@@ -13,11 +13,12 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('company', function (Blueprint $table) {
+        Schema::create('internship_user', function (Blueprint $table) {
             $table->id();
-            $table->string('company_name');
-            $table->unsignedBigInteger('created_by')->nullable();
-            $table->foreign('created_by')->references('id')->on('users')->onDelete('set null');
+            $table->unsignedBigInteger('internship_id');
+            $table->foreign('internship_id')->references('id')->on('internships')->onDelete('cascade');
+            $table->unsignedBigInteger('user_id');
+            $table->foreign('user_id')->references('id')->on('userprofiles')->onDelete('cascade');
             $table->timestamps();
         });
     }
@@ -29,6 +30,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('company');
+        Schema::dropIfExists('internship_user');
     }
 };

@@ -5,28 +5,31 @@ namespace App\Services\ManageInternships\Services;
 use App\Contracts\Roles\RolePermissions;
 use App\Models\Internship;
 use App\Services\BaseService;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Validation\ValidationException;
 
-class CreateInternshipService extends BaseService
+class UpdateInternshipService extends BaseService
 {
     public function rules(): array
     {
-        return ['company_id' => 'required|integer',
+        return [
+            'internship_id' => 'required|integer',
             'users' => 'required|array',
+            'company_id' => 'required|integer',
             'date_from' => 'required|date',
             'date_to' => 'required|date',
-            'is_active' => 'required|integer'];
+            'is_active' => 'required|boolean'];
     }
 
     public function data(): array
     {
-        return ['company_id' => $this->request['companyId'],
+        return [
+            'internship_id' => $this->request['internshipId'],
             'users' => $this->request['users'],
+            'company_id' => $this->request['companyId'],
             'date_from' => $this->request['dateFrom'],
             'date_to' => $this->request['dateTo'],
-            'is_active' => 1];
+            'is_active' => $this->request['isActive']];
     }
 
     public function permissions(): array
@@ -37,19 +40,21 @@ class CreateInternshipService extends BaseService
     /**
      * @throws ValidationException
      */
-    function execute(): JsonResponse
+    function execute() : JsonResponse
     {
         // input validation
         if (!$this->validateRules()) return response()->json("Action not allowed", 401);
 
+        // logic execution
 
-        // create the record
-        $internship = Internship::create(array_diff_key($this->data(), ['users' => '']));
+        $internship = Internship::find($this->data()['internship_id']);
 
-        // save entries to pivot table
-        $internship->userProfiles()->attach($this->data()['users']);
+        $internship->update(array_diff_key($this->data(),
+            ['users' => '', 'internship_id' => '']));
 
-        // respond
+        $internship->userProfiles()->sync($this->data()['users']);
+
+        // response
         return response()->json($internship);
     }
 }

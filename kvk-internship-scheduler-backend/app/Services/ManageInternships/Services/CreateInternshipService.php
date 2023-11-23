@@ -5,6 +5,7 @@ namespace App\Services\ManageInternships\Services;
 use App\Contracts\Roles\RolePermissions;
 use App\Models\Internship;
 use App\Services\BaseService;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Validation\ValidationException;
 
@@ -12,16 +13,17 @@ class CreateInternshipService extends BaseService
 {
     public function rules(): array
     {
-    return ['company_id' => 'required|integer',
-        'user_id' => 'required|integer',
-        'date_from' => 'required|date',
-        'date_to' => 'required|date',
-        'is_active' => 'required|integer'];
+        return ['company_id' => 'required|integer',
+            'users' => 'required|array',
+            'date_from' => 'required|date',
+            'date_to' => 'required|date',
+            'is_active' => 'required|integer'];
     }
+
     public function data(): array
     {
         return ['company_id' => $this->request['companyId'],
-            'user_id' => $this->request['userId'],
+            'users' => $this->request['users'],
             'date_from' => $this->request['dateFrom'],
             'date_to' => $this->request['dateTo'],
             'is_active' => 1];
@@ -35,17 +37,17 @@ class CreateInternshipService extends BaseService
     /**
      * @throws ValidationException
      */
-    function execute() : JsonResponse
+    function execute(): JsonResponse
     {
         // input validation
+        if (!$this->validateRules()) return response()->json("Action not allowed", 401);
 
-        $validation = $this->validateRules();
-        if (!is_bool($validation)) {
-            return $validation;
-        }
 
         // create the record
-        $internship = Internship::create($this->data());
+        $internship = Internship::create(array_diff_key($this->data(), ['users' => '']));
+
+        // save entries to pivot table
+        $internship->userProfiles()->attach($this->data()['users']);
 
         // respond
         return response()->json($internship);

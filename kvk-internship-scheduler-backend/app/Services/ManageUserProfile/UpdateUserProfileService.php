@@ -4,6 +4,7 @@ namespace App\Services\ManageUserProfile;
 
 use App\Models\User;
 use App\Services\BaseService;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
@@ -48,11 +49,7 @@ class UpdateUserProfileService extends BaseService
     function execute(): JsonResponse
     {
         // input validation
-
-        $validation = $this->validateRules();
-        if (!is_bool($validation)) {
-            return $validation;
-        }
+        if (!$this->validateRules()) return response()->json("Action not allowed", 401);
 
         // logic execution
 

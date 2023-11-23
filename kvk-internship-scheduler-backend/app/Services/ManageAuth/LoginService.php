@@ -46,7 +46,7 @@ class LoginService extends BaseService
         // logic execution
 
         if (!$token = auth()->attempt($this->data())) {
-            return response()->json(['error' => 'Unauthorized'], 401);
+            return response()->json(['error' => 'Wrong credentials', 'success' => false], 401);
         }
 
         $user = User::with('userProfile')->find(Auth::id());

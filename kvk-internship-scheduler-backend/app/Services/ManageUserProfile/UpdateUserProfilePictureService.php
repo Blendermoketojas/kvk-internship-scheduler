@@ -3,6 +3,7 @@
 namespace App\Services\ManageUserProfile;
 
 use App\Services\BaseService;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\ValidationException;
@@ -30,11 +31,8 @@ class UpdateUserProfilePictureService extends BaseService
     function execute() : JsonResponse
     {
         // input validation
+        if (!$this->validateRules()) return response()->json("Action not allowed", 401);
 
-        $validation = $this->validateRules();
-        if (!is_bool($validation)) {
-            return $validation;
-        }
 
         // logic execution
 

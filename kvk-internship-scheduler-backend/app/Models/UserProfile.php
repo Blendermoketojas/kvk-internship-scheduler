@@ -2,6 +2,7 @@
 
 namespace App\Models;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -10,7 +11,7 @@ class UserProfile extends Model
 {
     use HasFactory;
 
-    protected $table ='user_profile';
+    protected $table ='userprofiles';
 
     protected $fillable = [
         'user_id',
@@ -18,7 +19,7 @@ class UserProfile extends Model
         'first_name',
         'last_name',
         'fullname',
-        'role',
+        'role_id',
         'image_path',
         'description',
         'country',
@@ -30,9 +31,10 @@ class UserProfile extends Model
         'student_group_id'
     ];
 
-    public function internships(): HasMany
+    public function internships(): BelongsToMany
     {
-        return $this->hasMany(Internship::class);
+        return $this->BelongsToMany(Internship::class, 'internship_user',
+            'user_id', 'internship_id');
     }
 
     public function user(): BelongsTo
@@ -48,6 +50,11 @@ class UserProfile extends Model
     public function studentGroup() : BelongsTo
     {
         return $this->belongsTo(StudentGroup::class);
+    }
+
+    public function role() : BelongsTo
+    {
+        return $this->belongsTo(Role::class);
     }
 
     public function comments() : HasMany {

@@ -4,10 +4,13 @@ namespace App\Http\Controllers\v2;
 
 use App\Http\Controllers\Controller;
 use App\Services\ManageInternships\Services\CreateInternshipService;
+use App\Services\ManageInternships\Services\DeleteInternshipService;
 use App\Services\ManageInternships\Services\GetActiveInternshipService;
 use App\Services\ManageInternships\Services\GetInternshipService;
 use App\Services\ManageInternships\Services\GetStudentGroupActiveInternships;
 use App\Services\ManageInternships\Services\GetStudentGroupInternships;
+use App\Services\ManageInternships\Services\GetUserInternshipsService;
+use App\Services\ManageInternships\Services\UpdateInternshipService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
@@ -15,29 +18,9 @@ use Illuminate\Validation\ValidationException;
 class InternshipController extends Controller
 {
     /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function index()
-    {
-        //
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-
-    }
-
-    /**
      * @throws ValidationException
      */
-    public function getStudentGroupInternships(Request $request)
+    public function getStudentGroupInternships(Request $request): JsonResponse
     {
         return (new GetStudentGroupInternships($request))->execute();
     }
@@ -45,29 +28,17 @@ class InternshipController extends Controller
     /**
      * @throws ValidationException
      */
-    public function getStudentGroupActiveInternships(Request $request)
+    public function getStudentGroupActiveInternships(Request $request): JsonResponse
     {
         return (new GetStudentGroupActiveInternships($request))->execute();
     }
 
     /**
-     * Store a newly created resource in storage.
-     *
-     * @param \Illuminate\Http\Request $request
-     * @return \Illuminate\Http\JsonResponse
+     * @throws ValidationException
      */
-    public function store(Request $request): \Illuminate\Http\JsonResponse
+    public function createInternship(Request $request): JsonResponse
     {
         return (new CreateInternshipService($request))->execute();
-    }
-
-    /**
-     * Display the specified resource.
-     *
-     * @return \Illuminate\Http\JsonResponse
-     */
-    public function show($i)
-    {
     }
 
     public function getActiveInternship(Request $request): JsonResponse
@@ -78,41 +49,32 @@ class InternshipController extends Controller
     /**
      * @throws ValidationException
      */
-    public function getInternship(Request $request) {
+    public function getInternship(Request $request): JsonResponse
+    {
         return (new GetInternshipService($request))->execute();
     }
 
     /**
-     * Show the form for editing the specified resource.
-     *
-     * @param int $id
-     * @return \Illuminate\Http\Response
+     * @throws ValidationException
      */
-    public function edit($id)
+    public function getUserInternships(Request $request): JsonResponse
     {
-        //
+        return (new GetUserInternshipsService($request))->execute();
     }
 
     /**
-     * Update the specified resource in storage.
-     *
-     * @param \Illuminate\Http\Request $request
-     * @param int $id
-     * @return \Illuminate\Http\Response
+     * @throws ValidationException
      */
-    public function update(Request $request, $id)
+    public function deleteInternship(Request $request): JsonResponse
     {
-        //
+        return (new DeleteInternshipService($request))->execute();
     }
 
     /**
-     * Remove the specified resource from storage.
-     *
-     * @param int $id
-     * @return \Illuminate\Http\Response
+     * @throws ValidationException
      */
-    public function destroy($id)
+    public function updateInternship(Request $request): JsonResponse
     {
-        //
+        return (new UpdateInternshipService($request))->execute();
     }
 }

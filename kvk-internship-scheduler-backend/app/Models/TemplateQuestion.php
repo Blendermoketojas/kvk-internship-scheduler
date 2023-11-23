@@ -1,12 +1,15 @@
 <?php
 
 namespace App\Models;
+use App\Traits\AutoCreatedBy;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Model;
 
 class TemplateQuestion extends Model
 {
-    protected $table ='template_question';
+    use AutoCreatedBy;
+
+    protected $table = 'template_question';
 
     protected $fillable = [
         'template_id',

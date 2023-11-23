@@ -1,12 +1,15 @@
 <?php
 
 namespace App\Models;
+use App\Traits\AutoCreatedBy;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Model;
 
 class InternshipForm extends Model
 {
-    protected $table ='internship_form';
+    use AutoCreatedBy;
+
+    protected $table = 'internship_form';
 
     protected $fillable = [
         'template_id',

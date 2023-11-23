@@ -4,6 +4,7 @@ namespace App\Services\ManageStudents;
 
 use App\Models\StudentGroup;
 use App\Services\BaseService;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Validation\ValidationException;
 
@@ -32,11 +33,8 @@ class SearchStudentGroupsService extends BaseService
     function execute() : JsonResponse
     {
         // input validation
+        if (!$this->validateRules()) return response()->json("Action not allowed", 401);
 
-        $validation = $this->validateRules();
-        if (!is_bool($validation)) {
-            return $validation;
-        }
 
         // logic execution
 

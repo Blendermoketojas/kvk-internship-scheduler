@@ -2,10 +2,15 @@
 
 namespace App\Services;
 
+use App\Contracts\Roles\RolePermissions;
+use App\Exceptions\ModelNotProvidedInServiceException;
 use App\Models\UserProfile;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\ValidationException;
+use RuntimeException;
 
 abstract class BaseService
 {
@@ -16,6 +21,9 @@ abstract class BaseService
 
     protected Request $request;
 
+    protected string $modelClass;
+    protected ?Model $modelInstance = null;
+
     /**
      * If resource does not require user to be authenticated.
      * Default - true (needs to be authenticated)
@@ -25,6 +33,7 @@ abstract class BaseService
     function __construct(Request $request)
     {
         if ($this->authentication) $this->user = auth()->user()->userProfile;
+
         $this->request = $request;
     }
 
@@ -49,6 +58,10 @@ abstract class BaseService
         return [];
     }
 
+    /**
+     * @throws ModelNotProvidedInServiceException
+     * @throws ValidationException
+     */
     public function validateRules()
     {
        Validator::make($this->data(), $this->rules())->validate();
@@ -58,17 +71,55 @@ abstract class BaseService
             return true;
         }
 
+        $allowAction = false;
+
         // Check if the user's role matches any of the specified permissions
         foreach ($this->permissions() as $permission) {
             if ($permission->equalsValue($this->user->role_id)) {
-                return true;
+                $allowAction = true;
             }
         }
 
-        // If no match is found, deny access
-        return response()->json('Unauthorized', 401);
+        if (in_array(RolePermissions::SELF, $this->permissions()))
+        {
+            $allowAction = $this->checkResourceOwnership();
+        }
+
+        // return if access is granted
+        return $allowAction;
     }
 
+    /**
+     * Get the permissions that users need to execute the service.
+     * @throws ModelNotProvidedInServiceException
+     */
+    private function checkResourceOwnership()
+    {
+        if (empty($this->modelClass)) {
+            throw new ModelNotProvidedInServiceException(get_class());
+        }
+
+        // Retrieve the model instance if it hasn't been set already
+        if (!$this->modelInstance) {
+            $this->modelInstance = $this->retrieveModelInstance();
+        }
+
+        Log::info($this->modelInstance->created_by);
+
+        if ($this->user->id != $this->modelInstance->created_by) {
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
+     * Used for user's record ownership validation
+     * Retrieves model instance. Then can be used with $modelInstance property
+     */
+    protected function retrieveModelInstance(): ?Model {
+        return null;
+    }
 
     abstract function execute();
 }

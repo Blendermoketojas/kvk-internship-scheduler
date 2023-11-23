@@ -4,6 +4,7 @@ namespace App\Services\ManageInternships\Services;
 
 use App\Models\Internship;
 use App\Services\BaseService;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\JsonResponse;
 
 class GetActiveInternshipService extends BaseService

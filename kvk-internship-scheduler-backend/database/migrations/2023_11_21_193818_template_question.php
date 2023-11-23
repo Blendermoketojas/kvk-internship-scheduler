@@ -18,6 +18,8 @@ return new class extends Migration
             $table->integer("template_id");
             $table->integer("question_id");
             $table->integer("sequence");
+            $table->unsignedBigInteger('created_by')->nullable();
+            $table->foreign('created_by')->references('id')->on('users')->onDelete('set null');
         });
     }
 

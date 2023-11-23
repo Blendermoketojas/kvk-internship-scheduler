@@ -28,7 +28,7 @@ class UserSeeder extends Seeder
                 'updated_at' => fake()->dateTime
             ]);
 
-            DB::table('user_profile')->insert([
+            DB::table('userprofiles')->insert([
                 'user_id' => $i,
                 'first_name' => $firstName,
                 'last_name' => $lastName,

@@ -16,7 +16,7 @@ class CompanySeeder extends Seeder
     public function run()
     {
         for ($i = 0; $i < 30; $i++) {
-            DB::table('company')->insert([
+            DB::table('companies')->insert([
                 'company_name' => fake()->company,
             ]);
         }

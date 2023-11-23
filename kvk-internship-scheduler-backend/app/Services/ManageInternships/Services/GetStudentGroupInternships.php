@@ -5,6 +5,7 @@ namespace App\Services\ManageInternships\Services;
 use App\Models\Internship;
 use App\Models\StudentGroup;
 use App\Services\BaseService;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Validation\ValidationException;
 
@@ -31,11 +32,8 @@ class GetStudentGroupInternships extends BaseService
     function execute() : JsonResponse
     {
         // input validation
+        if (!$this->validateRules()) return response()->json("Action not allowed", 401);
 
-        $validation = $this->validateRules();
-        if (!is_bool($validation)) {
-            return $validation;
-        }
 
         // logic execution
 
@@ -43,7 +41,10 @@ class GetStudentGroupInternships extends BaseService
 
         $studentIds = $studentGroup->userProfiles()->pluck('id');
 
-        $internships = Internship::whereIn('user_id', $studentIds)->get();
+        $internships = Internship::whereHas('userProfiles', function($query) use ($studentIds) {
+            $query->whereIn('id', $studentIds);
+        })->with('userProfiles')->get();
+
 
         // response
 

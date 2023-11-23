@@ -11,7 +11,7 @@ class TokenHelper
         return response()->json([
             'access_token' => $token,
             'token_type' => 'bearer',
-            'status' => 'success',
+            'success' => true,
             'expires_in' => auth('api')->factory()->getTTL() * 60,
             'user' => $user
         ]);

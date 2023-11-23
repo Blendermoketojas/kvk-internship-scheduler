@@ -44,7 +44,12 @@
             style="border: dashed rgb(153, 150, 150) 2px;"
             width="80%"
           />
+          
     </div>
+    <div class="bottomButtons">
+        <v-btn color="#0D47A1" rounded="xl" variant="elevated" type="submit">Išsaugoti</v-btn>
+        <v-btn rounded="xl" variant="outlined">Atšaukti</v-btn>
+      </div>
   </div>
   </div>
 </template>
@@ -188,36 +193,15 @@ h2 {
   display: flex;
   margin-bottom:10px;
 }
-
-#widget-area {
-  visibility: hidden;
-}
-
-#message-box {
-  display: none;
-}
-
-.show-widget #widget-area {
-  visibility: visible;
-}
-
-.show-message #widget-area {
-  display: none;
-}
-
-.show-message #message-box {
-  display: block;
-}
-
-#request-panel {
-  min-width: 505px;
-  height: 400px;
-  overflow-x: hidden;
-  overflow-y: auto;
-  padding: 18px;
-  margin-top: 40px;
-  background-color: rgba(191, 191, 191, 0.15);
-}
+.bottomButtons {
+    display: flex;
+    justify-content: center;
+    margin-top: 30px;
+  }
+  .bottomButtons .v-btn {
+    width: 200px;
+    margin: 0 10px;
+  }
 
 #request-panel .parameter-info {
   display: flex;

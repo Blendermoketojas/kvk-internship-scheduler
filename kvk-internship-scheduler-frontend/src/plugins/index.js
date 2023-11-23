@@ -9,6 +9,7 @@ import vuetify from './vuetify'
 import router from '../router'
 import store from '@/store/store'
 import axios from 'axios'
+import PrimeVue from 'primevue/config';
 
 export function registerPlugins (app) {
   app.config.globalProperties.$axios = axios;
@@ -16,4 +17,5 @@ export function registerPlugins (app) {
     .use(vuetify)
     .use(router)
     .use(store)
+    .use(PrimeVue)
 }

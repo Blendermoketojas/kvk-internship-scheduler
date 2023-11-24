@@ -15,9 +15,9 @@ return new class extends Migration
     {
         Schema::create('internship_form', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger("template_id");
+            $table->unsignedBigInteger("template_id")->nullable();
             $table->foreign('template_id')->references('id')->on('form_template')->onDelete('set null');
-            $table->unsignedBigInteger("internship_id");
+            $table->unsignedBigInteger("internship_id")->nullable();
             $table->foreign('internship_id')->references('id')->on('internships')->onDelete('set null');
             $table->integer("sequence");
             $table->unsignedBigInteger('created_by')->nullable();

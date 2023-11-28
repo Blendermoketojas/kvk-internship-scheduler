@@ -21,6 +21,7 @@ return new class extends Migration
             $table->foreign('item_id')->references('id')->on('form_answer_item')->onDelete('cascade');
             $table->unsignedBigInteger('created_by')->nullable();
             $table->foreign('created_by')->references('id')->on('users')->onDelete('set null');
+            $table->timestamps();
         });
     }
 

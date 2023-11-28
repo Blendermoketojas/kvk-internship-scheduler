@@ -17,8 +17,8 @@ return new class extends Migration
             $table->id();
             $table->unsignedBigInteger('learning_material_id');
             $table->morphs('accessable');
-            $table->timestamps();
-            $table->foreign('learning_material_id')->references('id')->on('documents')->onDelete('cascade');
+            $table->foreign('learning_material_id')->references('id')->on('learning_materials')
+                ->onDelete('cascade');
         });
     }
 

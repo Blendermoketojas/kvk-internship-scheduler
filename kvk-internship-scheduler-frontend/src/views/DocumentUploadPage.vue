@@ -187,7 +187,7 @@ h2 {
   margin-top: 40px;
 }
 .uploadedFiles {
-  height: 200px;
+  height: 150px;
   border-radius: 10px;
   border: 2px solid black;
   display: flex;

@@ -26,11 +26,15 @@ class GetActiveInternshipService extends BaseService
 
     function execute() : JsonResponse
     {
-        $active_internship = Internship::where('user_id', $this->user->id)
-            ->where('is_active', true)
-            ->orderBy('created_at', 'desc')
-            ->with('company')
-            ->first();
+//        $active_internship = Internship::where('user_id', $this->user->id)
+//            ->where('is_active', true)
+//            ->orderBy('created_at', 'desc')
+//            ->with('company')
+//            ->first();
+
+        $active_internship = $this->user->internships()->where('is_active', true)
+            ->orderBy('created_at', 'desc')->first();
+
 
         if ($active_internship == null) {
             response()->json('User does not currently have an active internship', 404);

@@ -97,7 +97,7 @@ export default {
       try {
         this.$axios.post('http://localhost:8000/api/v2/login', 
 this.loginData
-        ,{ withCredentials: true }).then(response=>{ if (response.data.status === 'success') {
+        ,{ withCredentials: true }).then(response=>{ if (response.data.success) {
         this.$router.push( '/calendar');
         } else {
         // Handle login error, e.g., showing an error message to the user

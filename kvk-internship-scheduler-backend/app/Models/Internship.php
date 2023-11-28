@@ -36,6 +36,11 @@ class Internship extends Model
             'internship_id', 'user_id');
     }
 
+    public function documents(): HasMany
+    {
+        return $this->hasMany(Document::class);
+    }
+
     public function comments(): HasMany
     {
         return $this->hasMany(Comment::class);

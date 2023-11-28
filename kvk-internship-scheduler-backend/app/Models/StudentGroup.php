@@ -21,4 +21,8 @@ class StudentGroup extends Model
         return $this->hasMany(UserProfile::class);
     }
 
+    public function accessibleLearningMaterials()
+    {
+        return $this->morphToMany(LearningMaterial::class, 'accessable', 'learning_materials_access');
+    }
 }

@@ -36,6 +36,12 @@ const routes = [
     path: "/document-upload",
     component: () => import("@/views/DocumentUploadPage.vue"),
   },
+  {
+path: "/evaluation-creation",
+component:() => import("@/views/EvaluationCreationPage.vue"),
+
+  },
+
 ];
 
 const router = createRouter({

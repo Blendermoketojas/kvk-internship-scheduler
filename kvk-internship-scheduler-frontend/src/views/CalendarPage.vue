@@ -1,35 +1,53 @@
 <template>
- <header-nav/>
-    <DxScheduler   id="scheduler"  :adaptivity-enabled="true" :views="views" current-view="week" >
+  <header-nav />
+  <DxScheduler
+    id="scheduler"
+    :adaptivity-enabled="true"
+    :views="views"
+    current-view="week"
+    :data-source="dataSource"
+    @appointmentAdded="showValue"
+  >
+  </DxScheduler>
 
-    </DxScheduler>
-  </template>
-  
-  <script>
-  import 'devextreme/dist/css/dx.light.css'; 
-  import { DxScheduler } from 'devextreme-vue/scheduler';
-  import HeaderNav from "@/components/DesktopHeader.vue";
+</template>
+<script>
+import "devextreme/dist/css/dx.light.css";
+import { DxScheduler } from "devextreme-vue/scheduler";
+import HeaderNav from "@/components/DesktopHeader.vue";
   import { mapGetters } from 'vuex';
 
-  export default {
+export default {
+  components: {
+    DxScheduler,
+    HeaderNav,
+  },
+  name: "CalendarComponent",
+  data() {
+    return {
+      views: ["month", "week"],
+     dataSource:[],
+ 
    
-    components: {
-        DxScheduler,
-        HeaderNav
-    },
-    name: 'CalendarComponent',
-    data() {
-      return {
-        views: ['month','week'],
-      };
-    },
-    methods: {
+    };
+  },
+  methods: {
+    showValue(e) {
+      const appointmentData = e.appointmentData;
+      console.log(e);
+      console.log(appointmentData);
+  
+    }
       updateCurrentInternship(internship) {
         this.$store.commit('setCurrentInternship', internship)
       },
       getActiveInternship() {
         // partraukimo logika this.updateCurrentIntership(response.data)
       }
+    },
+  },
+};
+</script>
     },
     computed: {
       ...mapGetters([
@@ -45,6 +63,6 @@
   </script>
 <style scoped>
 #scheduler {
-    height: 600px;
+  height: 600px;
 }
 </style>

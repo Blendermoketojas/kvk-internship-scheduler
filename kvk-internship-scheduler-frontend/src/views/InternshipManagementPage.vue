@@ -31,19 +31,21 @@
 
         <div class="fieldDiv">
           <div class="text-subtitle-1 text-bold-emphasis">Vardas Pavardė</div>
-          <v-autocomplete
-            v-model="selectedStudent"
+          <v-combobox
+            v-model="selectedStudents"
             :items="students"
             item-title="fullName"
             item-value="id"
+            multiple
+            clearable
+            chips
             @input="onStudentInput"
             return-object
             label="Įrašykite vardą"
-          ></v-autocomplete>
+          ></v-combobox>
         </div>
 
         <div class="fieldDivDate">
-         
           <div class="d-inline-block dateInput">
             <div class="text-subtitle-1 text-bold-emphasis">Nuo:</div>
             <input type="date" v-model="dateFrom" />
@@ -51,8 +53,7 @@
           <div class="d-inline-block dateInput">
             <div class="text-subtitle-1 text-bold-emphasis">Iki:</div>
             <input type="date" v-model="dateTo" />
-    
-        </div>
+          </div>
         </div>
 
         <div class="fieldDiv">
@@ -104,7 +105,7 @@ export default {
   data() {
     return {
       userIcon,
-      selectedStudent: "",
+      selectedStudents: [],
       selectedGroup: "",
       students: [],
       groups: [],
@@ -191,7 +192,7 @@ export default {
     },
 
     triggerSearchStudents() {
-      this.debouncedSearchStudents(this.selectedStudent);
+      this.debouncedSearchStudents(this.selectedStudents);
     },
     triggerSearchGroups() {
       this.debouncedSearchGroups(this.selectedGroup);
@@ -199,13 +200,15 @@ export default {
     submitInternship() {
       if (
         this.selectedCompany &&
-        this.selectedStudent &&
+        this.selectedStudents.length > 0 &&
         this.dateFrom &&
         this.dateTo
       ) {
+        const userIds = this.selectedStudents.map(student => student.id);
+
         const payload = {
           companyId: this.selectedCompany.id,
-          userId: this.selectedStudent.id,
+          users: userIds,
           dateFrom: this.dateFrom,
           dateTo: this.dateTo,
         };
@@ -231,14 +234,13 @@ export default {
 </script>
 
 <style scoped>
-
-.fieldDivDate{
+.fieldDivDate {
   width: 450px;
   display: flex;
   justify-content: space-between;
   margin-bottom: 22px;
 }
-.dateInput{
+.dateInput {
   width: 49%;
 }
 .fieldDiv {

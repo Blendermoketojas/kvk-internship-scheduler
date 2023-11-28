@@ -15,9 +15,10 @@ return new class extends Migration
     {
         Schema::create('form_likert', function (Blueprint $table) {
             $table->id();
-            $table->string("question");
+            $table->string("answer");
             $table->unsignedBigInteger('created_by')->nullable();
             $table->foreign('created_by')->references('id')->on('users')->onDelete('set null');
+            $table->timestamps();
         });
     }
 

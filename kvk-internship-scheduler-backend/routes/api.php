@@ -12,6 +12,7 @@ use App\Http\Controllers\v2\Auth\AuthController;
 use App\Http\Controllers\v2\CommentController;
 use App\Http\Controllers\v2\CompanyController;
 use App\Http\Controllers\v2\InternshipController;
+use App\Http\Controllers\v2\ResultFormController;
 use App\Http\Controllers\v2\InternshipFileManagementController;
 use App\Http\Controllers\v2\StudentController;
 use App\Http\Controllers\v2\UserProfileController;
@@ -98,6 +99,10 @@ Route::middleware('api')->prefix('v2')->group(function () {
         Route::delete('/comments', [CommentController::class, 'deleteComment']);
 
         Route::put('/comments', [CommentController::class, 'updateComment']);
+
+        // ResultsForms
+
+        Route::post('/result/template/modify', [ResultFormController::class, 'modifyTemplate']);
 
         // Internship File Management
 

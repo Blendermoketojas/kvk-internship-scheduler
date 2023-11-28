@@ -21,7 +21,7 @@ class FormQuestion extends Model
 
     public function templatesQuestions(): BelongsToMany
     {
-        return $this->belongsToMany(FormTemplate::class, 'form_template',
+        return $this->belongsToMany(FormTemplate::class, 'template_question',
         'question_id', 'template_id');
     }
 

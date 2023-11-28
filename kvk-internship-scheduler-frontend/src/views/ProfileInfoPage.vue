@@ -101,8 +101,8 @@ export default {
     customHeader,
   },
   mounted() {
-    this.$axios
-      .get("http://localhost:8000/api/v2/companies", { withCredentials: true })
+    apiClient
+      .get("/companies", { withCredentials: true })
       .then((response) => {
         this.companies = response.data;
         this.registrationData.company_id = response.data.id;

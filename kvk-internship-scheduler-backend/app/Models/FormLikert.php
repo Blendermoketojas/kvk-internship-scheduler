@@ -17,7 +17,7 @@ class FormLikert extends Model
     protected $table = 'form_likert';
 
     protected $fillable = [
-        'question'
+        'answer'
     ];
 
     public function answersQuestions(): BelongsToMany

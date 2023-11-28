@@ -60,4 +60,9 @@ class UserProfile extends Model
     public function comments() : HasMany {
         return $this->hasMany(Comment::class);
     }
+
+    public function accessibleLearningMaterials()
+    {
+        return $this->morphToMany(LearningMaterial::class, 'accessable', 'learning_materials_access');
+    }
 }

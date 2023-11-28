@@ -29,10 +29,12 @@ class RefreshDatabase extends Command
     public function handle()
     {
         // Drop all tables and re-run all migrations
+        $this->info('Refreshing database...');
         Artisan::call('migrate:refresh');
         $this->info('Database has been refreshed.');
 
         // Seed the database
+        $this->info('Seeding database...');
         Artisan::call('db:seed --class=MainSeeder');
         $this->info('Database has been seeded.');
 

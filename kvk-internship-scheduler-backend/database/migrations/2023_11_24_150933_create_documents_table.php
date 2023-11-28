@@ -13,9 +13,14 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('form_template', function (Blueprint $table) {
+        Schema::create('documents', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
+            $this->integer('internship_id');
+            $table->string('title');
+            $table->string('description')->nullable();
+            $table->string('status')->default('draft');
+            $table->boolean('visible')->default(true);
+            $table->string('tags')->nullable();
             $table->unsignedBigInteger('created_by')->nullable();
             $table->foreign('created_by')->references('id')->on('users')->onDelete('set null');
             $table->timestamps();
@@ -29,6 +34,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('form_template');
+        Schema::dropIfExists('documents');
     }
 };

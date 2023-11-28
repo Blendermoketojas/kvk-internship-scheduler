@@ -58,6 +58,11 @@ abstract class BaseService
         return [];
     }
 
+    public function custom_permission(): bool
+    {
+        return false;
+    }
+
     /**
      * @throws ModelNotProvidedInServiceException
      * @throws ValidationException

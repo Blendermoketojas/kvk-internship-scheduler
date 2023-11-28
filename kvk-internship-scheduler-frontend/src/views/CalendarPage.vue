@@ -3,13 +3,13 @@
     <DxScheduler   id="scheduler"  :adaptivity-enabled="true" :views="views" current-view="week" >
 
     </DxScheduler>
-
   </template>
   
   <script>
   import 'devextreme/dist/css/dx.light.css'; 
   import { DxScheduler } from 'devextreme-vue/scheduler';
   import HeaderNav from "@/components/DesktopHeader.vue";
+  import { mapGetters } from 'vuex';
 
   export default {
    
@@ -24,8 +24,23 @@
       };
     },
     methods: {
-
+      updateCurrentInternship(internship) {
+        this.$store.commit('setCurrentInternship', internship)
+      },
+      getActiveInternship() {
+        // partraukimo logika this.updateCurrentIntership(response.data)
+      }
     },
+    computed: {
+      ...mapGetters([
+        'getCurrentInternship'
+      ])
+    },
+    mounted() {
+      if (!this.getCurrentInternship) {
+        this.getActiveInternship();
+      }
+    }
   };
   </script>
 <style scoped>

@@ -13,10 +13,13 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('answer_item', function (Blueprint $table) {
+        Schema::create('template_likert', function (Blueprint $table) {
             $table->id();
-            $table->integer("answer_id");
-            $table->integer("item_id");
+            $table->unsignedBigInteger("template_id");
+            $table->foreign('template_id')->references('id')->on('form_template')->onDelete('cascade');
+            $table->unsignedBigInteger("likert_id");
+            $table->foreign('likert_id')->references('id')->on('form_likert')->onDelete('cascade');
+            $table->integer("sequence");
             $table->unsignedBigInteger('created_by')->nullable();
             $table->foreign('created_by')->references('id')->on('users')->onDelete('set null');
         });
@@ -29,6 +32,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('answer_item');
+        Schema::dropIfExists('template_likert');
     }
 };

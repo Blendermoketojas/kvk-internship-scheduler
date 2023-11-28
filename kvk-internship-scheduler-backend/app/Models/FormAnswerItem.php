@@ -6,6 +6,7 @@ use App\Traits\AutoCreatedBy;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class FormAnswerItem extends Model
 {
@@ -19,13 +20,9 @@ class FormAnswerItem extends Model
         'answer_id'
     ];
 
-    public function question(): BelongsTo
+    public function formAnswers(): BelongsToMany
     {
-        return $this->belongsTo(FormQuestion::class);
-    }
-
-    public function answer(): BelongsTo
-    {
-        return $this->belongsTo(FormLikert::class);
+        return $this->belongsToMany(InternshipForm::class, 'answer_item',
+        'item_id', 'internship_form_id');
     }
 }

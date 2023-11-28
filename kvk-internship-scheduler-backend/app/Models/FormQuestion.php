@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Traits\AutoCreatedBy;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -18,13 +19,15 @@ class FormQuestion extends Model
         'question'
     ];
 
-    public function templates(): HasMany
+    public function templatesQuestions(): BelongsToMany
     {
-        return $this->hasMany(TemplateQuestion::class);
+        return $this->belongsToMany(FormTemplate::class, 'form_template',
+        'question_id', 'template_id');
     }
 
-    public function formAnswerItems(): HasMany
+    public function questionsLikerts(): BelongsToMany
     {
-        return $this->hasMany(FormAnswerItem::class);
+        return $this->belongsToMany(FormQuestion::class, 'form_answer_item',
+        'answer_id', 'question_id');
     }
 }

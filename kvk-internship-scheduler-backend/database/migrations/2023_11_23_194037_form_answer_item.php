@@ -13,12 +13,12 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('internship_form', function (Blueprint $table) {
+        Schema::create('form_answer_item', function (Blueprint $table) {
             $table->id();
-            $table->integer("form_id");
-            $table->integer("form_answer_id")->nullable();
-            $table->integer("internship_id");
-            $table->integer("sequence");
+            $table->unsignedBigInteger("question_id");
+            $table->foreign('question_id')->references('id')->on('form_question')->onDelete('cascade');
+            $table->unsignedBigInteger("answer_id");
+            $table->foreign('answer_id')->references('id')->on('form_likert')->onDelete('cascade');
             $table->unsignedBigInteger('created_by')->nullable();
             $table->foreign('created_by')->references('id')->on('users')->onDelete('set null');
         });
@@ -31,6 +31,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('internship_form');
+        Schema::dropIfExists('form_answer_item');
     }
 };

@@ -14,5 +14,7 @@ export default createStore({
       return state.currentInternship;
     }
   },
-  actions: {}
+  actions: {
+    
+  }
 });

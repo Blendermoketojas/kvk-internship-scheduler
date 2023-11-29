@@ -2,7 +2,7 @@
 
 namespace App\Services;
 
-use App\Contracts\Roles\RolePermissions;
+use App\Contracts\Roles\Role;
 use App\Exceptions\ModelNotProvidedInServiceException;
 use App\Models\UserProfile;
 use Illuminate\Database\Eloquent\Model;
@@ -85,7 +85,7 @@ abstract class BaseService
             }
         }
 
-        if (in_array(RolePermissions::SELF, $this->permissions()))
+        if (in_array(Role::SELF, $this->permissions()))
         {
             $allowAction = $this->checkResourceOwnership();
         }

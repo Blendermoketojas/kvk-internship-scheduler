@@ -4,31 +4,31 @@
       <img class="logo" :src="layoutLogo" alt="KVK Logo" />
     </div>
     <div class="btn">
-      <a @click="goToCalendar">Mano kalendorius</a>
+      <router-link to="/calendar">Mano kalendorius</router-link>
     </div>
     <div class="btn">
-      <a @click="goToDocuments">Dokumentai</a>
+      <router-link to="/documents">Dokumentai</router-link>
     </div>
     <div class="btn">
-      <a>Mano rezultatai</a>
+      <router-link to="/my-results">Mano rezultatai</router-link>
     </div>
     <div class="btn">
-      <a>Mokymosi medžiaga</a>
+      <router-link to="/learning-materials">Mokymosi medžiaga</router-link>
     </div>
     <div class="btn">
-      <a>Pokalbiai</a>
+      <router-link to="/chat">Pokalbiai</router-link>
     </div>
     <div class="btn">
-      <a>Pagalba</a>
+      <router-link to="/help">Pagalba</router-link>
     </div>
     <div class="btn">
-      <a @click="goToProfile" v-if="user.image_path">
+      <router-link to="/profile-info" v-if="user.image_path">
         <img class="userImg" :src="fullImagePath" alt="User Image">
-      </a>
-      <a @click="goToProfile" v-else>
+      </router-link>
+      <router-link to="/profile-info" v-else>
         <img src="https://freesvg.org/img/abstract-user-flat-4.png" alt="Default Image">
-      </a>
-      <a @click="goToProfile">{{ user.fullname }}</a>
+      </router-link>
+      <router-link to="/profile-info">{{ user.fullname }}</router-link>
 
     </div>
   </div>
@@ -61,18 +61,6 @@ export default {
     if (userStored) {
       this.user = JSON.parse(userStored);
     }
-  },
-  mounted() {},
-  methods: {
-    goToCalendar() {
-      this.$router.push("/calendar");
-    },
-    goToDocuments() {
-      this.$router.push("/documents");
-    },
-    goToProfile() {
-      this.$router.push("/profile-info");
-    },
   },
 };
 </script>

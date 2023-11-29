@@ -2,7 +2,7 @@
 
 namespace App\Services\ManageResults;
 
-use App\Contracts\Roles\RolePermissions;
+use App\Contracts\Roles\Role;
 use App\Models\FormLikert;
 use App\Models\FormQuestion;
 use App\Models\FormTemplate;

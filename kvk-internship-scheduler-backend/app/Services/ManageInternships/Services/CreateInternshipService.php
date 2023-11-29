@@ -2,7 +2,7 @@
 
 namespace App\Services\ManageInternships\Services;
 
-use App\Contracts\Roles\RolePermissions;
+use App\Contracts\Roles\Role;
 use App\Models\Internship;
 use App\Services\BaseService;
 use Illuminate\Database\Eloquent\Model;
@@ -31,7 +31,7 @@ class CreateInternshipService extends BaseService
 
     public function permissions(): array
     {
-        return [RolePermissions::PRODEKANAS];
+        return [Role::PRODEKANAS];
     }
 
     /**

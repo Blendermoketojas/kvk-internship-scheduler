@@ -19,6 +19,12 @@ class File extends Model
         'created_by'
     ];
 
+    protected $hidden = [
+      'fileable_id',
+      'fileable_type',
+      'file_path'
+    ];
+
     public function fileable()
     {
         return $this->morphTo();

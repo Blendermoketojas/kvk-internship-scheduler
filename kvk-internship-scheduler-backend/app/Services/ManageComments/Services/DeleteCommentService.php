@@ -2,7 +2,7 @@
 
 namespace App\Services\ManageComments\Services;
 
-use App\Contracts\Roles\RolePermissions;
+use App\Contracts\Roles\Role;
 use App\Exceptions\ModelNotProvidedInServiceException;
 use App\Models\Comment;
 use App\Services\BaseService;
@@ -30,7 +30,7 @@ class DeleteCommentService extends BaseService
 
     public function permissions(): array
     {
-        return [RolePermissions::SELF];
+        return [Role::SELF];
     }
 
     /**

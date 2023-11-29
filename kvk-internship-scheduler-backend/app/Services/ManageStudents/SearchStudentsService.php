@@ -2,7 +2,7 @@
 
 namespace App\Services\ManageStudents;
 
-use App\Contracts\Roles\RolePermissions;
+use App\Contracts\Roles\Role;
 use App\Models\UserProfile;
 use App\Services\BaseService;
 use Illuminate\Database\Eloquent\Model;
@@ -41,7 +41,7 @@ class SearchStudentsService extends BaseService
 
         // logic execution
 
-        $query = UserProfile::where('role_id', RolePermissions::STUDENTAS->value)
+        $query = UserProfile::where('role_id', Role::STUDENTAS->value)
             ->whereRaw('LOWER(fullname) LIKE ?', ['%' . strtolower($this->data()['fullName']) . '%'])
             ->get();
 

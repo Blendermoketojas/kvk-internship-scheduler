@@ -2,7 +2,7 @@
 
 namespace App\Services\ManageComments\Services;
 
-use App\Contracts\Roles\RolePermissions;
+use App\Contracts\Roles\Role;
 use App\Models\Comment;
 use App\Services\BaseService;
 use App\Services\ManageComments\Response\CommentResource;
@@ -36,7 +36,7 @@ class UpdateCommentService extends BaseService
 
     public function permissions(): array
     {
-        return [RolePermissions::SELF];
+        return [Role::SELF];
     }
 
     /**

@@ -2,7 +2,7 @@
 
 namespace App\Services\ManageUserProfile;
 
-use App\Contracts\Roles\RolePermissions;
+use App\Contracts\Roles\Role;
 use App\Http\Resources\Response\UserProfileResource;
 use App\Models\UserProfile;
 use App\Services\BaseService;
@@ -29,7 +29,7 @@ class SearchUserProfilesByRoleService extends BaseService
 
     public function permissions(): array
     {
-        return [RolePermissions::PRODEKANAS];
+        return [Role::PRODEKANAS];
     }
 
     /**

@@ -1,39 +1,33 @@
 <?php
 
-namespace App\Services\ManageFiles\InternshipDocumentServices;
+namespace App\Services\ManageFiles;
 
-use App\Contracts\Roles\Role;
+use App\Contracts\Files\FileType;
 use App\Models\Document;
-use App\Models\Internship;
+use App\Models\LearningMaterial;
 use App\Services\BaseService;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\ValidationException;
 
-class HandleInternshipDocumentUploadService extends BaseService
+class CreateFilesService extends BaseService
 {
-
     public function rules(): array
     {
         return [
-            'internshipId' => 'required|integer|exists:internships,id',
+            'activityName' => 'required|string|matches:Internship,LearningMaterials',
+            'activityId' => 'required|integer',
             'files' => 'required|array|max:' . env('FILE_MAX_COUNT', 5),
             'files.*' => 'required|file|max:' . env('FILE_MAX_SIZE', 25600),
-            'title' => 'required|string|max:100',
-            'description' => 'string|max:2560',
-            'visible' => 'boolean'
         ];
     }
 
     public function data(): array
     {
         return [
-            'internshipId' => $this->request['internshipId'],
+            'activityName' =>  $this->request['activityName'],
+            'activityId' =>  $this->request['activityId'],
             'files' => $this->request['files'],
-            'title' => $this->request['title'],
-            'description' => $this->request['description'],
-            'visible' => $this->request['visible'] ?? true
         ];
     }
 
@@ -45,30 +39,21 @@ class HandleInternshipDocumentUploadService extends BaseService
     /**
      * @throws ValidationException
      */
-    function execute(): JsonResponse
+    function execute() : JsonResponse
     {
         // input validation
         if (!$this->validateRules()) return response()->json("Action not allowed", 401);
 
-        // retrieve model
-
-        $internship = Internship::find($this->data()['internshipId']);
-
-        // check policy
-
-        if ($this->user->role_id !== Role::PRODEKANAS->value) {
-            if (Gate::denies('internshipGet', $internship)) {
-                return response()->json('User must belong to the internship or be PRODEKANAS to perform this task',
-                    401);
-            }
-        }
-
         // logic execution
 
-        // creating document record
-
-        $documentData = array_diff_key($this->data(), ['files' => '', 'internshipId' => '']);
-        $document = $internship->documents()->create($documentData);
+        $fileable = null;
+        switch ($this->request['activityName']) {
+            case FileType::Internship:
+                $fileable = Document::find($this->request['activityId']);
+                break;
+            case FileType::LearningMaterials:
+                $fileable = LearningMaterial::find($this->request['activityId']);
+        }
 
         $uploadedFiles = $this->request->file('files');
         $fileRecords = [];
@@ -101,10 +86,8 @@ class HandleInternshipDocumentUploadService extends BaseService
 
         // response
         return response()->json(['document' => $document, 'files' => $document->files]);
-    }
 
-    private function getPath($internshipId)
-    {
-        return "internship/$internshipId";
+        // response
+        return response()->json('Not implemented');
     }
 }

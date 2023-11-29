@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Contracts\Roles;
-enum RolePermissions: int
+enum Role: int
 {
     case SELF = 0;
     case PRODEKANAS = 1;

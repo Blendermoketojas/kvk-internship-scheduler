@@ -116,5 +116,6 @@ Route::middleware('api')->prefix('v2')->group(function () {
         // File Management
 
         Route::post('/file/delete', [FileController::class, 'deleteFile']);
+        Route::post('/files/create', [FileController::class, 'createFiles']);
     });
 });

@@ -3,10 +3,13 @@
 namespace App\Services\ManageFiles;
 
 use App\Contracts\Files\FileType;
+use App\Helpers\File\FileHelper;
 use App\Models\Document;
 use App\Models\LearningMaterial;
 use App\Services\BaseService;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\ValidationException;
 
@@ -15,7 +18,7 @@ class CreateFilesService extends BaseService
     public function rules(): array
     {
         return [
-            'activityName' => 'required|string|matches:Internships,LearningMaterials',
+            'activityName' => 'required|string|in:Internships,LearningMaterials',
             'activityId' => 'required|integer',
             'files' => 'required|array|max:' . env('FILE_MAX_COUNT', 5),
             'files.*' => 'required|file|max:' . env('FILE_MAX_SIZE', 25600),
@@ -25,8 +28,8 @@ class CreateFilesService extends BaseService
     public function data(): array
     {
         return [
-            'activityName' =>  $this->request['activityName'],
-            'activityId' =>  $this->request['activityId'],
+            'activityName' => $this->request['activityName'],
+            'activityId' => $this->request['activityId'],
             'files' => $this->request['files'],
         ];
     }
@@ -39,24 +42,27 @@ class CreateFilesService extends BaseService
     /**
      * @throws ValidationException
      */
-    function execute() : JsonResponse
+    function execute(): JsonResponse
     {
         // input validation
         if (!$this->validateRules()) return response()->json("Action not allowed", 401);
 
-        // verify policies
-
-
-
         // logic execution
 
         $fileable = null;
-        switch ($this->request['activityName']) {
-            case FileType::Internship:
-                $fileable = Document::find($this->request['activityId']);
+        switch ($this->data()['activityName']) {
+            case FileType::Internships->value:
+                $fileable = Document::find($this->data()['activityId']);
+                if (Gate::denies('fileCreateDocuments', $fileable)) {
+                    return response()
+                        ->json("Document must belong to the user to perform this action", 401);
+                }
                 break;
-            case FileType::LearningMaterials:
-                $fileable = LearningMaterial::find($this->request['activityId']);
+            case FileType::LearningMaterials->value:
+                $fileable = LearningMaterial::find($this->data()['activityId']);
+                if (Gate::denies('fileCreateLearningMaterials', $fileable)) return response()
+                    ->json("Learning material must belong
+                    to the user to perform this action", 401);
                 break;
         }
 
@@ -95,6 +101,6 @@ class CreateFilesService extends BaseService
 
     private function getPath($id)
     {
-        return strtolower($this->data()['activityName'])."/".$id;
+        return strtolower($this->data()['activityName']) . "/" . $id;
     }
 }

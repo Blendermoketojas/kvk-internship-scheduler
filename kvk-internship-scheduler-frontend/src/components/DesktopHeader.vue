@@ -4,31 +4,31 @@
       <img class="logo" :src="layoutLogo" alt="KVK Logo" />
     </div>
     <div class="btn">
-      <router-link to="/calendar">Mano kalendorius</router-link>
+      <router-link class="redirectText" to="/calendar">Mano kalendorius</router-link>
     </div>
     <div class="btn">
-      <router-link to="/documents">Dokumentai</router-link>
+      <router-link class="redirectText" to="/documents">Dokumentai</router-link>
     </div>
     <div class="btn">
-      <router-link to="/my-results">Mano rezultatai</router-link>
+      <router-link class="redirectText" to="/my-results">Mano rezultatai</router-link>
     </div>
     <div class="btn">
-      <router-link to="/learning-materials">Mokymosi medžiaga</router-link>
+      <router-link class="redirectText" to="/learning-materials">Mokymosi medžiaga</router-link>
     </div>
     <div class="btn">
-      <router-link to="/chat">Pokalbiai</router-link>
+      <router-link class="redirectText" to="/chat">Pokalbiai</router-link>
     </div>
     <div class="btn">
-      <router-link to="/help">Pagalba</router-link>
+      <router-link class="redirectText" to="/help">Pagalba</router-link>
     </div>
     <div class="btn">
-      <router-link to="/profile-info" v-if="user.image_path">
+      <router-link class="redirectText"  to="/profile-info" v-if="user.image_path">
         <img class="userImg" :src="fullImagePath" alt="User Image">
       </router-link>
-      <router-link to="/profile-info" v-else>
+      <router-link class="redirectText" to="/profile-info" v-else>
         <img src="https://freesvg.org/img/abstract-user-flat-4.png" alt="Default Image">
       </router-link>
-      <router-link to="/profile-info">{{ user.fullname }}</router-link>
+      <router-link class="redirectText" to="/profile-info">{{ user.fullname }}</router-link>
 
     </div>
   </div>
@@ -81,8 +81,11 @@ export default {
 img {
   height: 60%;
 }
-a {
+.redirectText {
   font-weight: 600;
+  text-decoration: none;
+  color: black;
+  
 }
 
 .userImg{

@@ -37,11 +37,14 @@ const routes = [
     component: () => import("@/views/DocumentUploadPage.vue"),
   },
   {
-path: "/evaluation-creation",
-component:() => import("@/views/EvaluationCreationPage.vue"),
-
+    path: "/evaluation-creation",
+    component: () => import("@/views/EvaluationCreationPage.vue"),
   },
 
+  {
+    path: "/user-internships",
+    component: () => import("@/views/UsersInternshipsPage.vue"),
+  },
 ];
 
 const router = createRouter({

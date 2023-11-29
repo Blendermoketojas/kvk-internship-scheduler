@@ -53,7 +53,15 @@ methods:{
 },
 
 mounted(){
-apiClient.get('/internships');
+apiClient.get('/internships').then((response) => {
+          if (response.data && response.data.id) {
+            this.internship_id = response.data.id;
+            console.log("Active internship ID:", this.internship_id);
+            this.getUserComments();
+          } else {
+            throw new Error("Internship ID not found in response");
+          }
+        });
 
 },
 

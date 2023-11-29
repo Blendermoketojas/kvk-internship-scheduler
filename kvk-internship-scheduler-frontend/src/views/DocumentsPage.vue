@@ -1,19 +1,24 @@
 <template>
   <custom-header></custom-header>
   <main-content-container>
-    <h1 class="mt-4">Užsakymų surinkimai</h1>
-    <p>Reikiamų užsakymų atrinkimui prekių sąrašas</p>
+    <h1 class="mt-4">Dokumentai</h1>
+    <p>Čia galite peržiūrėti įkeltus dokumentus</p>
+    <document-container>
+      
+    </document-container>
   </main-content-container>
 </template>
 
 <script>
 import customHeader from "@/components/DesktopHeader.vue";
 import MainContentContainer from "@/components/containers/MainContentContainer.vue";
+import DocumentContainer from "@/components/documents/DocumentContainer.vue";
 
 export default {
   components: {
     customHeader,
-    MainContentContainer
+    MainContentContainer,
+    DocumentContainer
   },
   data() {
     return {

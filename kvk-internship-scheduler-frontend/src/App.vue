@@ -4,7 +4,21 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex';
+import apiClient from './utils/api-client';
 
+export default {
+  computed: {
+    ...mapGetters([
+      'getUser'
+    ])
+  },
+  mounted() {
+    if (!getUser) {
+      
+    }
+  }
+}
 </script>
 
 <style>

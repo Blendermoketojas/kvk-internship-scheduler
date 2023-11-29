@@ -1,22 +1,24 @@
 <template>
     <div class="document-container">
         <div class="d-flex align-items-center document-container-title">
-            <button style="">
-            <v-icon v-if="collapsed" icon="mdi-chevron-down" size="70"></v-icon>
-            <v-icon v-else icon="mdi-chevron-up" size="70"></v-icon>
+            <button @click="toggleBody" class="styleless-button">
+                <v-icon :icon="collapsed ? 'mdi-chevron-down' : 'mdi-chevron-up'" size="70"></v-icon>
+            </button>
             <div class="text-container">
                 <span class="fs-2">{{ containerName }}</span>
             </div>
-            </button>
         </div>
-        <div v-if="collapsed">
-            <div class="document-vertical-line"></div>
-            <div class="d-flex flex-column">
-                <document-row v-for="i in 5"></document-row>
+        <transition name="accordion">
+            <div v-show="!collapsed" class="document-container-body">
+                <div class="document-vertical-line"></div>
+                <div class="d-flex flex-column">
+                    <document-row v-for="i in 5" :key="i"></document-row>
+                </div>
             </div>
-        </div>
+        </transition>
     </div>
 </template>
+
 
 <script>
 import DocumentRow from './DocumentRow.vue';
@@ -35,6 +37,11 @@ export default {
             required: true,
             type: String,
             default: 'IT sistemų praktika'
+        }
+    },
+    methods: {
+        toggleBody() {
+            this.collapsed = !this.collapsed;
         }
     }
 }
@@ -63,5 +70,20 @@ export default {
 
 .document-container-body {}
 
-/* Other styles */
+
+
+.accordion-enter-active, .accordion-leave-active {
+  transition: opacity 0.5s, max-height 0.5s ease;
+  overflow: hidden;
+}
+
+.accordion-enter-from, .accordion-leave-to {
+  opacity: 0;
+  max-height: 0;
+}
+
+.accordion-leave-from, .accordion-enter-to {
+  opacity: 1;
+  max-height: 1000px; /* Adjust as necessary for your content's actual height */
+}
 </style>

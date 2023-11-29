@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\v2;
 
 use App\Http\Controllers\Controller;
+use App\Services\ManageFiles\InternshipDocumentServices\DeleteInternshipDocumentService;
 use App\Services\ManageFiles\InternshipDocumentServices\HandleInternshipDocumentUploadService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -16,5 +17,13 @@ class InternshipFileManagementController extends Controller
     public function uploadDocumentWithFiles(Request $request): JsonResponse
     {
         return (new HandleInternshipDocumentUploadService($request))->execute();
+    }
+
+    /**
+     * @throws ValidationException
+     */
+    public function deleteDocumentWithFiles(Request $request): JsonResponse
+    {
+        return (new DeleteInternshipDocumentService($request))->execute();
     }
 }

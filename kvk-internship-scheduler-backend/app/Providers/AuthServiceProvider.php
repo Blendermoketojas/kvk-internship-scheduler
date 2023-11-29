@@ -3,7 +3,9 @@
 namespace App\Providers;
 
 // use Illuminate\Support\Facades\Gate;
+use App\Models\Document;
 use App\Models\File;
+use App\Policies\DocumentPolicy;
 use App\Policies\FilePolicy;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 
@@ -20,7 +22,8 @@ class AuthServiceProvider extends ServiceProvider
      */
     protected $policies = [
         Internship::class => InternshipPolicy::class,
-        File::class => FilePolicy::class
+        File::class => FilePolicy::class,
+        Document::class => DocumentPolicy::class
     ];
 
     /**

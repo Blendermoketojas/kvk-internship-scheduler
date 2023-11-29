@@ -39,7 +39,7 @@ class UserSeeder extends Seeder
                 'student_group_id' => rand(1, 5),
                 'country' => fake()->country,
                 'description' => fake()->text,
-                'image_path' => '/storage/profile_pictures/placeholder/profile_pic_placeholder.png',
+                'image_path' => '/storage/app/public/profile_pictures/placeholder/profile_pic_placeholder.png',
                 'created_at' => fake()->dateTime,
                 'updated_at' => fake()->dateTime
             ]);

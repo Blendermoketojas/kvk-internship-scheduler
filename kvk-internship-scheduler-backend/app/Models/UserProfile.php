@@ -27,7 +27,6 @@ class UserProfile extends Model
     ];
 
     protected $hidden = [
-        'role_id',
         'student_group_id'
     ];
 

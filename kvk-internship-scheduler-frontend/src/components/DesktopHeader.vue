@@ -55,6 +55,7 @@ export default {
         ? this.baseImageUrl+this.user.image_path
         : null;
     },
+    
   },
   created() {
     const userStored = localStorage.getItem("user");

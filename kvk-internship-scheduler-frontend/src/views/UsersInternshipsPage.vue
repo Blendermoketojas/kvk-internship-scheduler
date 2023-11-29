@@ -1,87 +1,150 @@
 <template>
-<header-nav></header-nav>
+  <header-nav></header-nav>
 
-<div class="mainPageDiv">
-<div class="pageDescription">
-    <h1>Praktikos sąrašas</h1>
-    <h2>Čia galite peržiūrėti vykstamas ir pasibaigusias praktikas</h2>
+  <div class="mainPageDiv">
+    <div class="pageDescription">
+      <h1>Praktikų sąrašas</h1>
+      <h2>Čia galite peržiūrėti vykstamas ir pasibaigusias praktikas</h2>
+    </div>
+    <div class="mainInternshipDiv">
+      <v-expansion-panels>
+        <v-expansion-panel
+          v-for="internship in internships"
+          :key="internship.id"
+        >
+          <v-expansion-panel-title class="panelHeader" @click="handleInternshipClick(internship.id)">
+            <v-container>
+              <v-row no-gutters>
+                <v-col cols="3">
+                  {{ internship.company.company_name }}
+                </v-col>
+                <v-col cols="3">
+                  <div>Nuo: {{ internship.date_from }}</div>
+                </v-col>
+                <v-col cols="3">
+                  <div>Iki: {{ internship.date_to }}</div>
+                </v-col>
+                <v-col class='d-flex justify-end' cols="3">
+              
+                </v-col>
+              </v-row>
+            </v-container>
+          </v-expansion-panel-title>
+          <v-expansion-panel-text>
+            <v-container v-if="selectedInternshipComments === null">
+                Kraunama informacija...
+              </v-container>
+            
+              <v-container v-else>
+                <v-row v-if="selectedInternshipComments.length > 0">
+                  <v-col
+                    v-for="comment in selectedInternshipComments"
+                    :key="comment.id"
+                    cols="12"
+                  >
+                    <v-row>
+                      <v-col cols="4" class="comment-details">
+                        Nuo: {{ comment.date_from }}
+                      </v-col>
+                      <v-col cols="4" class="comment-details">
+                        Iki: {{ comment.date_to }}
+                      </v-col>
+                      <v-col cols="4" class="comment-details">
+                        Aprašymas: {{ comment.comment }}
+                      </v-col>
+                    </v-row>
+                  </v-col>
+                </v-row>
+                <v-row v-else>
+                  <v-col cols="12">Kraunama informacija...</v-col>
+                </v-row>
+              </v-container>
+          </v-expansion-panel-text>
+        </v-expansion-panel>
+      </v-expansion-panels>
+    </div>
   </div>
-  <div class="mainInternshipDiv">
-<v-expansion-panels>
-    <v-expansion-panel
-      title="Nu viena is praktiku"
-      text="Mire tiodars reikia grabo, o virs grabo virga kabo"
-    >
-    </v-expansion-panel>
-    <v-expansion-panel
-    title="Nu kita is praktiku"
-    text="salia jos 3 eilėm"
-  >
-  </v-expansion-panel>
-
-  <v-expansion-panel
-  title="Nu dar kita is praktiku"
-  text="mandavoske su gelem"
->
-</v-expansion-panel>
-  </v-expansion-panels>
-
-</div>
-
-</div>
 </template>
 
 <script>
-import headerNav from '@/components/DesktopHeader.vue';
-import apiClient from '@/utils/api-client';
+import headerNav from "@/components/DesktopHeader.vue";
+import apiClient from "@/utils/api-client";
 
 export default {
   name: "UserInternships",
   data() {
     return {
-
+      internships: [],
+      selectedInternshipId: null,
+      selectedInternshipComments: [],
     };
   },
   components: {
     headerNav,
   },
 
-methods:{
+  methods: {
 
+    handleInternshipClick(internshipId) {
 
+        if (this.selectedInternshipId === internshipId) {
+      return;
+    }
+    this.selectedInternshipId = internshipId;
+    this.selectedInternshipComments =[];
 
+    apiClient.post(`/internship/comments`, {internshipId:this.selectedInternshipId})
+      .then(response => {
+    this.selectedInternshipComments  = response.data;
+    console.log(this.selectedInternshipComments .date_from); 
+      })
+      .catch(error => {
+        console.error("Error fetching internship details:", error);
+        this.selectedInternshipComments=[];
+    
+      });
+
+  },
 },
 
-mounted(){
-apiClient.get('/internships').then((response) => {
-          if (response.data && response.data.id) {
-            this.internship_id = response.data.id;
-            console.log("Active internship ID:", this.internship_id);
-            this.getUserComments();
-          } else {
-            throw new Error("Internship ID not found in response");
-          }
+  mounted() {
+
+    //users internships
+    apiClient
+      .get("/internships")
+      .then((response) => {
+        this.internships = response.data;
+        this.internships.forEach((internship) => {
+
         });
+      })
+      .catch((error) => {
+        console.error("Error fetching internships:", error);
+      });
 
-},
-
-}
+//specific interships comments
 
 
+  },
+};
 </script>
 
 <style>
 h2 {
-    display: inline-block;
-    font-size: 15px;
-    color: rgb(170, 167, 167);
-    font-weight: 400;
-  }
-.mainPageDiv{
-    padding: 0 200px;
+  display: inline-block;
+  font-size: 15px;
+  color: rgb(170, 167, 167);
+  font-weight: 400;
 }
-.mainInternshipDiv{
-    padding: 50px 100px;
+.mainPageDiv {
+  padding: 0 200px;
 }
-
+.mainInternshipDiv {
+  padding: 50px 100px;
+}
+.comment-details{
+    display: flex;
+    border-bottom: 1px rgb(234, 225, 225) solid;
+    padding: 20px 0;
+}
 </style>

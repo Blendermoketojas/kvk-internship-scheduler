@@ -7,8 +7,8 @@ use App\Services\ManageInternships\Services\CreateInternshipService;
 use App\Services\ManageInternships\Services\DeleteInternshipService;
 use App\Services\ManageInternships\Services\GetActiveInternshipService;
 use App\Services\ManageInternships\Services\GetInternshipService;
-use App\Services\ManageInternships\Services\GetStudentGroupActiveInternships;
-use App\Services\ManageInternships\Services\GetStudentGroupInternships;
+use App\Services\ManageInternships\Services\GetStudentGroupActiveInternshipsService;
+use App\Services\ManageInternships\Services\GetStudentGroupInternshipsService;
 use App\Services\ManageInternships\Services\GetUserInternshipsService;
 use App\Services\ManageInternships\Services\UpdateInternshipService;
 use Illuminate\Http\JsonResponse;
@@ -22,7 +22,7 @@ class InternshipController extends Controller
      */
     public function getStudentGroupInternships(Request $request): JsonResponse
     {
-        return (new GetStudentGroupInternships($request))->execute();
+        return (new GetStudentGroupInternshipsService($request))->execute();
     }
 
     /**
@@ -30,7 +30,7 @@ class InternshipController extends Controller
      */
     public function getStudentGroupActiveInternships(Request $request): JsonResponse
     {
-        return (new GetStudentGroupActiveInternships($request))->execute();
+        return (new GetStudentGroupActiveInternshipsService($request))->execute();
     }
 
     /**

@@ -35,8 +35,7 @@ class GetUserInternshipsService extends BaseService
         // logic execution
 
         $internships = $this->user->internships;
-
-
+        $internships->load('company');
 
         // response
         return response()->json($internships);

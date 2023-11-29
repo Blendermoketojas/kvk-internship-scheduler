@@ -10,7 +10,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Validation\ValidationException;
 
-class GetStudentGroupActiveInternships extends BaseService
+class GetStudentGroupActiveInternshipsService extends BaseService
 {
     public function rules(): array
     {

@@ -105,6 +105,6 @@ class HandleInternshipDocumentUploadService extends BaseService
 
     private function getPath($internshipId)
     {
-        return "internship/$internshipId";
+        return "internships/$internshipId";
     }
 }

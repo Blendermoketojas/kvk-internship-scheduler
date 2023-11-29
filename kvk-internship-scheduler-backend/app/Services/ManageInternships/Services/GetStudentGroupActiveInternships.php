@@ -14,7 +14,7 @@ class GetStudentGroupActiveInternships extends BaseService
 {
     public function rules(): array
     {
-        return ['studentGroupId' => 'required|integer'];
+        return ['studentGroupId' => 'required|integer|exists:student_groups,id'];
     }
 
     public function data(): array
@@ -39,12 +39,12 @@ class GetStudentGroupActiveInternships extends BaseService
 
         $studentGroup = StudentGroup::find($this->data()['studentGroupId']);
 
-        $studentIds = $studentGroup->userProfiles()->pluck('id');
+        $studentIds = $studentGroup->userProfiles->pluck('id');
 
         $internships = Internship::whereHas('userProfiles', function($query) use ($studentIds) {
-            $query->whereIn('id', $studentIds);
-            $query->where('is_active', true);
-        })->with('userProfiles')->get();
+            $query->whereIn('userprofiles.id', $studentIds); // Specify the table alias 'userprofiles.id'
+        })->where('internships.is_active', true) // Specify 'is_active' condition for the 'Internship' table
+        ->with('userProfiles')->get();
 
         // response
 

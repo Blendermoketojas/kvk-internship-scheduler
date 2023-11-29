@@ -57,21 +57,50 @@ export default {
       this.$store.commit("setCurrentInternship", internship);
     },
     getActiveInternship() {
-      apiClient
-        .get("/internship-active", { withCredentials: true })
+      return apiClient.get("/internship-active", { withCredentials: true })
         .then((response) => {
-          this.internship_id = response.data.id;
-          console.log("Active internship ID:", this.internship_id);
+          if (response.data && response.data.id) {
+            this.internship_id = response.data.id;
+            console.log("Active internship ID:", this.internship_id);
+            this.getUserComments(); 
+          } else {
+            throw new Error('Internship ID not found in response');
+          }
         });
+    },
+
+    getUserComments() {
+      if (this.internship_id) {
+        const payload = { internshipId: this.internship_id };
+        apiClient.post('/internship/comments', payload)
+          .then((response) => {
+            this.dataSource = response.data.map(comment => ({
+              text: 'Praktika',
+              startDate: new Date(comment.date_from),
+              endDate: new Date(comment.date_to),
+   
+            }));
+            console.log("Formatted comments for scheduler:", this.dataSource);
+          })
+          .catch((error) => console.error("Error fetching comments:", error));
+      } else {
+        console.error("Internship ID is not set yet.");
+      }
     },
   },
   computed: {
     ...mapGetters(["getCurrentInternship"]),
   },
   mounted() {
-    if (!this.getCurrentInternship) {
-      this.getActiveInternship();
-    }
+
+     this.getActiveInternship().then(() => {
+
+      if (this.internship_id) {
+        this.getUserComments();
+      }
+    }).catch((error) => {
+      console.error("Error during the active internship retrieval:", error);
+    });
   },
 };
 </script>

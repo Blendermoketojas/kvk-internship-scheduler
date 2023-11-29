@@ -48,7 +48,14 @@
           @click:append-inner="visible = !visible"
         ></v-text-field>
 
-        <v-btn block class="mb-8" color="white" size="large" variant="tonal"  @click="login">
+        <v-btn
+          block
+          class="mb-8"
+          color="white"
+          size="large"
+          variant="tonal"
+          @click="login"
+        >
           Prisijungti
         </v-btn>
 
@@ -77,42 +84,40 @@
 </template>
 
 <script>
-import kvkLogo from '@/assets/Photos/KVKlogo.png';
-
+import kvkLogo from "@/assets/Photos/KVKlogo.png";
 
 export default {
-    name: 'UserLogin',
+  name: "UserLogin",
   data() {
     return {
       kvkLogo,
-      loginData:{
-      email: '',
-      password: '',
+      loginData: {
+        email: "",
+        password: "",
       },
       visible: false,
     };
   },
   methods: {
-   login() {
+    login() {
       try {
-        this.$axios.post('http://localhost:8000/api/v2/login', 
-this.loginData
-        ,{ withCredentials: true }).then(response=>{ if (response.data.success) {
-        this.$router.push( '/calendar');
-        } else {
-        // Handle login error, e.g., showing an error message to the user
-        }});
-
-
+        this.$axios
+          .post("http://localhost:8000/api/v2/login", this.loginData, {
+            withCredentials: true,
+          })
+          .then((response) => {
+            if (response.data.success) {
+              const { fullname, image_path } = response.data.user;
+              this.$router.push("/calendar");
+            }
+          });
       } catch (error) {
         if (error.response && error.response.status === 401) {
-        // Handle login error, e.g., showing an error message to the user
         }
       }
-
-    }
-  }
-}
+    },
+  },
+};
 </script>
 
 <style scoped>

@@ -44,7 +44,7 @@ class DeleteFileService extends BaseService
 
         // check policy
 
-        if (Gate::denies('deleteFile', $file)) {
+        if (Gate::denies('fileDelete', $file)) {
             return response()->json(['error' => 'User must be the owner of the file to perform this task'],
                 401);
         }

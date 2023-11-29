@@ -10,7 +10,7 @@ class FilePolicy
 {
     use HandlesAuthorization;
 
-    public function restrictDelete(User $user, File $file)
+    public function fileDelete(User $user, File $file)
     {
         return $user->id === $file->created_by;
     }

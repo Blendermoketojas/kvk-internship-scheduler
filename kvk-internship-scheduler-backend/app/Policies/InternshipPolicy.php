@@ -10,7 +10,7 @@ class InternshipPolicy
 {
     use HandlesAuthorization;
 
-    public function restrictGet(User $user, Internship $internship)
+    public function internshipGet(User $user, Internship $internship)
     {
         $user_id = $user->id;
         return $internship->userProfiles()->where('internship_user.user_id', $user_id)->exists();

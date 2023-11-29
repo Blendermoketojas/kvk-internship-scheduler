@@ -104,6 +104,7 @@ Route::middleware('api')->prefix('v2')->group(function () {
         // ResultsForms
 
         Route::post('/result/template/modify', [ResultFormController::class, 'modifyTemplate']);
+        Route::post('/result/template/get', [ResultFormController::class, 'getTemplate']);
 
         // Internship File Management
 

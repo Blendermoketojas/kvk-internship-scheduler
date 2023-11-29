@@ -11,6 +11,7 @@
 use App\Http\Controllers\v2\Auth\AuthController;
 use App\Http\Controllers\v2\CommentController;
 use App\Http\Controllers\v2\CompanyController;
+use App\Http\Controllers\v2\FileController;
 use App\Http\Controllers\v2\InternshipController;
 use App\Http\Controllers\v2\ResultFormController;
 use App\Http\Controllers\v2\InternshipFileManagementController;
@@ -109,5 +110,8 @@ Route::middleware('api')->prefix('v2')->group(function () {
         Route::post('/internship/upload-document-with-files',
             [InternshipFileManagementController::class, 'uploadDocumentWithFiles']);
 
+        // File Management
+
+        Route::post('/file/delete', [FileController::class, 'deleteFile']);
     });
 });

@@ -15,7 +15,7 @@ return new class extends Migration
     {
         Schema::create('documents', function (Blueprint $table) {
             $table->id();
-            $this->integer('internship_id');
+            $table->integer('internship_id');
             $table->string('title');
             $table->string('description')->nullable();
             $table->string('status')->default('draft');

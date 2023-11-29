@@ -6,7 +6,12 @@
     :views="views"
     current-view="week"
     :data-source="dataSource"
-    @appointmentAdded="showValue"
+    @appointmentAdded="addedComment"
+    @appointmentDeleted="deleteComment"
+    @appointmentUpdated="updatedComment"
+    allowDragging="false"
+    allowResizing="false"
+
   >
   </DxScheduler>
 </template>
@@ -31,7 +36,7 @@ export default {
     };
   },
   methods: {
-    showValue(e) {
+    addedComment(e) {
       const appointmentData = e.appointmentData;
 
       const formattedStartDate = this.formatDate(appointmentData.startDate);
@@ -44,27 +49,75 @@ export default {
         dateTo: formattedEndDate,
       };
 
+      apiClient.post("/comments", dataToSend);
+    },
+
+    deleteComment(e) {
+      const commentId = e.appointmentData?.id;
+      console.log("comment id:", commentId);
+
+      const payload = { commentId: commentId };
+
       apiClient
-        .post("/comments", dataToSend)
+        .delete(`/comments`, { data: payload })
+        .then(() => {
+          console.log(`Comment with ID ${commentId} deleted successfully.`);
+        })
+        .catch((error) => {
+          console.error("Error deleting comment:", error);
+        });
+    },
+
+    updatedComment(e) {
+      const appointmentData = e.appointmentData;
+      const formattedStartDate = this.formatDate(appointmentData.startDate);
+      const formattedEndDate = this.formatDate(appointmentData.endDate);
+
+      const dataToSend = {
+        commentId: appointmentData.id,
+        comment: appointmentData.description,
+        dateFrom: formattedStartDate,
+        dateTo: formattedEndDate,
+      };
+apiClient.put('/comments', dataToSend);
+
     },
 
     formatDate(date) {
-      const offset = date.getTimezoneOffset();
-      const adjustedDate = new Date(date.getTime() - offset * 60 * 1000);
-      return adjustedDate.toISOString().split("T")[0];
+      function padTo2Digits(num) {
+        return num.toString().padStart(2, "0");
+      }
+      function formatDate(date) {
+        return (
+          [
+            date.getFullYear(),
+            padTo2Digits(date.getMonth() + 1),
+            padTo2Digits(date.getDate()),
+          ].join("-") +
+          " " +
+          [
+            padTo2Digits(date.getHours()),
+            padTo2Digits(date.getMinutes()),
+            padTo2Digits(date.getSeconds()),
+          ].join(":")
+        );
+      }
+
+      return formatDate(date);
     },
     updateCurrentInternship(internship) {
       this.$store.commit("setCurrentInternship", internship);
     },
     getActiveInternship() {
-      return apiClient.get("/internship-active", { withCredentials: true })
+      return apiClient
+        .get("/internship-active", { withCredentials: true })
         .then((response) => {
           if (response.data && response.data.id) {
             this.internship_id = response.data.id;
             console.log("Active internship ID:", this.internship_id);
-            this.getUserComments(); 
+            this.getUserComments();
           } else {
-            throw new Error('Internship ID not found in response');
+            throw new Error("Internship ID not found in response");
           }
         });
     },
@@ -72,13 +125,15 @@ export default {
     getUserComments() {
       if (this.internship_id) {
         const payload = { internshipId: this.internship_id };
-        apiClient.post('/internship/comments', payload)
+        apiClient
+          .post("/internship/comments", payload)
           .then((response) => {
-            this.dataSource = response.data.map(comment => ({
-              text: 'Praktika',
+            this.dataSource = response.data.map((comment) => ({
+              id: comment.id,
+              text: "Praktika",
               startDate: new Date(comment.date_from),
               endDate: new Date(comment.date_to),
-   
+              description: comment.comment,
             }));
             console.log("Formatted comments for scheduler:", this.dataSource);
           })
@@ -92,15 +147,15 @@ export default {
     ...mapGetters(["getCurrentInternship"]),
   },
   mounted() {
-
-     this.getActiveInternship().then(() => {
-
-      if (this.internship_id) {
-        this.getUserComments();
-      }
-    }).catch((error) => {
-      console.error("Error during the active internship retrieval:", error);
-    });
+    this.getActiveInternship()
+      .then(() => {
+        if (this.internship_id) {
+          this.getUserComments();
+        }
+      })
+      .catch((error) => {
+        console.error("Error during the active internship retrieval:", error);
+      });
   },
 };
 </script>

@@ -14,9 +14,6 @@ export default {
     ])
   },
   mounted() {
-    if (!getUser) {
-      
-    }
   }
 }
 </script>

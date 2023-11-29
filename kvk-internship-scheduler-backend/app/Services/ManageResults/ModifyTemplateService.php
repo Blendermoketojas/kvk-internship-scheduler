@@ -65,10 +65,13 @@ class ModifyTemplateService extends BaseService
         $formTemplate = FormTemplate::create(['name' => $formName]);
 
         $responseAnswers = $this->resolveAnswers($answers, $formTemplate);
-        //$responseQuestions = $this->resolveQuestions($questions, $formTemplate);
-        return response()->json($this->resolveQuestions($questions, $formTemplate));
-        $formTemplate->templateQuestions()->sync($this->pivotDict($responseQuestions));
-        $formTemplate->templateLikerts()->sync($this->pivotDict($responseAnswers));
+        $responseQuestions = $this->resolveQuestions($questions, $formTemplate);
+
+        $formTemplate->templateQuestions()->detach();
+        $formTemplate->templateLikerts()->detach();
+
+        $formTemplate->templateQuestions()->attach($this->pivotDict($responseQuestions));
+        $formTemplate->templateLikerts()->attach($this->pivotDict($responseAnswers));
 
         $response['template_id'] = $formTemplate['id'];
         $response['name'] = $formTemplate['name'];
@@ -90,21 +93,24 @@ class ModifyTemplateService extends BaseService
         $answers = $this->data()['answers'];
 
         if ($formTemplate['name'] != $formName) {
-            $formTemplate::update('name', $formName);
+            $formTemplate->update(['name' => $formName]);
         }
 
         $responseAnswers = $this->resolveAnswers($answers, $formTemplate);
         $responseQuestions = $this->resolveQuestions($questions, $formTemplate);
 
-        $formTemplate->templateQuestions()->sync($responseQuestions['id']);
-        $formTemplate->templateLikert()->sync($responseAnswers['id']);
+        $formTemplate->templateQuestions()->detach();
+        $formTemplate->templateLikerts()->detach();
+
+        $formTemplate->templateQuestions()->attach($this->pivotDict($responseQuestions));
+        $formTemplate->templateLikerts()->attach($this->pivotDict($responseAnswers));
 
         $response['id'] = $formTemplate['id'];
         $response['name'] = $formTemplate['name'];
         $response['questions'] = $responseQuestions;
         $response['answers'] = $responseAnswers;
 
-        return response()->json(json_encode($response));
+        return response()->json($response);
     }
 
     private function resolveQuestions($questions, $formTemplate) {
@@ -122,56 +128,74 @@ class ModifyTemplateService extends BaseService
         $savedQuestions = array();
         if (sizeof($noIdQuestions) > 0) {
             $temp = FormQuestion::whereIn('question', collect($noIdQuestions)->pluck('question')->toArray())->get();
-            foreach ($temp as $item) {
-                $found = false;
+            if (sizeof($temp) > 0) {
                 foreach ($noIdQuestions as $noIdQuestion) {
-                    if ($item['question'] == $noIdQuestion['question']) {
-                        $found = true;
+                    $found = false;
+                    foreach ($temp as $item) {
+                        if ($item['question'] == $noIdQuestion['question']) {
+                            $found = true;
+                        }
+                    }
+                    if (!$found) {
+                        array_push($newQuestions, $noIdQuestion);
                     }
                 }
-                if (!$found) {
-                    array_push($newQuestions, $item);
-                }
+            } else {
+                $newQuestions = $noIdQuestions;
             }
             $savedQuestions = array_merge($savedQuestions, $temp->toArray());
             $savedQuestions = array_merge($savedQuestions, $formTemplate->templateQuestions()->createMany($newQuestions));
             $savedQuestions = $this->mapValues($savedQuestions, $noIdQuestions);
         }
+
         if (sizeof($existingQuestions) > 0) {
             $temp = FormQuestion::whereIn('id', collect($existingQuestions)->pluck('id')->toArray())->get();
-            $savedQuestions = array_merge($savedQuestions, $temp->toArray());
-            if (sizeof($noIdQuestions) > 0) {
-                $savedQuestions = array_merge($savedQuestions, $this->mapValues($savedQuestions, $existingQuestions));
-            } else {
-                $savedQuestions = $this->mapValues($savedQuestions, $existingQuestions);
-            }
+            $savedQuestions = array_merge($savedQuestions, $this->mapValues($temp->toArray(), $existingQuestions));
         }
 
         return $savedQuestions;
     }
 
     private function resolveAnswers($answers, $formTemplate) {
-        $newAnswers = array();
+        $noIdAnswers = array();
         $existingAnswers = array();
+        $newAnswers = array();
         foreach ($answers as $answer) {
             if (!array_key_exists('id', $answer)) {
-                array_push($newAnswers, $answer);
+                array_push($noIdAnswers, $answer);
             } else {
                 array_push($existingAnswers, $answer);
             }
         }
 
-        //return response()->json($newAnswers);
-
         $savedAnswers = array();
-        if (sizeof($newAnswers) > 0) {
+        if (sizeof($noIdAnswers) > 0) {
+            $temp = FormLikert::whereIn('answer', collect($noIdAnswers)->pluck('answer')->toArray())->get();
+            if (sizeof($temp) > 0) {
+                foreach ($noIdAnswers as $noIdAnswer) {
+                    $found = false;
+                    foreach ($temp as $item) {
+                        if ($item['answer'] == $noIdAnswer['answer']) {
+                            $found = true;
+                        }
+                    }
+                    if (!$found) {
+                        array_push($newAnswers, $noIdAnswer);
+                    }
+                }
+            } else {
+                $newAnswers = $noIdAnswers;
+            }
+            $savedAnswers = array_merge($savedAnswers, $temp->toArray());
             $savedAnswers = array_merge($savedAnswers, $formTemplate->templateLikerts()->createMany($newAnswers));
-            $savedAnswers = $this->mapValues($savedAnswers, $newAnswers);
+            $savedAnswers = $this->mapValues($savedAnswers, $noIdAnswers);
         }
+
         if (sizeof($existingAnswers) > 0) {
-            $savedAnswers = array_merge($savedAnswers, FormLikert::findMany($existingAnswers['id']));
-            $savedAnswers = $this->mapValues($savedAnswers, $existingAnswers);
+            $temp = FormLikert::whereIn('id', collect($existingAnswers)->pluck('id')->toArray())->get();
+            $savedAnswers = array_merge($savedAnswers, $this->mapValues($temp->toArray(), $existingAnswers));
         }
+
         return $savedAnswers;
     }
 

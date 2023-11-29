@@ -65,16 +65,17 @@ class ModifyTemplateService extends BaseService
         $formTemplate = FormTemplate::create(['name' => $formName]);
 
         $responseAnswers = $this->resolveAnswers($answers, $formTemplate);
-        $responseQuestions = $this->resolveQuestions($questions, $formTemplate);
-        $formTemplate->templateQuestions()->sync($responseQuestions);
-        $formTemplate->templateLikert()->sync($responseAnswers);
+        //$responseQuestions = $this->resolveQuestions($questions, $formTemplate);
+        return response()->json($this->resolveQuestions($questions, $formTemplate));
+        $formTemplate->templateQuestions()->sync($this->pivotDict($responseQuestions));
+        $formTemplate->templateLikerts()->sync($this->pivotDict($responseAnswers));
 
         $response['template_id'] = $formTemplate['id'];
         $response['name'] = $formTemplate['name'];
         $response['questions'] = $responseQuestions;
         $response['answers'] = $responseAnswers;
 
-        return response()->json(json_encode($response));
+        return response()->json($response);
     }
 
     private function modifyExisting($formId): JsonResponse {
@@ -107,24 +108,43 @@ class ModifyTemplateService extends BaseService
     }
 
     private function resolveQuestions($questions, $formTemplate) {
-        $newQuestions = array();
+        $noIdQuestions = array();
         $existingQuestions = array();
+        $newQuestions = array();
         foreach ($questions as $question) {
             if (!array_key_exists('id', $question)) {
-                array_push($newQuestions, $question);
+                array_push($noIdQuestions, $question);
             } else {
                 array_push($existingQuestions, $question);
             }
         }
 
         $savedQuestions = array();
-        if (sizeof($newQuestions) > 0) {
+        if (sizeof($noIdQuestions) > 0) {
+            $temp = FormQuestion::whereIn('question', collect($noIdQuestions)->pluck('question')->toArray())->get();
+            foreach ($temp as $item) {
+                $found = false;
+                foreach ($noIdQuestions as $noIdQuestion) {
+                    if ($item['question'] == $noIdQuestion['question']) {
+                        $found = true;
+                    }
+                }
+                if (!$found) {
+                    array_push($newQuestions, $item);
+                }
+            }
+            $savedQuestions = array_merge($savedQuestions, $temp->toArray());
             $savedQuestions = array_merge($savedQuestions, $formTemplate->templateQuestions()->createMany($newQuestions));
-            $savedQuestions = $this->mapValues($savedQuestions, $newQuestions);
+            $savedQuestions = $this->mapValues($savedQuestions, $noIdQuestions);
         }
         if (sizeof($existingQuestions) > 0) {
-            $savedQuestions = array_merge($savedQuestions, FormQuestion::findMany($existingQuestions['id']));
-            $savedQuestions = $this->mapValues($savedQuestions, $existingQuestions);
+            $temp = FormQuestion::whereIn('id', collect($existingQuestions)->pluck('id')->toArray())->get();
+            $savedQuestions = array_merge($savedQuestions, $temp->toArray());
+            if (sizeof($noIdQuestions) > 0) {
+                $savedQuestions = array_merge($savedQuestions, $this->mapValues($savedQuestions, $existingQuestions));
+            } else {
+                $savedQuestions = $this->mapValues($savedQuestions, $existingQuestions);
+            }
         }
 
         return $savedQuestions;
@@ -156,36 +176,48 @@ class ModifyTemplateService extends BaseService
     }
 
     private function mapValues($dbEntities, $requestEntities) {
-        if (!array_key_exists('id', $requestEntities[0])) {
-            foreach ($dbEntities as $dbEntity) {
-                foreach ($requestEntities as $requestEntity) {
+        $newDbEntities = array();
+        foreach ($dbEntities as $dbEntity) {
+            foreach ($requestEntities as $requestEntity) {
+                if (array_key_exists('id', $requestEntity)) {
+                    if ($dbEntity['id'] == $requestEntity['id']) {
+                        $dbEntity['sequence'] = $requestEntity['sequence'];
+                        break;
+                    }
+                } else {
                     if (array_key_exists('answer', $requestEntity)) {
                         if ($dbEntity['answer'] == $requestEntity['answer']) {
                             $dbEntity['sequence'] = $requestEntity['sequence'];
+                            break;
                         }
                     } else {
                         if ($dbEntity['question'] == $requestEntity['question']) {
                             $dbEntity['sequence'] = $requestEntity['sequence'];
+                            break;
                         }
                     }
                 }
-                unset($dbEntity['created_by']);
-                unset($dbEntity['created_at']);
-                unset($dbEntity['updated_at']);
             }
-        } else {
-            foreach ($dbEntities as $dbEntity) {
-                foreach ($requestEntities as $requestEntity) {
-                    if ($dbEntity['id'] == $requestEntity['id']) {
-                        $dbEntity['sequence'] = $requestEntity['sequence'];
-                    }
-                }
-                unset($dbEntity['created_by']);
-                unset($dbEntity['created_at']);
-                unset($dbEntity['updated_at']);
-            }
+            unset($dbEntity['created_by']);
+            unset($dbEntity['created_at']);
+            unset($dbEntity['updated_at']);
+            array_push($newDbEntities, $dbEntity);
         }
 
-        return $dbEntities;
+        return $newDbEntities;
+    }
+
+    private function pivotDict($dbDict) {
+        $pivotDict = array();
+        foreach($dbDict as $dbItem) {
+            $temp['sequence'] = $dbItem['sequence'];
+            if (isset($dbItem['question'])) {
+                $temp['question_id'] = $dbItem['id'];
+            } else {
+                $temp['likert_id'] = $dbItem['id'];
+            }
+            array_push($pivotDict, $temp);
+        }
+        return $pivotDict;
     }
 }

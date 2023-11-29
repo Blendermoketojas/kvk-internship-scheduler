@@ -42,7 +42,7 @@ class GetStudentGroupInternships extends BaseService
         $studentIds = $studentGroup->userProfiles()->pluck('id');
 
         $internships = Internship::whereHas('userProfiles', function($query) use ($studentIds) {
-            $query->whereIn('id', $studentIds);
+            $query->whereIn('userprofiles.id', $studentIds);
         })->with('userProfiles')->get();
 
 

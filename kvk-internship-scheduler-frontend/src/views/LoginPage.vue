@@ -108,7 +108,8 @@ export default {
           .then((response) => {
             if (response.data.success) {
               const { fullname, image_path } = response.data.user;
-              this.$router.push("/calendar");
+              this.$router.push("/calendar" );
+              
             }
           });
       } catch (error) {

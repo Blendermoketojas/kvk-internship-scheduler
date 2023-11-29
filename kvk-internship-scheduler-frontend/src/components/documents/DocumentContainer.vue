@@ -1,14 +1,19 @@
 <template>
     <div class="document-container">
         <div class="d-flex align-items-center document-container-title">
-            <v-icon icon="mdi-chevron-down" size="70"></v-icon>
+            <button style="">
+            <v-icon v-if="collapsed" icon="mdi-chevron-down" size="70"></v-icon>
+            <v-icon v-else icon="mdi-chevron-up" size="70"></v-icon>
             <div class="text-container">
                 <span class="fs-2">{{ containerName }}</span>
             </div>
+            </button>
         </div>
-        <div class="document-vertical-line"></div>
-        <div class="d-flex flex-column">
-            <document-row v-for="i in 5"></document-row>
+        <div v-if="collapsed">
+            <div class="document-vertical-line"></div>
+            <div class="d-flex flex-column">
+                <document-row v-for="i in 5"></document-row>
+            </div>
         </div>
     </div>
 </template>
@@ -19,6 +24,11 @@ import DocumentRow from './DocumentRow.vue';
 export default {
     components: {
         DocumentRow,
+    },
+    data() {
+        return {
+            collapsed: true
+        }
     },
     props: {
         containerName: {
@@ -43,16 +53,15 @@ export default {
 .text-container {
     display: flex;
     align-items: center;
-    flex-grow: 1; /* Optional: It helps the text container take up the remaining space */
+    flex-grow: 1;
+    /* Optional: It helps the text container take up the remaining space */
 }
 
 .document-container-title {
     font-weight: 700;
 }
 
-.document-container-body {
-
-}
+.document-container-body {}
 
 /* Other styles */
 </style>

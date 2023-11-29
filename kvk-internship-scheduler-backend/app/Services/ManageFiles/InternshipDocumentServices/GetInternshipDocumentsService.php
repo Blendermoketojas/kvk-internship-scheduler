@@ -35,10 +35,10 @@ class GetInternshipDocumentsService extends BaseService
 
         // logic execution
 
-        if (Gate::denies('internshipGet', $internship)) {
-            return response()->json('User must belong to the internship or be PRODEKANAS to perform this task',
-                401);
-        }
+//        if (Gate::denies('internshipGet', $internship)) {
+//            return response()->json('User must belong to the internship or be PRODEKANAS to perform this task',
+//                401);
+//        }
 
         // response
         return response()->json('Not implemented');

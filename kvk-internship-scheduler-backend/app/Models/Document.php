@@ -10,6 +10,11 @@ class Document extends Model
 {
     use HasFactory;
 
+    protected $fillable = [
+        'title',
+        'description'
+    ];
+
     public function files()
     {
         return $this->morphMany(File::class, 'fileable');

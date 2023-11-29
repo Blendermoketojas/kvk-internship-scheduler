@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\v2;
 
 use App\Http\Controllers\Controller;
-use App\Services\ManageFiles\DocumentServices\HandleInternshipDocumentUploadService;
+use App\Services\ManageFiles\InternshipDocumentServices\HandleInternshipDocumentUploadService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;

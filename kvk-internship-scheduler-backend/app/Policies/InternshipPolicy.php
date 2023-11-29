@@ -13,8 +13,6 @@ class InternshipPolicy
     public function restrictGet(User $user, Internship $internship)
     {
         $user_id = $user->id;
-        return Internship::whereHas('users', function ($query) use ($user_id) {
-            $query->where('id', $user_id);
-        })->where('id', $internship->id)->exists();
+        return $internship->userProfiles()->where('internship_user.user_id', $user_id)->exists();
     }
 }

@@ -18,7 +18,6 @@ class HandleInternshipDocumentUploadService extends BaseService
     {
         return [
             'internshipId' => 'required|integer|exists:internships,id',
-            'files' => 'required|array|max:' . env('FILE_MAX_COUNT', 5),
             'files.*' => 'required|file|max:' . env('FILE_MAX_SIZE', 25600),
             'title' => 'required|string|max:100',
             'description' => 'string|max:2560',

@@ -13,4 +13,12 @@ class DocumentPolicy
     public function documentDelete(User $user, Document $document) {
         return $user->id === $document->created_by;
     }
+
+    public function fileCreateDocuments(User $user, Document $document) {
+        return $user->id === $document->created_by;
+    }
+
+    public function documentUpdate(User $user, Document $document) {
+        return $user->id === $document->created_by;
+    }
 }

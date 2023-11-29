@@ -2,14 +2,14 @@
   <custom-header></custom-header>
   <div class="mainDiv">
     <div class="pageDescription">
-      <h1>Klausimyno kūrimas</h1>
+      <h1 class="heading">Klausimyno kūrimas</h1>
       <h2>Čia galite sukurti savo klausimyną</h2>
     </div>
     <div class="CreationDiv">
       <div>
         <div class="fullInput">
           <div class="inputField">
-            <div class="text-subtitle-1 text-bold-emphasis">Klausimas</div>
+            <div class="label">Klausimas</div>
             <v-text-field
             v-model="newQuestionText"
               density="compact"
@@ -20,7 +20,7 @@
           <v-btn
           @click="addQuestion"
             width="200px"
-            color="#0D47A1"
+            class="custom-gradient"
             rounded="xl"
             variant="elevated"
             type="submit"
@@ -30,7 +30,7 @@
 
         <div class="fullInput">
           <div class="inputField">
-            <div class="text-subtitle-1 text-bold-emphasis">
+            <div class="label">
               Atsakymo variantas
             </div>
             <v-text-field
@@ -43,7 +43,7 @@
           <v-btn
           @click="addAnswerOption"
             width="200px"
-            color="#0D47A1"
+            class="custom-gradient"
             rounded="xl"
             variant="elevated"
             type="submit"
@@ -53,43 +53,33 @@
       </div>
 
       <div class="TableDiv">
-        <div class="rotated-text-div">
-<div class="rotated-text">Panaikinti klausimą</div>
 
-
-
-</div>
 
 <table style="border-bottom: #dddddd 1px solid;">
-    <tr style="border-right:#dddddd 1px solid;" >
-        
-        <td style="border: none;" ></td>
-        <td :colspan="answerOptions.length" style="border-bottom:none">Panaikinti atsakymą</td>
+    <!-- Header row for removing answer options -->
+    <tr style="border-right: #dddddd 1px solid;">
     </tr>
-    <tr style="border-right: #dddddd 1px solid; height:40px; ">
 
-        <td style=" border:none; border-right: 1px #dddddd solid;"></td>
-        <td style='border-top: none; border:none;' v-for="(option, index) in answerOptions" :key="'header-' + index">
-            <span style='border:none;' @click="removeAnswerOption(index)" class="remove-option">X</span>
-          </td>
-    </tr>
-<tr style="border-right:#dddddd 1px solid;">
-<td  rowspan="2">Klausimai</td>
-<td :colspan="answerOptions.length" style="border-bottom:none; border-right:none">Atsakymai</td>
-</tr>
-<tr style="border-right:#dddddd 1px solid;">
-    <td style='border: none;' v-for="(option, index) in answerOptions" :key="'header-' + index">
+    <!-- Rows for answer options with remove icons -->
+    <tr style="border-right: #dddddd 1px solid; height: 40px;">
+      <td style="border: none; border-right: 1px #dddddd solid;"></td>
+      <td v-for="(option, index) in answerOptions" :key="'header-' + index">
+        <span style='border:none;' @click="removeAnswerOption(index)" class="remove-option">X</span><br>
         {{ option }}
       </td>
-</tr>
-<tr v-for="(question, index) in questions" :key="index">
-    <td>{{ question.text }}</td>
-    <td v-for="(option, oIndex) in answerOptions" :key="oIndex">
+    </tr>
+
+    <!-- Rows for questions with radio buttons and remove icons -->
+    <tr v-for="(question, qIndex) in questions" :key="qIndex">
+      <td>
+        <span @click="removeQuestion(qIndex)" class="remove-option">X</span>
+        {{ question.text }}
+      </td>
+      <td v-for="(option, oIndex) in answerOptions" :key="oIndex">
         <input type="radio" :name="'question' + qIndex" :value="option" />
       </td>
-</tr>
-
-</table>
+    </tr>
+  </table>
 
       </div>
     </div>
@@ -103,10 +93,11 @@ export default {
   name: "EvaluationCreation",
   data() {
     return {
-      questions: [],
+      answerOptions: ["Blogai", "Gerai", "Puikiai"],
+      questions: [{ text: "Klausimas 1" }, { text: "Klausimas 2" }, { text: "Klausimas 3" }],
       newQuestionText: "",
       newAnswerOption: "",
-      answerOptions: [],
+      isFocused: false,
     };
   },
   components: {
@@ -152,6 +143,19 @@ td, th {
     text-align: center;
     padding: 8px;
   }
+
+.heading{
+    font-weight: bold;
+}
+
+.custom-gradient{
+  background: linear-gradient(to top, #11257B, #048ACC);
+  color: white;
+}
+
+.label{
+    font-weight: 600;
+}
 .question{
     display: flex;
     flex-direction: row;
@@ -193,7 +197,7 @@ justify-content: space-between;
     display: flex;
     }
 .mainDiv {
-  padding: 0 200px;
+  padding: 0 100px;
 }
 
 h2 {
@@ -208,7 +212,7 @@ h2 {
 }
 
 .inputField {
-  width: 45%;
+  width: 50%;
 }
 
 .fullInput {

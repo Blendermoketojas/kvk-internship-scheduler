@@ -3,7 +3,7 @@
 namespace App\Contracts\Files;
 enum FileType: string
 {
-    case Internship = "Internship";
+    case Internships = "Internships";
     case LearningMaterials = "LearningMaterials";
 
     public function equalsValue(string $value): bool {

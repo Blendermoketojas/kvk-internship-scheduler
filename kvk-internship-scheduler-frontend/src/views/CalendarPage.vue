@@ -6,8 +6,12 @@
     :views="views"
     current-view="week"
     :data-source="dataSource"
-    @appointmentAdded="showValue"
+    @appointmentAdded="addedComment"
     @appointmentDeleted="deleteComment"
+    @appointmentUpdated="updatedComment"
+    allowDragging="false"
+    allowResizing="false"
+
   >
   </DxScheduler>
 </template>
@@ -32,7 +36,7 @@ export default {
     };
   },
   methods: {
-    showValue(e) {
+    addedComment(e) {
       const appointmentData = e.appointmentData;
 
       const formattedStartDate = this.formatDate(appointmentData.startDate);
@@ -49,20 +53,34 @@ export default {
     },
 
     deleteComment(e) {
-
       const commentId = e.appointmentData?.id;
-      console.log('comment id:',commentId);
+      console.log("comment id:", commentId);
 
       const payload = { commentId: commentId };
 
       apiClient
-        .delete(`/comments`, {data:payload})
+        .delete(`/comments`, { data: payload })
         .then(() => {
           console.log(`Comment with ID ${commentId} deleted successfully.`);
         })
         .catch((error) => {
           console.error("Error deleting comment:", error);
         });
+    },
+
+    updatedComment(e) {
+      const appointmentData = e.appointmentData;
+      const formattedStartDate = this.formatDate(appointmentData.startDate);
+      const formattedEndDate = this.formatDate(appointmentData.endDate);
+
+      const dataToSend = {
+        commentId: appointmentData.id,
+        comment: appointmentData.description,
+        dateFrom: formattedStartDate,
+        dateTo: formattedEndDate,
+      };
+apiClient.put('/comments', dataToSend);
+
     },
 
     formatDate(date) {

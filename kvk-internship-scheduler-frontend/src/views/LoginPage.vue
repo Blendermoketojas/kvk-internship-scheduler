@@ -65,6 +65,7 @@
             href="#"
             rel="noopener noreferrer"
             target="_blank"
+            @click="goToRegistration"
           >
             Registracija <v-icon icon="mdi-chevron-right"></v-icon>
           </a>
@@ -99,6 +100,9 @@ export default {
     };
   },
   methods: {
+    goToRegistration() {
+      this.$router.push("/registration");
+    },
     login() {
       try {
         this.$axios
@@ -108,8 +112,15 @@ export default {
           .then((response) => {
             if (response.data.success) {
               const { fullname, image_path } = response.data.user;
-              this.$router.push("/calendar" );
-              
+
+              localStorage.setItem(
+                "user",
+                JSON.stringify({
+                  fullname,
+                  image_path,
+                })
+              );
+              this.$router.push("/calendar");
             }
           });
       } catch (error) {

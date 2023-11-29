@@ -6,8 +6,8 @@
   v-if="showSuccessAlert"
   color="success"
   icon="$success"
-  title="Alert title"
-  text="Profile was successfully updated!"
+  title="Pavyko!"
+  text="Profilio informacija buvo atnaujinta!"
 ></v-alert>
       <div class="pageDescription">
         <h1>Profilis</h1>

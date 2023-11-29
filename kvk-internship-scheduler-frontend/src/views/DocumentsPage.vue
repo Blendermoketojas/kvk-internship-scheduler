@@ -1,30 +1,28 @@
 <template>
-<customHeader></customHeader>
-<v-file-input label="File input"></v-file-input>
-
+  <custom-header></custom-header>
+  <main-content-container>
+    <h1 class="mt-4">Užsakymų surinkimai</h1>
+    <p>Reikiamų užsakymų atrinkimui prekių sąrašas</p>
+  </main-content-container>
 </template>
 
 <script>
 import customHeader from "@/components/DesktopHeader.vue";
-
-
+import MainContentContainer from "@/components/containers/MainContentContainer.vue";
 
 export default {
-  name: "Documents",
+  components: {
+    customHeader,
+    MainContentContainer
+  },
   data() {
     return {
 
     };
-  },
-  components: {
-    customHeader,
   },
 };
 
 </script>
 
 
-<style scoped>
-
-
-</style>
+<style scoped></style>

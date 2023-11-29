@@ -20,7 +20,8 @@ class Company extends Model
 
     protected $hidden = [
         'created_at',
-        'updated_at'
+        'updated_at',
+        'created_by'
     ];
 
     public function internships(): HasMany

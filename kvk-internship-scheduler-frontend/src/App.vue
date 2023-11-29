@@ -33,6 +33,5 @@ export default {
 .styleless-button:focus,
 .styleless-button:active {
   outline: none;
-
 }
 </style>

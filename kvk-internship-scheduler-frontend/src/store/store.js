@@ -19,10 +19,6 @@ export default createStore({
     }
   },
   actions: {
-    login({ commit }, userCredentials) {
-
-      commit('setRoleId', response.data.user.role_id);
-    }
 
   }
 });

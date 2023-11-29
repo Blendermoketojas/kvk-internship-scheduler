@@ -31,7 +31,7 @@ class ModifyTemplateService extends BaseService
 
     public function permissions(): array
     {
-        return []; //Ka cia deti as nzn, kas turetu tureti galimybe kurti/modifikuoti formas?
+        return [Role::PRODEKANAS];
     }
 
     /**

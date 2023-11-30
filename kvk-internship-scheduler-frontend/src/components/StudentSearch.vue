@@ -33,8 +33,17 @@ export default {
     return {
       selectedStudent: "",
       students: [],
-  
+      
 
+    }
+  },
+  watch:{
+
+    selectedStudent:{
+      handler(newVal, oldVal){
+this.sendData(newVal)
+
+      }
     }
   },
   mounted() {
@@ -44,6 +53,11 @@ export default {
 
   },
   methods: {
+    sendData(value){
+      this.$emit("send-student-id", value)
+    },
+
+
     onStudentInput(value) {
       const studentName = event.target.value;
       if (typeof studentName === "string" && studentName.trim() !== "") {

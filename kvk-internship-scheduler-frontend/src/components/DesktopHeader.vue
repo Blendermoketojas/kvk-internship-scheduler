@@ -32,7 +32,8 @@
           >
           <router-link @click="setupUpload" :to="documentItem.route">
             <v-list-item-title>{{ documentItem.title }}</v-list-item-title>
-          </router-link>
+            </router-link>
+
           </v-list-item>
         </v-list>
       </v-menu>

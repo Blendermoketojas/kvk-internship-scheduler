@@ -30,14 +30,8 @@
             :key="index"
             :value="index"
           >
-<<<<<<< .mine
           <router-link @click="setupUpload" :to="documentItem.route">
             <v-list-item-title>{{ documentItem.title }}</v-list-item-title>
-=======
-            <router-link class="redirectText" :to="documentItem.route">
-              <v-list-item-title>{{ documentItem.title }}</v-list-item-title>
->>>>>>> .theirs
-            </router-link>
           </router-link>
           </v-list-item>
         </v-list>
@@ -125,22 +119,11 @@ export default {
       ],
     };
   },
-<<<<<<< .mine
   methods: {
     setupUpload() {
       this.$store.commit('setUploadAction', "Internship");
     }
-=======
-  methods() {},
-
-
-
->>>>>>> .theirs
-<<<<<<< .mine
   },
-=======
-
->>>>>>> .theirs
   created() {
     const userStored = localStorage.getItem("user");
     if (userStored) {

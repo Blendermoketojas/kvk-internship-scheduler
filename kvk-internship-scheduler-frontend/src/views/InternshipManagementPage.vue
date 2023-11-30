@@ -64,7 +64,7 @@
         </div>
 
         <div class="fieldDiv">
-          <div class="text-subtitle-1 text-bold-emphasis">Kompanija</div>
+          <div class="text-subtitle-1 text-bold-emphasis">Praktikos vieta</div>
           <v-autocomplete
             v-model="selectedCompany"
             :items="companies"
@@ -72,7 +72,7 @@
             item-value="id"
             item-title="company_name"
             return-object
-            label="Įrašykite kompaniją"
+            label="Pasirinkite praktikos vietą"
           ></v-autocomplete>
         </div>
       </div>

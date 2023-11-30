@@ -82,17 +82,19 @@
   </table>
 
       </div>
+      <div class="bottomButtons">
+        <v-btn
+        @click="sendRequest"
+          width="200px"
+          class="custom-gradient"
+          rounded="xl"
+          variant="elevated"
+          type="submit"
+          >Pridėti</v-btn
+        >
+      </div>
     </div>
   </div>
-          <v-btn
-          @click="sendRequest"
-            width="200px"
-            class="custom-gradient"
-            rounded="xl"
-            variant="elevated"
-            type="submit"
-            >Pridėti</v-btn
-          >
 
 </template>
 
@@ -172,6 +174,12 @@ export default {
 </script>
 
 <style scoped>
+
+.bottomButtons{
+  display: flex;
+  justify-content: center;
+  margin: 30px 0;
+}
 .removeQuestion{
     display: flex;
 }

@@ -30,7 +30,7 @@
             :key="index"
             :value="index"
           >
-          <router-link @click="setupUpload" :to="documentItem.route">
+          <router-link class="redirectText" @click="setupUpload" :to="documentItem.route">
             <v-list-item-title>{{ documentItem.title }}</v-list-item-title>
             </router-link>
 
@@ -110,7 +110,7 @@ export default {
 
       resultItems: [
         { title: "Rezultatų kūrimo forma", route: "/evaluation-creation" },
-        { title: "Įsivertimas", route:'/empty'},
+        { title: "Įsivertimas", route:'/evaluation-demo'},
       ],
 
       internshipItems: [

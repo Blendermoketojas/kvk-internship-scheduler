@@ -3,8 +3,11 @@
   <main-content-container>
     <h1 class="mt-4">Dokumentai</h1>
     <p>Čia galite peržiūrėti įkeltus dokumentus</p>
-    <document-container v-for="internship in internships" :key="internship.id" :documents="internship.documents"
-      :container-name="internship?.title"></document-container>
+    <v-skeleton-loader v-if="isLoading" type="paragraph"></v-skeleton-loader>
+    <div v-else>
+      <document-container v-for="internship in internships" :key="internship.id" :documents="internship.documents"
+        :container-name="internship?.title"></document-container>
+    </div>
   </main-content-container>
 </template>
 
@@ -22,13 +25,14 @@ export default {
   },
   data() {
     return {
-      internships: []
+      internships: [],
+      isLoading: true
     };
   },
   mounted() {
     IDS.getAllUserInternshipDocuments()
-      .then(response => this.internships = response.data)
-      .catch(error => console.log('could not get'))
+      .then(response => {this.internships = response.data; this.isLoading = false})
+      .catch(error => {console.log('could not get'); this.isLoading = false})
   }
 };
 

@@ -1,7 +1,7 @@
 <template>
     <div class="document-section-container">
         <span class="m-2 fs-5 font-bold">{{ sectionName }}</span>
-        <document-row v-for="file in files" :file-name="resolveFileName(file)" :file-type="resolveFileType(file)"
+        <document-row v-for="file in files" :file-path="file.file_path" :file-name="resolveFileName(file)" :file-type="resolveFileType(file)"
             :key="file.id" :id="file.id"></document-row>
     </div>
 </template>

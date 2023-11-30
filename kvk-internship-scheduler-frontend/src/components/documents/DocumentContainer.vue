@@ -1,5 +1,5 @@
 <template>
-    <div class="document-container">
+    <div class="document-container mb-1">
         <div class="d-flex align-items-center document-container-title">
             <button @click="toggleBody" class="styleless-button">
                 <v-icon :icon="collapsed ? 'mdi-chevron-down' : 'mdi-chevron-up'" size="70"></v-icon>

@@ -8,7 +8,7 @@
     </div>
     <div class="mainInternshipDiv">
         <div class="studentSearchInput" v-if="getUser.role_id === 1">
-        <search-student></search-student>
+            <search-student @student-selected="handleStudentSelection"></search-student>
     </div>
       <v-expansion-panels>
         <v-expansion-panel
@@ -90,6 +90,19 @@ export default {
   },
 
   methods: {
+    onStudentSelected(student) {
+    this.$emit('student-selected', student.id);
+  },
+
+  handleStudentSelection(studentId) {
+    apiClient.get(`/user/internships`, { params: { userId: studentId } })
+      .then(response => {
+console.log(response.data);
+      })
+      .catch(error => {
+        console.error("Error fetching internships for selected user:", error);
+      });
+  },
 
     handleInternshipClick(internshipId) {
 

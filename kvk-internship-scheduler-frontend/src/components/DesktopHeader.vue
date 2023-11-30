@@ -5,7 +5,7 @@
     </div>
     <div class="btn" id="menu-activator-learning-material">
       <router-link class="redirectText" to="/calendar"
-        >Mano kalendorius</router-link
+        >Praktika</router-link
       >
       <v-menu open-on-hover activator="#menu-activator-learning-material">
         <v-list>
@@ -14,9 +14,9 @@
             :key="index"
             :value="index"
           >
-          <router-link :to="documentItem.route">
-            <v-list-item-title>{{ internshipItem.title }}</v-list-item-title>
-          </router-link>
+            <router-link class="redirectText" :to="internshipItem.route">
+              <v-list-item-title>{{ internshipItem.title }}</v-list-item-title>
+            </router-link>
           </v-list-item>
         </v-list>
       </v-menu>
@@ -30,8 +30,14 @@
             :key="index"
             :value="index"
           >
+<<<<<<< .mine
           <router-link @click="setupUpload" :to="documentItem.route">
             <v-list-item-title>{{ documentItem.title }}</v-list-item-title>
+=======
+            <router-link class="redirectText" :to="documentItem.route">
+              <v-list-item-title>{{ documentItem.title }}</v-list-item-title>
+>>>>>>> .theirs
+            </router-link>
           </router-link>
           </v-list-item>
         </v-list>
@@ -48,7 +54,9 @@
             :key="index"
             :value="index"
           >
+          <router-link class="redirectText" :to="resultItem.route">
             <v-list-item-title>{{ resultItem.title }}</v-list-item-title>
+            </router-link>
           </v-list-item>
         </v-list>
       </v-menu>
@@ -101,27 +109,38 @@ export default {
       baseImageUrl: "http://localhost:8000",
 
       documentItems: [
-        { title: "Dokumentų peržiūra", route:"/documents" },
-        { title: "Dokumentų įkėlimas", route:"/document-upload"},
+        { title: "Dokumentų peržiūra", route: "/documents" },
+        { title: "Dokumentų įkėlimas", route: "/document-upload" },
       ],
 
       resultItems: [
-        { title: "Rezultatų kūrimo forma" },
-        { title: "Įsivertimas" },
+        { title: "Rezultatų kūrimo forma", route: "/evaluation-creation" },
+        { title: "Įsivertimas", route:'/empty'},
       ],
 
       internshipItems: [
-        { title: "Kalendorius" },
-        { title: "Praktikos priskirimas" },
-        { title: "Praktikos peržiūra" },
+        { title: "Kalendorius", route: "/calendar" },
+        { title: "Praktikos priskirimas", route: "/internship-management" },
+        { title: "Praktikos peržiūra", route: "/user-internships" },
       ],
     };
   },
+<<<<<<< .mine
   methods: {
     setupUpload() {
       this.$store.commit('setUploadAction', "Internship");
     }
+=======
+  methods() {},
+
+
+
+>>>>>>> .theirs
+<<<<<<< .mine
   },
+=======
+
+>>>>>>> .theirs
   created() {
     const userStored = localStorage.getItem("user");
     if (userStored) {
@@ -139,15 +158,12 @@ export default {
     ...mapGetters(["getUser"]),
 
     filteredDocumentItems() {
-    if (this.getUser.role_id === 1) {
-
-      return this.documentItems;
-    } else if (this.getUser.role_id === 5) {
-     
-      return this.documentItems.slice(0, 1);
-    }
-
-  }
+      if (this.getUser.role_id === 1) {
+        return this.documentItems;
+      } else if (this.getUser.role_id === 5) {
+        return this.documentItems.slice(0, 1);
+      }
+    },
   },
 
   mounted() {

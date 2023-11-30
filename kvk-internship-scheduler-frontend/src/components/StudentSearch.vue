@@ -86,6 +86,8 @@ export default {
 </script>
 
 <style>
-
+.fieldDiv{
+  width: 500px;
+}
 
 </style>

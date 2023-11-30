@@ -1,13 +1,12 @@
 <?php
 
-namespace App\Services\ManageResults;
+namespace App\Services\ManageResults\Forms\Templates;
 
 use App\Contracts\Roles\Role;
 use App\Models\FormLikert;
 use App\Models\FormQuestion;
 use App\Models\FormTemplate;
 use App\Services\BaseService;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Validation\ValidationException;
 

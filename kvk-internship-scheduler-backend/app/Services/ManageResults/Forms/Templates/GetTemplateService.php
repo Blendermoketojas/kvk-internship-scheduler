@@ -1,24 +1,23 @@
 <?php
 
-namespace App\Services\ManageResults;
+namespace App\Services\ManageResults\Forms\Templates;
 
-use App\Contracts\Roles\Role;
 use App\Contracts\Roles\RolePermissions;
-use App\Models\FormQuestion;
+use App\Models\FormTemplate;
 use App\Services\BaseService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Validation\ValidationException;
 
-class SearchQuestionItemsService extends BaseService
+class GetTemplateService extends BaseService
 {
     public function rules(): array
     {
-        return ['question' => 'required|string'];
+        return ['id' => 'required|integer'];
     }
 
     public function data(): array
     {
-        return ['question' => $this->request['question']];
+        return ['id' => $this->request['id']];
     }
 
     public function permissions(): array
@@ -34,11 +33,19 @@ class SearchQuestionItemsService extends BaseService
         // input validation
         if (!$this->validateRules()) return response()->json("Action not allowed", 401);
 
-        $query = FormQuestion::whereRaw('LOWER(question) LIKE ?', ['%' . strtolower($this->data()['question']) . '%'])
-            ->get();
+        $formTemplate = FormTemplate::find($this->request['id']);
+        $answers = $formTemplate->templateLikerts()->get();
+        $questions = $formTemplate->templateQuestions()->get();
+
+        $response['id'] = $formTemplate['id'];
+        $response['name'] = $formTemplate['name'];
+        $response['questions'] = $this->fixObjects($questions);
+        $response['answers'] = $this->fixObjects($answers);
+
+        return response()->json($response);
 
         // response
-        return response()->json($this->fixObjects($query));
+        return response()->json('Not implemented');
     }
 
     private function fixObjects($array) {

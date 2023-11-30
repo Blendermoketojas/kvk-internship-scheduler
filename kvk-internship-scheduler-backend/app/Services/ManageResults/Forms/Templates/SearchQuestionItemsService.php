@@ -1,29 +1,29 @@
 <?php
 
-namespace App\Services\ManageResults;
+namespace App\Services\ManageResults\Forms\Templates;
 
 use App\Contracts\Roles\Role;
 use App\Contracts\Roles\RolePermissions;
-use App\Models\FormLikert;
+use App\Models\FormQuestion;
 use App\Services\BaseService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Validation\ValidationException;
 
-class SearchLikertItemsService extends BaseService
+class SearchQuestionItemsService extends BaseService
 {
     public function rules(): array
     {
-        return ['answer' => 'required|string'];
+        return ['question' => 'required|string'];
     }
 
     public function data(): array
     {
-        return ['answer' => $this->request['answer'],];
+        return ['question' => $this->request['question']];
     }
 
     public function permissions(): array
     {
-        return [];
+        return [Role::PRODEKANAS];
     }
 
     /**
@@ -34,7 +34,7 @@ class SearchLikertItemsService extends BaseService
         // input validation
         if (!$this->validateRules()) return response()->json("Action not allowed", 401);
 
-        $query = FormLikert::whereRaw('LOWER(answer) LIKE ?', ['%' . strtolower($this->data()['answer']) . '%'])
+        $query = FormQuestion::whereRaw('LOWER(question) LIKE ?', ['%' . strtolower($this->data()['question']) . '%'])
             ->get();
 
         // response

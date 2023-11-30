@@ -1,12 +1,12 @@
 <template>
     <div class="document-container mb-1">
-        <div class="d-flex align-items-center document-container-title">
-            <button @click="toggleBody" class="styleless-button">
+        <div class="document-container-title">
+            <button @click="toggleBody" class="styleless-button d-flex align-items-center">
                 <v-icon :icon="collapsed ? 'mdi-chevron-down' : 'mdi-chevron-up'" size="70"></v-icon>
+                <div class="text-container">
+                    <span class="fs-2">{{ containerName }}</span>
+                </div>
             </button>
-            <div class="text-container">
-                <span class="fs-2">{{ containerName }}</span>
-            </div>
         </div>
         <transition name="accordion">
             <div v-show="!collapsed" class="document-container-body">

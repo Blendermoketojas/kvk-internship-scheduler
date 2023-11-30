@@ -35,6 +35,8 @@ class GetAllUserInternshipDocumentsService extends BaseService
 
         // logic execution
 
+        // TODO: NEED TO VERIFY POLICY FOR LEGITIMATE DOCUMENT RETRIEVAL
+
 //        $internships = $this->user->internships()->pluck('id');
 
 //        if (Gate::denies('internshipGet', $internship)) {

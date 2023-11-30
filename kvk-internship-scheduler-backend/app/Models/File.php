@@ -22,7 +22,6 @@ class File extends Model
     protected $hidden = [
       'fileable_id',
       'fileable_type',
-      'file_path'
     ];
 
     public function fileable()

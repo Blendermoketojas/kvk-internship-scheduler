@@ -1,5 +1,5 @@
 <template>
-    <div class="document-container">
+    <div class="document-container mb-1">
         <div class="d-flex align-items-center document-container-title">
             <button @click="toggleBody" class="styleless-button">
                 <v-icon :icon="collapsed ? 'mdi-chevron-down' : 'mdi-chevron-up'" size="70"></v-icon>
@@ -12,9 +12,8 @@
             <div v-show="!collapsed" class="document-container-body">
                 <div class="document-vertical-line"></div>
                 <div class="d-flex flex-column">
-                    <document-section>
-                        <document-row v-for="i in 5" :key="i"></document-row>
-                    </document-section>
+                    <document-section v-for="document in documents" :key="document.id" :section-name="document?.title"
+                        :files="document.files"></document-section>
                 </div>
             </div>
         </transition>
@@ -41,6 +40,10 @@ export default {
             required: true,
             type: String,
             default: 'IT sistemų praktika'
+        },
+        documents: {
+            required: false,
+            type: Array,
         }
     },
     methods: {
@@ -93,4 +96,5 @@ export default {
     opacity: 1;
     max-height: 1000px;
     /* Adjust as necessary for your content's actual height */
-}</style>
+}
+</style>

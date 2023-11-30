@@ -14,6 +14,10 @@ export default {
     ])
   },
   mounted() {
+// if (!getUser){
+// apiClient.get('/profile').then(response=>this.$store.commit('setUser',response.data));
+
+// }
   }
 }
 </script>

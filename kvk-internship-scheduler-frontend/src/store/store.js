@@ -4,6 +4,7 @@ export default createStore({
   state: {
     currentInternship: null,
     role_id: null,
+    userInfo:null,
   },
   mutations: {
     setCurrentInternship(state, payload) {
@@ -11,17 +12,18 @@ export default createStore({
     },
     setRoleId(state, role_id) {
       state.role_id = role_id;
-    }
+    },
+    setUser(state, userInfo) {
+      state = userInfo;
+    },
   },
   getters: {
     getCurrentInternship(state) {
       return state.currentInternship;
-    }
+    },
+    getUser(state){
+      return state.userInfo;
+    },
   },
-  actions: {
-    login({ commit }, userCredentials) {
-
-      commit('setRoleId', response.data.user.role_id);
-    }
-  }
+  actions: {},
 });

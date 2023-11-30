@@ -7,7 +7,7 @@
       <h2>Čia galite peržiūrėti vykstamas ir pasibaigusias praktikas</h2>
     </div>
     <div class="mainInternshipDiv">
-        <div class="studentSearchInput">
+        <div class="studentSearchInput" v-if="getUser.role_id === 1">
         <search-student></search-student>
     </div>
       <v-expansion-panels>
@@ -72,7 +72,8 @@
 <script>
 import headerNav from "@/components/DesktopHeader.vue";
 import apiClient from "@/utils/api-client";
-import searchStudent from "@/components/StudentSearch.vue"
+import searchStudent from "@/components/StudentSearch.vue";
+import { mapGetters } from "vuex";
 
 export default {
   name: "UserInternships",
@@ -113,6 +114,7 @@ export default {
 },
 
   mounted() {
+    console.log(this.getUser.role_id);
 
     //users internships
     apiClient
@@ -129,8 +131,12 @@ export default {
 
 //specific interships comments
 
-
   },
+computed:{
+    ...mapGetters(["getUser"]),
+   
+}
+  
 };
 </script>
 

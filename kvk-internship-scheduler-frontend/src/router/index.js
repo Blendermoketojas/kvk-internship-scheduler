@@ -40,6 +40,10 @@ const routes = [
     path: "/evaluation-creation",
     component: () => import("@/views/EvaluationCreationPage.vue"),
   },
+  {
+    path: "/evaluation-demo",
+    component: () => import("@/views/EvaluationDemoPage.vue"),
+  },
 
   {
     path: "/user-internships",

@@ -9,48 +9,24 @@
       <div>
         <div class="fullInput">
           <div class="inputField">
-            <div class="label">Klausimas</div>
+            <div class="label">Paieška pagal šablono ID:</div>
             <v-text-field
-            v-model="newQuestionText"
+            v-model="templateId"
               density="compact"
-              placeholder="Klausimas"
+              placeholder="ID"
               variant="outlined"
             ></v-text-field>
           </div>
           <v-btn
-          @click="addQuestion"
+          @click="search"
             width="200px"
             class="custom-gradient"
             rounded="xl"
             variant="elevated"
             type="submit"
-            >Pridėti</v-btn
+            >Ieškoti</v-btn
           >
         </div>
-
-        <div class="fullInput">
-          <div class="inputField">
-            <div class="label">
-              Atsakymo variantas
-            </div>
-            <v-text-field
-            v-model="newAnswerOption"
-              density="compact"
-              placeholder="Blogai, gerai, puikiai.."
-              variant="outlined"
-            ></v-text-field>
-          </div>
-          <v-btn
-          @click="addAnswerOption"
-            width="200px"
-            class="custom-gradient"
-            rounded="xl"
-            variant="elevated"
-            type="submit"
-            >Pridėti</v-btn
-          >
-        </div>
-      </div>
 
       <div class="TableDiv">
 
@@ -64,7 +40,6 @@
     <tr style="border-right: #dddddd 1px solid; height: 40px;">
       <td style="border: none; border-right: 1px #dddddd solid;"></td>
       <td v-for="(option, index) in answerOptions" :key="'header-' + index">
-        <span style='border:none;' @click="removeAnswerOption(index)" class="remove-option">X</span><br>
         {{ option }}
       </td>
     </tr>
@@ -72,7 +47,6 @@
     <!-- Rows for questions with radio buttons and remove icons -->
     <tr v-for="(question, qIndex) in questionOptions" :key="qIndex">
       <td>
-        <span @click="removeQuestion(qIndex)" class="remove-option">X</span>
         {{ question.text }}
       </td>
       <td v-for="(option, oIndex) in answerOptions" :key="oIndex">
@@ -84,16 +58,7 @@
       </div>
     </div>
   </div>
-          <v-btn
-          @click="sendRequest"
-            width="200px"
-            class="custom-gradient"
-            rounded="xl"
-            variant="elevated"
-            type="submit"
-            >Pridėti</v-btn
-          >
-
+</div>
 </template>
 
 <script>
@@ -107,8 +72,7 @@ export default {
       name: "Testavimas",
       answerOptions: [],
       questionOptions: [],
-      newQuestionText: "",
-      newAnswerOption: "",
+      templateId: "",
       isFocused: false,
     };
   },
@@ -117,55 +81,32 @@ export default {
   },
 
   methods: {
-    removeAnswerOption(index) {
-      this.answerOptions.splice(index, 1);
-
-    },
-    addAnswerOption() {
-      if (this.newAnswerOption.trim() !== "") {
-        this.answerOptions.push(this.newAnswerOption);
-        this.newAnswerOption = "";
-        console.log(this);
-      }
-    },
-
-    addQuestion() {
-      if (this.newQuestionText.trim() !== "") {
-        this.questionOptions.push({text: this.newQuestionText});
-        this.newQuestionText = "";
-      }
-    },
-
-    removeQuestion(index) {
-      this.questionOptions.splice(index, 1);
-    },
-
-    sendRequest() {
-      let questions = [];
-      let answers = [];
-      for (var i = 0; i<this.answerOptions.length; i++) {
-        const item = {
-          answer: this.answerOptions[i],
-          sequence: i+1
+    search() {
+      if (this.templateId.trim() !== "") {
+        var idToSend = Number(this.templateId);
+        if (typeof idToSend === "number") {
+          this.answerOptions = [];
+          this.questionOptions = [];
+          apiClient.post("/result/template/get", {id: idToSend})
+        .then(response => {
+          console.log(response);
+          response.data.questions.sort(function(a, b) {
+            return a.sequence - b.sequence;
+          })
+          for(let i=0; i< response.data.questions.length; i++) {
+            this.questionOptions.push({text: response.data.questions[i].question});
+          }
+          response.data.answers.sort(function(a, b) {
+            return a.sequence - b.sequence;
+          })
+          for(let i=0; i< response.data.answers.length; i++) {
+            this.answerOptions.push(response.data.answers[i].answer);
+          }
         }
-        answers.push(item);
-      }
-      for (var i = 0; i<this.questionOptions.length; i++) {
-        const item = {
-          question: this.questionOptions[i].text,
-          sequence: i+1
-        }
-        questions.push(item);
-      }
-      const dataToSend = {
-        template_name: this.name,
-        questions: questions,
-        answers: answers
-      }
 
-      apiClient.post("/result/template/modify", dataToSend)
-      .then(response =>
-      console.log(response));
+        )
+      }
+        }
     },
   },
 };

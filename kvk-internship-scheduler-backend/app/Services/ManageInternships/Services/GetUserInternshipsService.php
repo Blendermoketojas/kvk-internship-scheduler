@@ -43,6 +43,6 @@ class GetUserInternshipsService extends BaseService
         $user = UserProfile::find($this->data()['userId']);
 
         // response
-        return response()->json($user->internships);
+        return response()->json($user->internships()->with('company')->get());
     }
 }

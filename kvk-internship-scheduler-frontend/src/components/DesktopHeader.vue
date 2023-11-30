@@ -30,9 +30,10 @@
             :key="index"
             :value="index"
           >
-            <router-link class="redirectText" :to="documentItem.route">
-              <v-list-item-title>{{ documentItem.title }}</v-list-item-title>
+          <router-link @click="setupUpload" :to="documentItem.route">
+            <v-list-item-title>{{ documentItem.title }}</v-list-item-title>
             </router-link>
+
           </v-list-item>
         </v-list>
       </v-menu>
@@ -119,8 +120,11 @@ export default {
       ],
     };
   },
-  methods() {},
-
+  methods: {
+    setupUpload() {
+      this.$store.commit('setUploadAction', "Internships");
+    }
+  },
   created() {
     const userStored = localStorage.getItem("user");
     if (userStored) {

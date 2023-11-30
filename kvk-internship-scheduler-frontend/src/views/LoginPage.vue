@@ -138,7 +138,8 @@ export default {
 }
 
 .footerYears {
-  font-size: 20px;
+  font-size: 15px;
+  margin: 10px;
 }
 .header {
   display: flex;
@@ -183,6 +184,10 @@ footer {
   background: linear-gradient(141deg, #58acfa 0%, #81bef7 51%, #a9d0f5 75%);
   width: 100%;
   bottom: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
 }
 .footerLogo {
   position: absolute;

@@ -7,6 +7,9 @@
       <h2>Čia galite peržiūrėti vykstamas ir pasibaigusias praktikas</h2>
     </div>
     <div class="mainInternshipDiv">
+        <div class="studentSearchInput">
+        <search-student></search-student>
+    </div>
       <v-expansion-panels>
         <v-expansion-panel
           v-for="internship in internships"
@@ -69,6 +72,7 @@
 <script>
 import headerNav from "@/components/DesktopHeader.vue";
 import apiClient from "@/utils/api-client";
+import searchStudent from "@/components/StudentSearch.vue"
 
 export default {
   name: "UserInternships",
@@ -81,6 +85,7 @@ export default {
   },
   components: {
     headerNav,
+    searchStudent,
   },
 
   methods: {
@@ -130,6 +135,11 @@ export default {
 </script>
 
 <style>
+.studentSearchInput{
+    display: flex;
+    justify-content: center;
+}
+
 h2 {
   display: inline-block;
   font-size: 15px;

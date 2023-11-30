@@ -36,6 +36,7 @@
 
 <script>
 import layoutLogo from "@/assets/Photos/KVKlogo.png";
+import { mapGetters } from 'vuex';
 
 export default {
   name: "AppLayout",
@@ -63,7 +64,16 @@ export default {
       this.user = JSON.parse(userStored);
     }
   },
-};
+
+  computed: {
+    ...mapGetters(["getUser"]),
+  },
+
+  mounted(){
+    console.log(this.getUser);
+  }
+  }
+
 </script>
 
 <style scoped>

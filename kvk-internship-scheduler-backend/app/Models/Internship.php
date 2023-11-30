@@ -19,6 +19,7 @@ class Internship extends Model
     protected $table = 'internships';
 
     protected $fillable = [
+        'title',
         'user_id',
         'company_id',
         'date_from',

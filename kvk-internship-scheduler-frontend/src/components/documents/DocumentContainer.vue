@@ -12,7 +12,9 @@
             <div v-show="!collapsed" class="document-container-body">
                 <div class="document-vertical-line"></div>
                 <div class="d-flex flex-column">
-                    <document-row v-for="i in 5" :key="i"></document-row>
+                    <document-section>
+                        <document-row v-for="i in 5" :key="i"></document-row>
+                    </document-section>
                 </div>
             </div>
         </transition>
@@ -22,10 +24,12 @@
 
 <script>
 import DocumentRow from './DocumentRow.vue';
+import DocumentSection from './DocumentSection.vue';
 
 export default {
     components: {
         DocumentRow,
+        DocumentSection
     },
     data() {
         return {
@@ -72,18 +76,21 @@ export default {
 
 
 
-.accordion-enter-active, .accordion-leave-active {
-  transition: opacity 0.5s, max-height 0.5s ease;
-  overflow: hidden;
+.accordion-enter-active,
+.accordion-leave-active {
+    transition: opacity 0.5s, max-height 0.5s ease;
+    overflow: hidden;
 }
 
-.accordion-enter-from, .accordion-leave-to {
-  opacity: 0;
-  max-height: 0;
+.accordion-enter-from,
+.accordion-leave-to {
+    opacity: 0;
+    max-height: 0;
 }
 
-.accordion-leave-from, .accordion-enter-to {
-  opacity: 1;
-  max-height: 1000px; /* Adjust as necessary for your content's actual height */
-}
-</style>
+.accordion-leave-from,
+.accordion-enter-to {
+    opacity: 1;
+    max-height: 1000px;
+    /* Adjust as necessary for your content's actual height */
+}</style>

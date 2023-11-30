@@ -15,7 +15,8 @@ class InternshipForm extends Model
 
     protected $fillable = [
         'template_id',
-        'internship_id'
+        'internship_id',
+        'sequence'
     ];
     public function internship(): BelongsTo
     {
@@ -28,11 +29,5 @@ class InternshipForm extends Model
     public function answers(): HasMany
     {
         return $this->hasMany(AnswerItem::class);
-    }
-
-    public function answerItems(): BelongsToMany
-    {
-        return$this->belongsToMany(FormAnswerItem::class, 'answer_item',
-        'internship_form_id', 'item_id');
     }
 }

@@ -81,12 +81,14 @@ Route::middleware('api')->prefix('v2')->group(function () {
         // Internships
 
         Route::get('/internship-active', [InternshipController::class, 'getActiveInternship']);
-        Route::get('/internships', [InternshipController::class, 'getUserInternships']);
+        Route::get('/internships', [InternshipController::class, 'getCurrentUserInternships']);
 
         Route::post('/internship', [InternshipController::class, 'getInternship']);
         Route::post('/internships', [InternshipController::class, 'createInternship']);
+        Route::post('/user/internships', [InternshipController::class, 'getUserInternships']);
         Route::post('/internships/student-group', [InternshipController::class, 'getStudentGroupInternships']);
-        Route::post('/internships/student-group-active', [InternshipController::class, 'getStudentGroupActiveInternships']);
+        Route::post('/internships/student-group-active', [InternshipController::class,
+            'getStudentGroupActiveInternships']);
 
         Route::put('/internship-update', [InternshipController::class, 'updateInternship']);
 
@@ -124,6 +126,9 @@ Route::middleware('api')->prefix('v2')->group(function () {
 
         Route::post('/internship/document-download', [InternshipFileManagementController::class,
             'downloadInternshipDocument']);
+
+        Route::post('/internship/documents', [InternshipFileManagementController::class,
+            'getInternshipDocuments']);
 
         // File Management
 

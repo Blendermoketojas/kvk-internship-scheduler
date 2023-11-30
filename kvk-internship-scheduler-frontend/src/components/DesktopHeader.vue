@@ -30,7 +30,7 @@
             :key="index"
             :value="index"
           >
-          <router-link :to="documentItem.route">
+          <router-link @click="setupUpload" :to="documentItem.route">
             <v-list-item-title>{{ documentItem.title }}</v-list-item-title>
           </router-link>
           </v-list-item>
@@ -117,11 +117,11 @@ export default {
       ],
     };
   },
-  methods(){
-  
-
+  methods: {
+    setupUpload() {
+      this.$store.commit('setUploadAction', "Internship");
+    }
   },
-
   created() {
     const userStored = localStorage.getItem("user");
     if (userStored) {

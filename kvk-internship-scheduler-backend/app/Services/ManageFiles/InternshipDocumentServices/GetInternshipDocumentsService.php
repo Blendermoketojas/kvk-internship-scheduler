@@ -1,33 +1,32 @@
 <?php
 
-namespace App\Services\ManageInternships\Services;
+namespace App\Services\ManageFiles\InternshipDocumentServices;
 
-use App\Contracts\Roles\Role;
 use App\Contracts\Roles\RolePermissions;
-use App\Models\UserProfile;
+use App\Models\Internship;
 use App\Services\BaseService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Validation\ValidationException;
 
-class GetUserInternshipsService extends BaseService
+class GetInternshipDocumentsService extends BaseService
 {
     public function rules(): array
     {
         return [
-            'userId' => 'required|integer|exists:users,id'
+            'internshipId' => 'required|integer|exists:internships,id'
         ];
     }
 
     public function data(): array
     {
         return [
-            'userId' => $this->request['userId']
+            'internshipId' => $this->request['internshipId']
         ];
     }
 
     public function permissions(): array
     {
-        return [Role::PRODEKANAS];
+        return [];
     }
 
     /**
@@ -40,9 +39,10 @@ class GetUserInternshipsService extends BaseService
 
         // logic execution
 
-        $user = UserProfile::find($this->data()['userId']);
+        $internship = Internship::find($this->data()['internshipId']);
+        $documents = $internship->documents;
 
         // response
-        return response()->json($user->internships);
+        return response()->json($documents);
     }
 }

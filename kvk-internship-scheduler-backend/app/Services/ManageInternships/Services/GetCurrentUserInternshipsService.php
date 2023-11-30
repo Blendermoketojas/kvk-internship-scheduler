@@ -2,6 +2,7 @@
 
 namespace App\Services\ManageInternships\Services;
 
+use App\Contracts\Roles\Role;
 use App\Models\Internship;
 use App\Services\BaseService;
 use Illuminate\Http\JsonResponse;
@@ -33,6 +34,11 @@ class GetCurrentUserInternshipsService extends BaseService
         if (!$this->validateRules()) return response()->json("Action not allowed", 401);
 
         // logic execution
+
+        if ($this->user->role_id === Role::PRODEKANAS->value)
+        {
+            return response()->json(Internship::all()->load('company'));
+        }
 
         $internships = $this->user->internships;
         $internships->load('company');

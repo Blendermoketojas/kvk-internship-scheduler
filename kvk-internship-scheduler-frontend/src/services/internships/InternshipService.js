@@ -1,6 +1,6 @@
 import apiClient from "@/utils/api-client";
 
-function getUserInternships() {
+function getCurrentUserInternships() {
     return apiClient.get('/internships', { withCredentials: true })
 }
 
@@ -9,6 +9,6 @@ function getInternshipDocuments(internshipId) {
 }
 
 export default {
-    getUserInternships,
+    getCurrentUserInternships,
     getInternshipDocuments
 }

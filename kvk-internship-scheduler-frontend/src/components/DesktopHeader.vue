@@ -122,7 +122,7 @@ export default {
   },
   methods: {
     setupUpload() {
-      this.$store.commit('setUploadAction', "Internship");
+      this.$store.commit('setUploadAction', "Internships");
     }
   },
   created() {

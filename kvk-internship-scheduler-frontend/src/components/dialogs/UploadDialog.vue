@@ -30,7 +30,7 @@
                 </v-card-text>
                 <v-card-actions>
                     <v-spacer></v-spacer>
-                    <v-btn color="blue-darken-1" variant="text" @click="dialog = false">
+                    <v-btn color="blue-darken-1" variant="text" @click="closeDialog">
                         Uždaryti
                     </v-btn>
                     <v-btn color="blue-darken-1" variant="text" @click="saveData">
@@ -44,6 +44,7 @@
 
 <script>
 import IS from '@/services/internships/InternshipService.js'
+import { mapGetters } from 'vuex';
 
 export default {
     data() {
@@ -62,23 +63,30 @@ export default {
             }
         }
     },
+    computed: {
+        ...mapGetters([
+            'getUploadAction'
+        ])
+    },
     methods: {
         openDialog() {
             this.dialog = true;
         },
         closeDialog() {
             this.dialog = false;
+            this.selectedInternshipId = null;
+            this.selectedDocument = null;
         },
         getInternshipDocuments(selectedInternshipId) {
             IS.getInternshipDocuments(selectedInternshipId).then(response => { this.internshipDocuments = response.data });
         },
         saveData() {
-            this.$store.commit();
+            this.$store.commit('setInternshipDialogData', { activityName: this.getUploadAction, activityId: this.selectedDocument });
             this.dialog = false;
         }
     },
     mounted() {
-        IS.getUserInternships()
+        IS.getCurrentUserInternships()
             .then(response => this.userInternships = response.data)
             .catch(error => console.log('user internships request failed'))
     }

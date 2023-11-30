@@ -57,6 +57,12 @@
           @click="login"
         >
           Prisijungti
+          <v-progress-circular
+          size="small"
+          v-if="isLoading"
+          indeterminate
+          color="white"
+          ></v-progress-circular>
         </v-btn>
 
         <v-card-text class="text-center">
@@ -97,6 +103,7 @@ export default {
         password: "",
       },
       visible: false,
+      isLoading: false,
     };
   },
   methods: {
@@ -105,6 +112,7 @@ export default {
     },
     login() {
       try {
+        this.isLoading = true;
         this.$axios
           .post("http://localhost:8000/api/v2/login", this.loginData, {
             withCredentials: true,
@@ -112,7 +120,6 @@ export default {
           .then((response) => {
             if (response.data.success) {
               const { fullname, image_path } = response.data.user;
-
               localStorage.setItem(
                 "user",
                 JSON.stringify({
@@ -121,9 +128,11 @@ export default {
                 })
               );
               this.$router.push("/calendar");
+              this.isLoading = false;
             }
-          });
+          }).catch(error => this.isLoading = false);
       } catch (error) {
+        this.isLoading = false;
         if (error.response && error.response.status === 401) {
         }
       }

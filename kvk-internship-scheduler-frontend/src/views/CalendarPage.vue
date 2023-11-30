@@ -117,7 +117,7 @@ apiClient.put('/comments', dataToSend);
             console.log("Active internship ID:", this.internship_id);
             this.getUserComments();
           } else {
-            throw new Error("Internship ID not found in response");
+            this.internship_id=null;
           }
         });
     },

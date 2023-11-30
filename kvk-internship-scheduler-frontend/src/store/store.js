@@ -14,7 +14,7 @@ export default createStore({
       state.role_id = role_id;
     },
     setUser(state, userInfo) {
-      state = userInfo;
+      state.userInfo = userInfo;
     },
   },
   getters: {
@@ -22,7 +22,7 @@ export default createStore({
       return state.currentInternship;
     },
     getUser(state){
-      return state.userInfo;
+      return state.userInfo || {};
     },
   },
   actions: {},

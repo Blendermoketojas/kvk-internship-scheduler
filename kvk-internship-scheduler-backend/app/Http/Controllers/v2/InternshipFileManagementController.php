@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Services\ManageFiles\InternshipDocumentServices\DeleteInternshipDocumentService;
 use App\Services\ManageFiles\InternshipDocumentServices\DownloadInternshipDocumentService;
 use App\Services\ManageFiles\InternshipDocumentServices\GetAllUserInternshipDocumentsService;
+use App\Services\ManageFiles\InternshipDocumentServices\GetInternshipDocumentsService;
 use App\Services\ManageFiles\InternshipDocumentServices\HandleInternshipDocumentUploadService;
 use App\Services\ManageFiles\InternshipDocumentServices\UpdateInternshipDocumentService;
 use Illuminate\Http\JsonResponse;
@@ -53,5 +54,13 @@ class InternshipFileManagementController extends Controller
     public function downloadInternshipDocument(Request $request): StreamedResponse
     {
         return (new DownloadInternshipDocumentService($request))->execute();
+    }
+
+    /**
+     * @throws ValidationException
+     */
+    public function getInternshipDocuments(Request $request): JsonResponse
+    {
+        return (new GetInternshipDocumentsService($request))->execute();
     }
 }

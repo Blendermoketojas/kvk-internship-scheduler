@@ -1,5 +1,8 @@
 <template>
   <custom-header></custom-header>
+  <Teleport to="body">
+    <upload-dialog ref="uploadDialog"></upload-dialog>
+  </Teleport>
   <div class="mainDiv">
     <div class="pageDescription">
       <h1>Dokumentų įkėlimas</h1>
@@ -7,12 +10,7 @@
       <h1>Įkelti dokumentai:</h1>
       <h2>Paspauskite ant dokumento, norėdami pašalinti</h2>
       <div class="uploadedFiles">
-        <div
-          class="uploadedFile"
-          v-for="(file, index) in files"
-          :key="index"
-          @click="showModal(file, index)"
-        >
+        <div class="uploadedFile" v-for="(file, index) in files" :key="index" @click="showModal(file, index)">
           <i :class="getFileIconClass(file.name)" style="font-size: 5rem"></i>
           <p>{{ file.name }}</p>
         </div>
@@ -21,36 +19,27 @@
         <div class="modal-content">
           <h1>Ar norite pašalinti šį failą?</h1>
           <div class="modalBtn">
-          <v-btn variant="tonal" width="150px" color="red" rounded="lg" @click="removeFile">Taip</v-btn>
-          <v-btn variant="tonal" width="150px" rounded="lg"  @click="isModalVisible = false">Ne</v-btn>
+            <v-btn variant="tonal" width="150px" color="red" rounded="lg" @click="removeFile">Taip</v-btn>
+            <v-btn variant="tonal" width="150px" rounded="lg" @click="isModalVisible = false">Ne</v-btn>
+          </div>
         </div>
-        </div>
-    </div>
-    <div class="documentUploadDiv">
-     
-        
-          <DxFileUploader
-            id="file-uploader"
-            :multiple="true"
-            :activeStateEnabled="false"
-            :select-button-text="'Pasirinkite failą'"
-            :label-text="'Arba nutempkite jį čia'"
-            accept=".pdf, .doc, .docx, .rtf, .pptx, image/*"
-            :upload-mode="'useButtons'"
-            :upload-url="'your-upload-endpoint-url'"
-            @valueChanged="onFilesSelected"
-            height="250px"
-           
-            style="border: dashed rgb(153, 150, 150) 2px;"
-            width="80%"
-          />
-          
-    </div>
-    <div class="bottomButtons">
+      </div>
+      <div class="documentUploadDiv">
+
+
+        <DxFileUploader id="file-uploader" :multiple="true" :activeStateEnabled="false"
+          :select-button-text="'Pasirinkite failą'" :label-text="'Arba nutempkite jį čia'"
+          accept=".pdf, .doc, .docx, .rtf, .pptx, image/*" :upload-mode="'useButtons'"
+          :upload-url="'your-upload-endpoint-url'" @valueChanged="onFilesSelected" height="250px"
+          style="border: dashed rgb(153, 150, 150) 2px;" width="80%" />
+
+      </div>
+      <div class="bottomButtons">
         <v-btn color="#0D47A1" rounded="xl" variant="elevated" type="submit">Išsaugoti</v-btn>
+        <v-btn @click="openDialog" color="#0D47A1" rounded="xl" variant="elevated">Pridėti į...</v-btn>
         <v-btn rounded="xl" variant="outlined">Atšaukti</v-btn>
       </div>
-  </div>
+    </div>
   </div>
 </template>
 
@@ -59,6 +48,7 @@ import customHeader from "@/components/DesktopHeader.vue";
 import apiClient from "@/utils/api-client";
 import { DxFileUploader } from "devextreme-vue/file-uploader";
 import { DxLoadPanel } from "devextreme-vue/load-panel";
+import UploadDialog from '@/components/dialogs/UploadDialog.vue';
 
 export default {
   name: "FileUploader",
@@ -67,6 +57,7 @@ export default {
     customHeader,
     DxFileUploader,
     DxLoadPanel,
+    UploadDialog
   },
   data() {
     return {
@@ -81,6 +72,9 @@ export default {
   },
 
   methods: {
+    openDialog() {
+      this.$refs.uploadDialog.openDialog();
+    },
     showModal(file, index) {
       this.fileToRemove = file;
       this.indexToRemove = index;
@@ -90,11 +84,9 @@ export default {
       this.files.splice(this.indexToRemove, 1);
       this.isModalVisible = false;
     },
-
     onFilesSelected(event) {
-      this.files = event.value; 
+      this.files = event.value;
     },
-
     getFileIconClass(fileName) {
       const ext = fileName
         .slice(((fileName.lastIndexOf(".") - 1) >>> 0) + 2)
@@ -120,39 +112,40 @@ export default {
 
 
 <style scoped>
-
-.modalBtn{
-    display: flex;
-    width: 100%;
-    justify-content: space-evenly;
+.modalBtn {
+  display: flex;
+  width: 100%;
+  justify-content: space-evenly;
 }
-.modal {
-    display: block;
-    position: fixed;
-    z-index: 1000;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    overflow: auto;
-    background-color: rgba(0,0,0,0.4);
-   
-  }
 
-  .modal-content {
-    display: flex;
-    background-color: #fefefe;
-    margin: 15% auto;
-    padding: 20px;
-    border: 1px solid #888;
-    width: 50%;
-    height: 250px;
-    text-align: center;
-    border: 1px solid rgb(121, 119, 119);
-    justify-content: space-evenly;
-    align-items: center;
-    flex-direction: column;
-  }
+.modal {
+  display: block;
+  position: fixed;
+  z-index: 1000;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgba(0, 0, 0, 0.4);
+
+}
+
+.modal-content {
+  display: flex;
+  background-color: #fefefe;
+  margin: 15% auto;
+  padding: 20px;
+  border: 1px solid #888;
+  width: 50%;
+  height: 250px;
+  text-align: center;
+  border: 1px solid rgb(121, 119, 119);
+  justify-content: space-evenly;
+  align-items: center;
+  flex-direction: column;
+}
+
 .uploadedFile {
   height: 100%;
   width: auto;
@@ -162,11 +155,13 @@ export default {
   align-items: center;
   margin: 0 10px;
 }
+
 p {
   text-align: center;
   margin-bottom: 0;
   padding-top: 5px;
 }
+
 .mainDiv {
   padding: 0 200px;
 }
@@ -177,6 +172,7 @@ h2 {
   color: rgb(170, 167, 167);
   font-weight: 400;
 }
+
 .documentUploadDiv {
   padding: 0 250px;
   display: flex;
@@ -186,22 +182,25 @@ h2 {
 .pageDescription h1:last-of-type {
   margin-top: 40px;
 }
+
 .uploadedFiles {
   height: 150px;
   border-radius: 10px;
   border: 2px solid black;
   display: flex;
-  margin-bottom:10px;
+  margin-bottom: 10px;
 }
+
 .bottomButtons {
-    display: flex;
-    justify-content: center;
-    margin-top: 30px;
-  }
-  .bottomButtons .v-btn {
-    width: 200px;
-    margin: 0 10px;
-  }
+  display: flex;
+  justify-content: center;
+  margin-top: 30px;
+}
+
+.bottomButtons .v-btn {
+  width: 200px;
+  margin: 0 10px;
+}
 
 #request-panel .parameter-info {
   display: flex;
@@ -217,15 +216,14 @@ h2 {
   text-overflow: ellipsis;
   white-space: nowrap;
 }
-::v-deep .dx-fileuploader-input-wrapper{
-    height: 100%;
+
+::v-deep .dx-fileuploader-input-wrapper {
+  height: 100%;
 
 }
 
-::v-deep .dx-fileuploader-files-container{
-    display: none;
+::v-deep .dx-fileuploader-files-container {
+  display: none;
 
 }
-
-
 </style>

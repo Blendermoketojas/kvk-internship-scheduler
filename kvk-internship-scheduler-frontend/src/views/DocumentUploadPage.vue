@@ -35,7 +35,7 @@
 
       </div>
       <div class="bottomButtons">
-        <v-btn color="#0D47A1" rounded="xl" variant="elevated" type="submit">Išsaugoti</v-btn>
+        <v-btn color="#0D47A1" rounded="xl" variant="elevated" @click="uploadFiles">Išsaugoti</v-btn>
         <v-btn @click="openDialog" color="#0D47A1" rounded="xl" variant="elevated">Pridėti į...</v-btn>
         <v-btn rounded="xl" variant="outlined">Atšaukti</v-btn>
       </div>
@@ -46,9 +46,11 @@
 <script>
 import customHeader from "@/components/DesktopHeader.vue";
 import apiClient from "@/utils/api-client";
+import IDS from "@/services/internship_documents/InternshipDocumentsService";
 import { DxFileUploader } from "devextreme-vue/file-uploader";
 import { DxLoadPanel } from "devextreme-vue/load-panel";
 import UploadDialog from '@/components/dialogs/UploadDialog.vue';
+import { mapGetters } from "vuex";
 
 export default {
   name: "FileUploader",
@@ -70,10 +72,17 @@ export default {
       indexToRemove: null,
     };
   },
-
+  computed: {
+    ...mapGetters([
+      'getInternshipDialogData'
+    ])
+  },
   methods: {
     openDialog() {
       this.$refs.uploadDialog.openDialog();
+    },
+    uploadFiles() {
+      IDS.uploadFiles({...this.getInternshipDialogData, files: this.files}).then(response => console.log(response.status));
     },
     showModal(file, index) {
       this.fileToRemove = file;

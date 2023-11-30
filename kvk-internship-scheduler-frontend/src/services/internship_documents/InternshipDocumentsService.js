@@ -8,7 +8,16 @@ function downloadFile(fileId) {
     return apiClient.post('/internship/document-download', { fileId }, { withCredentials: true, responseType: 'blob' })
 }
 
+function uploadFiles(data) {
+    return apiClient.post('/files/create', { ...data }, {
+        withCredentials: true, headers: {
+            'Content-Type': 'multipart/form-data'
+        }
+    })
+}
+
 export default {
     getAllUserInternshipDocuments,
-    downloadFile
+    downloadFile,
+    uploadFiles
 }

@@ -7,6 +7,7 @@ use App\Services\ManageFiles\InternshipDocumentServices\DeleteInternshipDocument
 use App\Services\ManageFiles\InternshipDocumentServices\DownloadInternshipDocumentService;
 use App\Services\ManageFiles\InternshipDocumentServices\GetAllUserInternshipDocumentsService;
 use App\Services\ManageFiles\InternshipDocumentServices\GetInternshipDocumentsService;
+use App\Services\ManageFiles\InternshipDocumentServices\GetInternshipDocumentsWithFilesService;
 use App\Services\ManageFiles\InternshipDocumentServices\HandleInternshipDocumentUploadService;
 use App\Services\ManageFiles\InternshipDocumentServices\UpdateInternshipDocumentService;
 use Illuminate\Http\JsonResponse;
@@ -46,6 +47,14 @@ class InternshipFileManagementController extends Controller
     public function getAllUserInternshipDocuments(Request $request): JsonResponse
     {
         return (new GetAllUserInternshipDocumentsService($request))->execute();
+    }
+
+    /**
+     * @throws ValidationException
+     */
+    public function getInternshipDocumentsWithFiles(Request $request): JsonResponse
+    {
+        return (new GetInternshipDocumentsWithFilesService($request))->execute();
     }
 
     /**

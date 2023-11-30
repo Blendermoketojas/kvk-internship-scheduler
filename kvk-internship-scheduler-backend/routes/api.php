@@ -132,6 +132,9 @@ Route::middleware('api')->prefix('v2')->group(function () {
         Route::post('/internship/documents', [InternshipFileManagementController::class,
             'getInternshipDocuments']);
 
+        Route::post('/internship/documents-files', [InternshipFileManagementController::class,
+            'getInternshipDocumentsWithFiles']);
+
         // File Management
 
         Route::post('/file/delete', [FileController::class, 'deleteFile']);

@@ -19,7 +19,7 @@ return new class extends Migration
             $table->foreign('template_id')->references('id')->on('form_template')->onDelete('set null');
             $table->unsignedBigInteger("internship_id")->nullable();
             $table->foreign('internship_id')->references('id')->on('internships')->onDelete('set null');
-            $table->integer("sequence");
+            $table->integer("sequence")->nullable();
             $table->unsignedBigInteger('created_by')->nullable();
             $table->foreign('created_by')->references('id')->on('users')->onDelete('set null');
             $table->timestamps();

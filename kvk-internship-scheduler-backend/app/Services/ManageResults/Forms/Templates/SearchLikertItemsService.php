@@ -1,28 +1,29 @@
 <?php
 
-namespace App\Services\ManageResults;
+namespace App\Services\ManageResults\Forms\Templates;
 
+use App\Contracts\Roles\Role;
 use App\Contracts\Roles\RolePermissions;
-use App\Models\FormTemplate;
+use App\Models\FormLikert;
 use App\Services\BaseService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Validation\ValidationException;
 
-class GetTemplateService extends BaseService
+class SearchLikertItemsService extends BaseService
 {
     public function rules(): array
     {
-        return ['id' => 'required|integer'];
+        return ['answer' => 'required|string'];
     }
 
     public function data(): array
     {
-        return ['id' => $this->request['id']];
+        return ['answer' => $this->request['answer'],];
     }
 
     public function permissions(): array
     {
-        return [];
+        return [Role::PRODEKANAS];
     }
 
     /**
@@ -33,19 +34,11 @@ class GetTemplateService extends BaseService
         // input validation
         if (!$this->validateRules()) return response()->json("Action not allowed", 401);
 
-        $formTemplate = FormTemplate::find($this->request['id']);
-        $answers = $formTemplate->templateLikerts()->get();
-        $questions = $formTemplate->templateQuestions()->get();
-
-        $response['id'] = $formTemplate['id'];
-        $response['name'] = $formTemplate['name'];
-        $response['questions'] = $this->fixObjects($questions);
-        $response['answers'] = $this->fixObjects($answers);
-
-        return response()->json($response);
+        $query = FormLikert::whereRaw('LOWER(answer) LIKE ?', ['%' . strtolower($this->data()['answer']) . '%'])
+            ->get();
 
         // response
-        return response()->json('Not implemented');
+        return response()->json($this->fixObjects($query));
     }
 
     private function fixObjects($array) {

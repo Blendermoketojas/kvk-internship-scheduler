@@ -5,6 +5,7 @@
     <p>Čia galite peržiūrėti įkeltus dokumentus</p>
     <v-skeleton-loader v-if="isLoading" type="paragraph"></v-skeleton-loader>
     <div v-else>
+      <span v-if="internships.length === 0">Nėra įkeltų dokumentų.</span>
       <document-container v-for="internship in internships" :key="internship.id" :documents="internship.documents"
         :container-name="internship?.title"></document-container>
     </div>

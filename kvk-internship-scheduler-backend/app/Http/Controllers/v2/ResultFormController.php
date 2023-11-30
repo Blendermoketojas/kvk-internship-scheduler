@@ -3,10 +3,12 @@
 namespace App\Http\Controllers\v2;
 
 use App\Http\Controllers\Controller;
-use App\Services\ManageResults\GetTemplateService;
-use App\Services\ManageResults\ModifyTemplateService;
-use App\Services\ManageResults\SearchLikertItemsService;
-use App\Services\ManageResults\SearchQuestionItemsService;
+use App\Services\ManageResults\Forms\Templates\AttachTemplateToInternshipService;
+use App\Services\ManageResults\Forms\Templates\DetachTemplateFromInternshipService;
+use App\Services\ManageResults\Forms\Templates\GetTemplateService;
+use App\Services\ManageResults\Forms\Templates\ModifyTemplateService;
+use App\Services\ManageResults\Forms\Templates\SearchLikertItemsService;
+use App\Services\ManageResults\Forms\Templates\SearchQuestionItemsService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
@@ -36,5 +38,17 @@ class ResultFormController extends Controller
      */
     public function searchLikert(Request $request): JsonResponse {
         return (new SearchLikertItemsService($request))->execute();
+    }
+    /**
+     * @throws ValidationException
+     */
+    public function attachTemplate(Request $request): JsonResponse {
+        return (new AttachTemplateToInternshipService($request))->execute();
+    }
+    /**
+     * @throws ValidationException
+     */
+    public function detachTemplate(Request $request): JsonResponse {
+        return (new DetachTemplateFromInternshipService($request))->execute();
     }
 }

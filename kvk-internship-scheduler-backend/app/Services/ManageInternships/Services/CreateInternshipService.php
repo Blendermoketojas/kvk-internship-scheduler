@@ -13,7 +13,9 @@ class CreateInternshipService extends BaseService
 {
     public function rules(): array
     {
-        return ['company_id' => 'required|integer',
+        return [
+            'title' => 'required|string|max:80',
+            'company_id' => 'required|integer',
             'users' => 'required|array',
             'date_from' => 'required|date',
             'date_to' => 'required|date',
@@ -22,11 +24,14 @@ class CreateInternshipService extends BaseService
 
     public function data(): array
     {
-        return ['company_id' => $this->request['companyId'],
+        return [
+            'title' => $this->request['title'],
+            'company_id' => $this->request['companyId'],
             'users' => $this->request['users'],
             'date_from' => $this->request['dateFrom'],
             'date_to' => $this->request['dateTo'],
-            'is_active' => 1];
+            'is_active' => 1
+        ];
     }
 
     public function permissions(): array

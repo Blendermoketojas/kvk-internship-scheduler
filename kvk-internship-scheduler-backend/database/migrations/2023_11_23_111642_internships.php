@@ -15,6 +15,7 @@ return new class extends Migration
     {
         Schema::create('internships', function (Blueprint $table) {
             $table->id();
+            $table->string('title');
             $table->integer('company_id');
             $table->date('date_from');
             $table->date('date_to');

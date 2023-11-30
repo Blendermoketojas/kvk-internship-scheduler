@@ -13,6 +13,7 @@ class UpdateInternshipService extends BaseService
     public function rules(): array
     {
         return [
+            'title' => 'required|string|max:80',
             'internship_id' => 'required|integer',
             'users' => 'required|array',
             'company_id' => 'required|integer',
@@ -24,6 +25,7 @@ class UpdateInternshipService extends BaseService
     public function data(): array
     {
         return [
+            'title' => $this->request['title'],
             'internship_id' => $this->request['internshipId'],
             'users' => $this->request['users'],
             'company_id' => $this->request['companyId'],

@@ -3,17 +3,60 @@
     <div class="kvkLogoDiv">
       <img class="logo" :src="layoutLogo" alt="KVK Logo" />
     </div>
-    <div class="btn">
-      <router-link class="redirectText" to="/calendar">Mano kalendorius</router-link>
+    <div class="btn" id="menu-activator-learning-material">
+      <router-link class="redirectText" to="/calendar"
+        >Mano kalendorius</router-link
+      >
+      <v-menu open-on-hover activator="#menu-activator-learning-material">
+        <v-list>
+          <v-list-item
+            v-for="(internshipItem, index) in internshipItems"
+            :key="index"
+            :value="index"
+          >
+          <router-link :to="documentItem.route">
+            <v-list-item-title>{{ internshipItem.title }}</v-list-item-title>
+          </router-link>
+          </v-list-item>
+        </v-list>
+      </v-menu>
     </div>
-    <div class="btn">
+    <div class="btn" id="menu-activator">
       <router-link class="redirectText" to="/documents">Dokumentai</router-link>
+      <v-menu open-on-hover activator="#menu-activator">
+        <v-list>
+          <v-list-item
+            v-for="(documentItem, index) in documentItems"
+            :key="index"
+            :value="index"
+          >
+          <router-link :to="documentItem.route">
+            <v-list-item-title>{{ documentItem.title }}</v-list-item-title>
+          </router-link>
+          </v-list-item>
+        </v-list>
+      </v-menu>
+    </div>
+    <div class="btn" id="menu-activator-results">
+      <router-link class="redirectText" to="/my-results"
+        >Mano rezultatai</router-link
+      >
+      <v-menu open-on-hover activator="#menu-activator-results">
+        <v-list>
+          <v-list-item
+            v-for="(resultItem, index) in resultItems"
+            :key="index"
+            :value="index"
+          >
+            <v-list-item-title>{{ resultItem.title }}</v-list-item-title>
+          </v-list-item>
+        </v-list>
+      </v-menu>
     </div>
     <div class="btn">
-      <router-link class="redirectText" to="/my-results">Mano rezultatai</router-link>
-    </div>
-    <div class="btn">
-      <router-link class="redirectText" to="/learning-materials">Mokymosi medžiaga</router-link>
+      <router-link class="redirectText" to="/learning-materials"
+        >Mokymosi medžiaga</router-link
+      >
     </div>
     <div class="btn">
       <router-link class="redirectText" to="/chat">Pokalbiai</router-link>
@@ -22,20 +65,29 @@
       <router-link class="redirectText" to="/help">Pagalba</router-link>
     </div>
     <div class="btn">
-      <router-link class="redirectText"  to="/profile-info" v-if="user.image_path">
-        <img class="userImg" :src="fullImagePath" alt="User Image">
+      <router-link
+        class="redirectText"
+        to="/profile-info"
+        v-if="user.image_path"
+      >
+        <img class="userImg" :src="fullImagePath" alt="User Image" />
       </router-link>
       <router-link class="redirectText" to="/profile-info" v-else>
-        <img src="https://freesvg.org/img/abstract-user-flat-4.png" alt="Default Image">
+        <img
+          src="https://freesvg.org/img/abstract-user-flat-4.png"
+          alt="Default Image"
+        />
       </router-link>
-      <router-link class="redirectText" to="/profile-info">{{ user.fullname }}</router-link>
-
+      <router-link class="redirectText" to="/profile-info">{{
+        user.fullname
+      }}</router-link>
     </div>
   </div>
 </template>
 
 <script>
 import layoutLogo from "@/assets/Photos/KVKlogo.png";
+import { mapGetters } from "vuex";
 
 export default {
   name: "AppLayout",
@@ -46,22 +98,60 @@ export default {
         fullname: null,
         image_path: null,
       },
-      baseImageUrl: 'http://localhost:8000',
+      baseImageUrl: "http://localhost:8000",
+
+      documentItems: [
+        { title: "Dokumentų peržiūra", route:"/documents" },
+        { title: "Dokumentų įkėlimas", route:"/document-upload"},
+      ],
+
+      resultItems: [
+        { title: "Rezultatų kūrimo forma" },
+        { title: "Įsivertimas" },
+      ],
+
+      internshipItems: [
+        { title: "Kalendorius" },
+        { title: "Praktikos priskirimas" },
+        { title: "Praktikos peržiūra" },
+      ],
     };
   },
-  computed: {
-    fullImagePath() {
-      return this.user.image_path
-        ? this.baseImageUrl+this.user.image_path
-        : null;
-    },
-    
+  methods(){
+  
+
   },
+
   created() {
     const userStored = localStorage.getItem("user");
     if (userStored) {
       this.user = JSON.parse(userStored);
     }
+  },
+
+  computed: {
+    fullImagePath() {
+      return this.user.image_path
+        ? this.baseImageUrl + this.user.image_path
+        : null;
+    },
+
+    ...mapGetters(["getUser"]),
+
+    filteredDocumentItems() {
+    if (this.getUser.role_id === 1) {
+
+      return this.documentItems;
+    } else if (this.getUser.role_id === 5) {
+     
+      return this.documentItems.slice(0, 1);
+    }
+
+  }
+  },
+
+  mounted() {
+    console.log(this.getUser.role_id);
   },
 };
 </script>
@@ -86,20 +176,18 @@ img {
   font-weight: 600;
   text-decoration: none;
   color: black;
-  
 }
 
-.userImg{
-height: 40px;
+.userImg {
+  height: 40px;
   width: 40px;
-  border-radius:50% ;
+  border-radius: 50%;
 }
 
-.btn:last-of-type{
+.btn:last-of-type {
   margin-left: 40%;
-
 }
-.btn:last-of-type img{
+.btn:last-of-type img {
   margin: 0 10px;
 }
 </style>

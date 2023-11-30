@@ -42,8 +42,8 @@ class GetStudentGroupActiveInternshipsService extends BaseService
         $studentIds = $studentGroup->userProfiles->pluck('id');
 
         $internships = Internship::whereHas('userProfiles', function($query) use ($studentIds) {
-            $query->whereIn('userprofiles.id', $studentIds); // Specify the table alias 'userprofiles.id'
-        })->where('internships.is_active', true) // Specify 'is_active' condition for the 'Internship' table
+            $query->whereIn('userprofiles.id', $studentIds);
+        })->where('internships.is_active', true)
         ->with('userProfiles')->get();
 
         // response

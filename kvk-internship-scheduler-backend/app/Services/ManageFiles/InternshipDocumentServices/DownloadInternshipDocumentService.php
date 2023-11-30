@@ -3,21 +3,27 @@
 namespace App\Services\ManageFiles\InternshipDocumentServices;
 
 use App\Contracts\Roles\RolePermissions;
+use App\Models\File;
 use App\Services\BaseService;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\ValidationException;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 
-class GetInternshipDocumentsService extends BaseService
+class DownloadInternshipDocumentService extends BaseService
 {
     public function rules(): array
     {
-        return [];
+        return [
+            'fileId' => 'required|integer|exists:files,id'
+        ];
     }
 
     public function data(): array
     {
-        return [];
+        return [
+            'fileId' => $this->request['fileId']
+        ];
     }
 
     public function permissions(): array
@@ -28,19 +34,18 @@ class GetInternshipDocumentsService extends BaseService
     /**
      * @throws ValidationException
      */
-    function execute() : JsonResponse
+    function execute() : StreamedResponse
     {
         // input validation
         if (!$this->validateRules()) return response()->json("Action not allowed", 401);
 
         // logic execution
 
-//        if (Gate::denies('internshipGet', $internship)) {
-//            return response()->json('User must belong to the internship or be PRODEKANAS to perform this task',
-//                401);
-//        }
+        // TODO: NEED TO VERIFY POLICY FOR LEGITIMATE FILE DOWNLOAD
+
+        $file = File::find($this->data()['fileId']);
 
         // response
-        return response()->json('Not implemented');
+        return Storage::download($file->file_path);
     }
 }

@@ -1,14 +1,17 @@
 <template>
-    <div class="document-row-body d-flex direction-row">
-        <img style="width: 45px;" :src="imageUrl" />
-        <span class="ms-4 align-self-center fs-4">{{ fileName }}</span>
-        <span class="ms-4 align-self-center document-type-text">{{ fileType }}</span>
+    <div class="document-row-body">
+        <button @click="downloadFile" class="styleless-button d-flex direction-row">
+            <img style="width: 45px;" :src="imageUrl" />
+            <span class="ms-4 align-self-center fs-4">{{ fileName }}</span>
+            <span class="ms-4 align-self-center document-type-text">Failo tipas: {{ fileType }}</span>
+        </button>
     </div>
 </template>
 
 <script>
 import fileBlank from '@/assets/file_images/file_blank.png';
- 
+import IDS from '@/services/internship_documents/InternshipDocumentsService';
+
 export default {
     data() {
         return {
@@ -16,6 +19,10 @@ export default {
         }
     },
     props: {
+        id: {
+            required: true,
+            type: Number,
+        },
         imageUrl: {
             required: true,
             type: Image,
@@ -30,6 +37,21 @@ export default {
             required: true,
             type: String,
             default: 'word dokumentas'
+        },
+    },
+    methods: {
+        downloadFile() {
+            console.log('triggerd')
+            IDS.downloadFile(this.id).then(response => {
+                const url = window.URL.createObjectURL(new Blob([response.data]));
+                const link = document.createElement('a');
+                link.href = url;
+                link.setAttribute('download', `${this.fileName}.${this.fileType}`);
+                document.body.appendChild(link);
+                link.click();
+                link.parentNode.removeChild(link);
+                window.URL.revokeObjectURL(url);
+            })
         }
     }
 }

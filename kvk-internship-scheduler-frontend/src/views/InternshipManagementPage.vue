@@ -28,6 +28,13 @@
             label="Įrašykite grupę"
           ></v-autocomplete>
         </div> -->
+        <div class="fieldDiv">
+          <div class="text-subtitle-1 text-bold-emphasis">Praktikos pavadinimas</div>
+          <v-text-field
+            v-model="internshipName"
+            label="Įrašykite praktikos pavadinimą"
+          ></v-text-field>
+        </div>
 
         <div class="fieldDiv">
           <div class="text-subtitle-1 text-bold-emphasis">Vardas Pavardė</div>
@@ -114,6 +121,8 @@ export default {
       dateFrom: null,
       dateTo: null,
       showSuccessAlert: false,
+      companyName:null,
+      internshipName:null,
     };
   },
   components: {
@@ -202,7 +211,8 @@ export default {
         this.selectedCompany &&
         this.selectedStudents.length > 0 &&
         this.dateFrom &&
-        this.dateTo
+        this.dateTo &&
+        this.internshipName
       ) {
         const userIds = this.selectedStudents.map(student => student.id);
 
@@ -211,6 +221,7 @@ export default {
           users: userIds,
           dateFrom: this.dateFrom,
           dateTo: this.dateTo,
+          title: this.internshipName,
         };
 
         apiClient
@@ -222,10 +233,8 @@ export default {
           })
           .catch((error) => {
             console.error("Error saving internship:", error);
-            // Handle error, show error message to user
           });
       } else {
-        // Handle case where not all fields are filled out
         console.error("All fields are required");
       }
     },

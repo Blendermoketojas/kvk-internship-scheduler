@@ -8,6 +8,10 @@ function downloadFile(fileId) {
     return apiClient.post('/internship/document-download', { fileId }, { withCredentials: true, responseType: 'blob' })
 }
 
+function deleteFile(fileId) {
+    return apiClient.post('/file/delete', { fileId }, { withCredentials: true })
+}
+
 function uploadFiles(data) {
     return apiClient.post('/files/create', { ...data }, {
         withCredentials: true, headers: {
@@ -16,8 +20,16 @@ function uploadFiles(data) {
     })
 }
 
+function getInternshipDocumentsWithFiles(documentId) {
+    return apiClient.post('/internship/documents-files', { documentId }, {
+        withCredentials: true
+    })
+}
+
 export default {
     getAllUserInternshipDocuments,
     downloadFile,
-    uploadFiles
+    uploadFiles,
+    getInternshipDocumentsWithFiles,
+    deleteFile
 }

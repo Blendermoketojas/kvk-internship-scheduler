@@ -3,6 +3,7 @@
 namespace App\Services\ManageFiles\InternshipDocumentServices;
 
 use App\Contracts\Roles\RolePermissions;
+use App\Models\Document;
 use App\Models\Internship;
 use App\Services\BaseService;
 use Illuminate\Http\JsonResponse;
@@ -13,14 +14,14 @@ class GetInternshipDocumentsWithFilesService extends BaseService
     public function rules(): array
     {
         return [
-            'internshipId' => 'required|integer|exists:internships,id'
+            'documentId' => 'required|integer|exists:documents,id'
         ];
     }
 
     public function data(): array
     {
         return [
-            'internshipId' => $this->request['internshipId']
+            'documentId' => $this->request['documentId']
         ];
     }
 
@@ -41,10 +42,9 @@ class GetInternshipDocumentsWithFilesService extends BaseService
 
         // TODO: IMPLEMENT POLICY VERIFICATION FOR DOCUMENT RETRIEVAL
 
-        $internship = Internship::find($this->data()['internshipId']);
-        $documents = $internship->documents()->with('files')->get();
+        $document = Document::find($this->data()['documentId'])->with('files')->first();
 
         // response
-        return response()->json($documents);
+        return response()->json($document);
     }
 }

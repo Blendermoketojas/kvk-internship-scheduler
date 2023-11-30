@@ -7,7 +7,7 @@
     <div class="pageDescription">
       <h1>Dokumentų įkėlimas</h1>
       <h2>Čia galite įkelti reikalingus dokumentus</h2>
-      <h1>Įkelti dokumentai:</h1>
+      <h1>Įkelti dokumentai {{ catalogName }} <span v-show="catalogName">aplanke</span>:</h1>
       <h2>Paspauskite ant dokumento, norėdami pašalinti</h2>
       <div class="uploadedFiles">
         <div class="uploadedFile" v-for="(file, index) in files" :key="index" @click="showModal(file, index)">
@@ -37,7 +37,7 @@
       <div class="bottomButtons">
         <v-btn color="#0D47A1" rounded="xl" variant="elevated" @click="uploadFiles">Išsaugoti</v-btn>
         <v-btn @click="openDialog" color="#0D47A1" rounded="xl" variant="elevated">Pridėti į...</v-btn>
-        <v-btn rounded="xl" variant="outlined">Atšaukti</v-btn>
+        <v-btn @click="abortAction" rounded="xl" variant="outlined">Atšaukti</v-btn>
       </div>
     </div>
   </div>
@@ -70,6 +70,7 @@ export default {
       isModalVisible: false,
       fileToRemove: null,
       indexToRemove: null,
+      catalogName: null,
     };
   },
   computed: {
@@ -77,12 +78,22 @@ export default {
       'getInternshipDialogData'
     ])
   },
+  watch: {
+    getInternshipDialogData: {
+      handler(newVal, oldVal) {
+        if (newVal?.activityId) {
+          IDS.getInternshipDocumentsWithFiles(newVal?.activityId).then(response => { this.files = response.data.files.map(f => { return { ...f, name: f.file_name } }); this.catalogName = response.data.title });
+        }
+      }
+    },
+    deep: true
+  },
   methods: {
     openDialog() {
       this.$refs.uploadDialog.openDialog();
     },
     uploadFiles() {
-      IDS.uploadFiles({...this.getInternshipDialogData, files: this.files}).then(response => console.log(response.status));
+      IDS.uploadFiles({ ...this.getInternshipDialogData, files: this.files }).then(response => console.log(response.status));
     },
     showModal(file, index) {
       this.fileToRemove = file;
@@ -90,11 +101,18 @@ export default {
       this.isModalVisible = true;
     },
     removeFile() {
-      this.files.splice(this.indexToRemove, 1);
-      this.isModalVisible = false;
+      IDS.deleteFile(this.files[this.indexToRemove].id).then(response => {
+        this.files.splice(this.indexToRemove, 1);
+        this.isModalVisible = false;
+      }).catch(error => console.log('failed to delete file'));
     },
     onFilesSelected(event) {
       this.files = event.value;
+    },
+    abortAction() {
+      this.files = [];
+      this.selectedFiles = [],
+      this.catalogName = null
     },
     getFileIconClass(fileName) {
       const ext = fileName

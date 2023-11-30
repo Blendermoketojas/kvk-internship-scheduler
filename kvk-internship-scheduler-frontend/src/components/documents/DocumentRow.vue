@@ -2,7 +2,7 @@
     <div class="document-row-body d-flex direction-row">
         <img style="width: 45px;" :src="imageUrl" />
         <span class="ms-4 align-self-center fs-4">{{ fileName }}</span>
-        <span class="ms-4 align-self-center document-type-text">{{ fileType }}</span>
+        <span class="ms-4 align-self-center document-type-text">Failo tipas: {{ fileType }}</span>
     </div>
 </template>
 
@@ -16,6 +16,10 @@ export default {
         }
     },
     props: {
+        id: {
+            required: true,
+            type: Number,
+        },
         imageUrl: {
             required: true,
             type: Image,
@@ -30,6 +34,11 @@ export default {
             required: true,
             type: String,
             default: 'word dokumentas'
+        },
+        filePath: {
+            required: true,
+            type: String,
+            default: '/test'
         }
     }
 }

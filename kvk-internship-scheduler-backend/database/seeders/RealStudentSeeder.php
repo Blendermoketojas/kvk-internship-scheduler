@@ -17,8 +17,15 @@ class RealStudentSeeder extends Seeder
      *
      * @return void
      */
+
+
+
     public function run()
     {
+        $rolesNames = ["Prodekanas", "Katedros vedėjas", "Praktikos vadovas", "Mentorius", "Studentas"];
+
+        // create students from real data
+
         $index = 1;
         $groupIndex = 1;
         foreach (getGroups() as $group) {
@@ -27,32 +34,53 @@ class RealStudentSeeder extends Seeder
                 $firstName = explode(" ", $student)[0];
                 $lastName = explode(" ", $student)[1];
 
-                DB::table('users')->insert([
-                    'email' => strtolower($firstName) . '.' . strtolower($lastName) . rand(1, 9999) . '@' . fake()->freeEmailDomain,
-                    'email_verified_at' => Carbon::today(),
-                    'password' => Hash::make('password'),
-                    'created_at' => Carbon::today(),
-                    'updated_at' => Carbon::today()
-                ]);
+                $this->createUserCredentials($firstName, $lastName);
+                $this->createUserProfile($index, $firstName, $lastName, $rolesNames[4], $groupIndex);
 
-                DB::table('userprofiles')->insert([
-                    'user_id' => $index,
-                    'first_name' => $firstName,
-                    'last_name' => $lastName,
-                    'fullname' => $student,
-                    'role_id' => rand(1, 5),
-                    'company_id' => rand(1, 30),
-                    'address' => fake()->address,
-                    'student_group_id' => $groupIndex,
-                    'country' => 'Lietuva',
-                    'description' => 'Studentas/ė Klaipėdos valstybinėje kolegijoje',
-                    'image_path' => '\storage\app\public\profile_pictures\placeholder\profile_pic_placeholder.png',
-                    'created_at' => Carbon::today(),
-                    'updated_at' => Carbon::today()
-                ]);
                 $index++;
             }
             $groupIndex++;
         }
+
+        // TODO: TEMPORARY SOLUTION: BEFORE THE REAL PRESENTATION POPULATE WITH REAL PEOPLE (IF NEEDED)
+
+        for ($i = $index; $i < $index + 30; $i++) {
+            $firstName = fake()->firstName;
+            $lastName = fake()->lastName;
+            $roleId = rand(1, 4);
+
+            $this->createUserCredentials($firstName, $lastName);
+            $this->createUserProfile($index, $firstName, $lastName, $rolesNames[$roleId], $groupIndex, $roleId);
+        }
+    }
+
+    public function createUserProfile($index, $firstName, $lastName, $roleName, $groupIndex = 0, $roleId = 5)
+    {
+        DB::table('userprofiles')->insert([
+            'user_id' => $index,
+            'first_name' => $firstName,
+            'last_name' => $lastName,
+            'fullname' => $firstName . ' ' .$lastName,
+            'role_id' => $roleId,
+            'company_id' => rand(1, 30),
+            'address' => fake()->address,
+            'student_group_id' => $groupIndex,
+            'country' => 'Lietuva',
+            'description' => "$roleName Klaipėdos valstybinėje kolegijoje",
+            'image_path' => '\storage\app\public\profile_pictures\placeholder\profile_pic_placeholder.png',
+            'created_at' => Carbon::today(),
+            'updated_at' => Carbon::today()
+        ]);
+    }
+
+    public function createUserCredentials($firstName, $lastName)
+    {
+        DB::table('users')->insert([
+            'email' => strtolower($firstName) . '.' . strtolower($lastName) . rand(1, 9999) . '@' . fake()->freeEmailDomain,
+            'email_verified_at' => Carbon::today(),
+            'password' => Hash::make('password'),
+            'created_at' => Carbon::today(),
+            'updated_at' => Carbon::today()
+        ]);
     }
 }

@@ -14,7 +14,7 @@ class RoleSeeder extends Seeder
      */
     public function run()
     {
-        $roles = [1 => "PRODEKANAS", 2 => "KADEDROS_VEDEJAS",
+        $roles = [1 => "PRODEKANAS", 2 => "KATEDROS_VEDEJAS",
             3 => "PRAKTIKOS_VADOVAS", 4 => "MENTORIUS",
             5 => "STUDENTAS"];
 

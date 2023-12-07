@@ -4,19 +4,15 @@
       <img class="logo" :src="layoutLogo" alt="KVK Logo" />
     </div>
     <div class="btn" id="menu-activator-learning-material">
-      <router-link class="redirectText" to="/calendar"
-        >Praktika</router-link
-      >
+      <router-link class="redirectText" to="/calendar">Praktika</router-link>
       <v-menu open-on-hover activator="#menu-activator-learning-material">
         <v-list>
-          <v-list-item
-            v-for="(internshipItem, index) in internshipItems"
-            :key="index"
-            :value="index"
-          >
-            <router-link class="redirectText" :to="internshipItem.route">
+          <v-list-item v-for="(internshipItem, index) in internshipItems"
+          :key="index"
+          :value="index"
+          class="redirectText"
+          :to="internshipItem.route">
               <v-list-item-title>{{ internshipItem.title }}</v-list-item-title>
-            </router-link>
           </v-list-item>
         </v-list>
       </v-menu>
@@ -29,11 +25,11 @@
             v-for="(documentItem, index) in documentItems"
             :key="index"
             :value="index"
+            class="redirectText"
+            @click="setupUpload"
+            :to="documentItem.route"
           >
-          <router-link class="redirectText" @click="setupUpload" :to="documentItem.route">
-            <v-list-item-title>{{ documentItem.title }}</v-list-item-title>
-            </router-link>
-
+              <v-list-item-title>{{ documentItem.title }}</v-list-item-title>
           </v-list-item>
         </v-list>
       </v-menu>
@@ -48,10 +44,10 @@
             v-for="(resultItem, index) in resultItems"
             :key="index"
             :value="index"
+            class="redirectText" 
+            :to="resultItem.route"
           >
-          <router-link class="redirectText" :to="resultItem.route">
-            <v-list-item-title>{{ resultItem.title }}</v-list-item-title>
-            </router-link>
+              <v-list-item-title>{{ resultItem.title }}</v-list-item-title>
           </v-list-item>
         </v-list>
       </v-menu>
@@ -110,7 +106,7 @@ export default {
 
       resultItems: [
         { title: "Rezultatų kūrimo forma", route: "/evaluation-creation" },
-        { title: "Įsivertimas", route:'/evaluation-demo'},
+        { title: "Įsivertimas", route: "/evaluation-demo" },
       ],
 
       internshipItems: [
@@ -122,8 +118,8 @@ export default {
   },
   methods: {
     setupUpload() {
-      this.$store.commit('setUploadAction', "Internships");
-    }
+      this.$store.commit("setUploadAction", "Internships");
+    },
   },
   created() {
     const userStored = localStorage.getItem("user");

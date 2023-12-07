@@ -16,42 +16,55 @@
       <div class="selections"></div>
 
       <div class="inputDiv">
-        <!-- <div class="fieldDiv">
-          <div class="text-subtitle-1 text-bold-emphasis">Grupė</div>
-          <v-autocomplete
-            v-model="selectedGroup"
-            :items="groups"
-            item-title="group_identifier"
-            item-value="id"
-            @input="onGroupInput"
-            return-object
-            label="Įrašykite grupę"
-          ></v-autocomplete>
-        </div> -->
         <div class="fieldDiv">
-          <div class="text-subtitle-1 text-bold-emphasis">Praktikos pavadinimas</div>
-          <v-text-field
-            v-model="internshipName"
-            label="Įrašykite praktikos pavadinimą"
-          ></v-text-field>
-        </div>
-
-        <div class="fieldDiv">
-          <div class="text-subtitle-1 text-bold-emphasis">Vardas Pavardė</div>
+          <div class="text-subtitle-1 text-bold-emphasis">
+            Praktikos pavadinimas
+          </div>
           <v-combobox
-            v-model="selectedStudents"
-            :items="students"
-            item-title="fullName"
-            item-value="id"
-            multiple
-            clearable
-            chips
-            @input="onStudentInput"
-            return-object
-            label="Įrašykite vardą"
-          ></v-combobox>
+          v-model="selectedInternship"
+          :items="internships"
+          @input="onInternshipInput"
+          item-value="id"
+          item-title="internshipName"
+          return-object
+          label="Pasirinkite praktikos pavadinimą"
+        ></v-combobox>
         </div>
 
+        <div class="fieldDiv">
+          <div class="multiple-divs">
+            <div class="text-subtitle-1 text-bold-emphasis">
+              Praktikos vadovas
+            </div>
+            <v-combobox
+              v-model="selectedCounselors"
+              :items="counselors"
+              item-title="fullName"
+              item-value="id"
+              multiple
+              clearable
+              chips
+              @input="onCounsolerInput"
+              return-object
+              label="Vardas Pavardė"
+            ></v-combobox>
+          </div>
+          <div class="multiple-divs">
+            <div class="text-subtitle-1 text-bold-emphasis">Studentai</div>
+            <v-combobox
+              v-model="selectedStudents"
+              :items="students"
+              item-title="fullName"
+              item-value="id"
+              multiple
+              clearable
+              chips
+              @input="onStudentInput"
+              return-object
+              label="Vardas Pavardė"
+            ></v-combobox>
+          </div>
+        </div>
         <div class="fieldDivDate">
           <div class="d-inline-block dateInput">
             <div class="text-subtitle-1 text-bold-emphasis">Nuo:</div>
@@ -114,15 +127,19 @@ export default {
       userIcon,
       selectedStudents: [],
       selectedGroup: "",
+      selectedCounselors: [],
       students: [],
+      counselors: [],
       groups: [],
       companies: [],
+      internships:[],
       selectedCompany: null,
       dateFrom: null,
       dateTo: null,
       showSuccessAlert: false,
-      companyName:null,
-      internshipName:null,
+      companyName: null,
+      internshipName: null,
+      selectedInternship:null,
     };
   },
   components: {
@@ -137,9 +154,19 @@ export default {
     this.debouncedSearchCompanies = debounce((companyName) => {
       this.searchCompanies(companyName);
     }, 500);
+
+    this.debouncedSearchCounsolers = debounce((counselorName) => {
+      this.searchCounselors(counselorName);
+    }, 500);
+
+    this.debouncedSearchInternships = debounce((internshipName) => {
+      this.searchInternships(internshipName);
+    }, 500);
+
+
   },
   methods: {
-    onStudentInput(value) {
+    onStudentInput(event) {
       const studentName = event.target.value;
       if (typeof studentName === "string" && studentName.trim() !== "") {
         this.debouncedSearchStudents(studentName);
@@ -150,6 +177,20 @@ export default {
       const companyName = event.target.value;
       if (typeof companyName === "string" && companyName.trim() !== "") {
         this.debouncedSearchCompanies(companyName);
+      }
+    },
+
+    onCounsolerInput(event) {
+      const counselorName = event.target.value;
+      if (typeof counselorName === "string" && counselorName.trim() !== "") {
+        this.debouncedSearchCounsolers(counselorName);
+      }
+    },
+
+    onInternshipInput(event) {
+      const internshipName = event.target.value;
+      if (typeof internshipName === "string" && internshipName.trim() !== "") {
+        this.debouncedSearchInternships(internshipName);
       }
     },
 
@@ -200,28 +241,84 @@ export default {
       }
     },
 
+    searchCounselors(counselorName) {
+      if (typeof counselorName !== "string") {
+        console.error(
+          "counselorName called with non-string argument:",
+          counselorName
+        );
+        return;
+      }
+      if (counselorName && counselorName.trim() !== "") {
+        apiClient
+          .post("/search-profiles-role", { fullName: counselorName, roleId: 3 })
+          .then((response) => {
+            this.counselors = response.data.map((counselor) => ({
+              id: counselor.id,
+              fullName: counselor.fullname,
+            }));
+          })
+          .catch((error) => {
+            console.error("Error searching for counselors:", error);
+          });
+      }
+    },
+
+    searchInternships(internshipName) {
+      if (typeof internshipName !== "string") {
+        console.error(
+          "internshipName called with non-string argument:",
+          internshipName
+        );
+        return;
+      }
+      if (internshipName && internshipName.trim() !== "") {
+        apiClient
+          .post("/search/internship/titles", { searchString: internshipName, })
+          .then((response) => {
+            this.internships = response.data
+
+          })
+          .catch((error) => {
+            console.error("Error searching for counselors:", error);
+          });
+      }
+    },
+
     triggerSearchStudents() {
       this.debouncedSearchStudents(this.selectedStudents);
     },
     triggerSearchGroups() {
       this.debouncedSearchGroups(this.selectedGroup);
     },
+    triggerSearchCounselors() {
+      this.debouncedSearchGroups(this.selectedCounselors);
+    },
+
     submitInternship() {
+     
+      let internshipName = this.selectedInternship?.internshipName || this.selectedInternship;
       if (
         this.selectedCompany &&
-        this.selectedStudents.length > 0 &&
+        (this.selectedStudents.length > 0 ||
+          this.selectedCounselors.length > 0) &&
         this.dateFrom &&
         this.dateTo &&
-        this.internshipName
+        internshipName
       ) {
-        const userIds = this.selectedStudents.map(student => student.id);
+        const studentIds = this.selectedStudents.map((student) => student.id);
+        const counselorIds = this.selectedCounselors.map(
+          (counselor) => counselor.id
+        );
+
+        const userIds = [...studentIds, ...counselorIds];
 
         const payload = {
           companyId: this.selectedCompany.id,
           users: userIds,
           dateFrom: this.dateFrom,
           dateTo: this.dateTo,
-          title: this.internshipName,
+          title: internshipName,
         };
 
         apiClient
@@ -243,6 +340,15 @@ export default {
 </script>
 
 <style scoped>
+.fieldDiv:nth-child(2) {
+  display: flex;
+  min-width: 300px;
+  justify-content: space-around;
+}
+.multiple-divs {
+  min-width: 220px;
+}
+
 .fieldDivDate {
   width: 450px;
   display: flex;

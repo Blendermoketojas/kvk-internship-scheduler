@@ -111,7 +111,7 @@ export default {
 
       internshipItems: [
         { title: "Kalendorius", route: "/calendar" },
-        { title: "Praktikos priskirimas", route: "/internship-management" },
+        { title: "Praktikos priskyrimas", route: "/internship-management" },
         { title: "Praktikos peržiūra", route: "/user-internships" },
       ],
     };

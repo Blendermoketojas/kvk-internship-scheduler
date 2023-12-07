@@ -7,7 +7,7 @@
       <router-link class="redirectText" to="/calendar">Praktika</router-link>
       <v-menu open-on-hover activator="#menu-activator-learning-material">
         <v-list>
-          <v-list-item v-for="(internshipItem, index) in internshipItems"
+          <v-list-item v-for="(internshipItem, index) in filteredInternshipItems"
           :key="index"
           :value="index"
           class="redirectText"
@@ -22,7 +22,7 @@
       <v-menu open-on-hover activator="#menu-activator">
         <v-list>
           <v-list-item
-            v-for="(documentItem, index) in documentItems"
+            v-for="(documentItem, index) in filteredDocumentItems"
             :key="index"
             :value="index"
             class="redirectText"
@@ -41,7 +41,7 @@
       <v-menu open-on-hover activator="#menu-activator-results">
         <v-list>
           <v-list-item
-            v-for="(resultItem, index) in resultItems"
+            v-for="(resultItem, index) in filteredResultItems"
             :key="index"
             :value="index"
             class="redirectText" 
@@ -129,21 +129,49 @@ export default {
   },
 
   computed: {
+    ...mapGetters(['getUser']),
+
     fullImagePath() {
       return this.user.image_path
         ? this.baseImageUrl + this.user.image_path
         : null;
     },
+    userRoleId() {
+      return this.getUser.role_id;
+  },
 
-    ...mapGetters(["getUser"]),
+  filteredDocumentItems() {
+    if (this.userRoleId === 1) {
+      return this.documentItems;
+    } else if (this.userRoleId === 5) {
+      return this.documentItems.filter(item => item.title !== "Dokumentų įkėlimas");
+    } else {
+      return []; 
+    }
+  },
 
-    filteredDocumentItems() {
-      if (this.getUser.role_id === 1) {
-        return this.documentItems;
-      } else if (this.getUser.role_id === 5) {
-        return this.documentItems.slice(0, 1);
-      }
-    },
+  filteredResultItems() {
+    if (this.userRoleId === 1) {
+      return this.resultItems;
+    } else if (this.userRoleId === 5) {
+      return this.resultItems.filter(item => item.title !== "Rezultatų kūrimo forma");
+    } else {
+      return []; 
+    }
+  },
+  filteredInternshipItems() {
+    if (this.userRoleId === 1) {
+      return this.internshipItems;
+    } else if (this.userRoleId === 5) {
+      return this.internshipItems.filter(item => item.title !== "Praktikos priskyrimas");
+    } else {
+      return []; 
+    }
+  },
+
+
+
+
   },
 
   mounted() {

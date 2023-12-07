@@ -72,12 +72,6 @@ Route::middleware('api')->prefix('v2')->group(function () {
         Route::post('/search-student-groups', [StudentController::class, 'searchStudentGroups']);
         Route::post('/search-students', [StudentController::class, 'searchStudents']);
 
-        // quick cookie test
-
-        Route::get('/echo/auth', function (Request $request) {
-            return "Maladec turi sausaini";
-        });
-
         // Internships
 
         Route::get('/internship-active', [InternshipController::class, 'getActiveInternship']);
@@ -89,6 +83,7 @@ Route::middleware('api')->prefix('v2')->group(function () {
         Route::post('/internships/student-group', [InternshipController::class, 'getStudentGroupInternships']);
         Route::post('/internships/student-group-active', [InternshipController::class,
             'getStudentGroupActiveInternships']);
+        Route::post('/search/internship/titles', [InternshipController::class, 'searchInternshipTitles']);
 
         Route::put('/internship-update', [InternshipController::class, 'updateInternship']);
 

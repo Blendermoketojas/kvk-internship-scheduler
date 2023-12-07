@@ -11,6 +11,7 @@ use App\Services\ManageInternships\Services\GetStudentGroupActiveInternshipsServ
 use App\Services\ManageInternships\Services\GetStudentGroupInternshipsService;
 use App\Services\ManageInternships\Services\GetCurrentUserInternshipsService;
 use App\Services\ManageInternships\Services\GetUserInternshipsService;
+use App\Services\ManageInternships\Services\SearchInternshipTitlesService;
 use App\Services\ManageInternships\Services\UpdateInternshipService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -85,5 +86,13 @@ class InternshipController extends Controller
     public function updateInternship(Request $request): JsonResponse
     {
         return (new UpdateInternshipService($request))->execute();
+    }
+
+    /**
+     * @throws ValidationException
+     */
+    public function searchInternshipTitles(Request $request): JsonResponse
+    {
+        return (new SearchInternshipTitlesService($request))->execute();
     }
 }

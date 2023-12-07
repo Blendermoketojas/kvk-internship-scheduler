@@ -92,7 +92,7 @@ class CreateFilesService extends BaseService
             ];
         }
 
-        // Bulk insert the file records
+        // bulk insert the file records
         $fileable->files()->createMany($fileRecords);
 
         // response

@@ -5,14 +5,14 @@ namespace App\Console\Commands;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Artisan;
 
-class RefreshDatabase extends Command
+class RefreshDatabaseFake extends Command
 {
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'db:refresh';
+    protected $signature = 'db:refresh {--real}';
 
     /**
      * The console command description.
@@ -35,7 +35,10 @@ class RefreshDatabase extends Command
 
         // Seed the database
         $this->info('Seeding database...');
-        Artisan::call('db:seed --class=MainSeeder');
+
+        if ($this->option('real')) Artisan::call('db:seed --class=RealSeeder');
+        else Artisan::call('db:seed --class=FakeSeeder');
+
         $this->info('Database has been seeded.');
 
         return 0;

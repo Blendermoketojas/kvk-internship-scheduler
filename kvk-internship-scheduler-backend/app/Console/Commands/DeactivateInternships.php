@@ -28,7 +28,7 @@ class DeactivateInternships extends Command
      */
     public function handle()
     {
-        $this->info('Deactivating internships past their date...');
+        $this->info('Deactivating internships past their end date...');
 
         Internship::where('date_to', '<', now())
             ->where('is_active', true)

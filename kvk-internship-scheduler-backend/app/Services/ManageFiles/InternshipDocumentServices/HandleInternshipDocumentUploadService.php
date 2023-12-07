@@ -95,7 +95,7 @@ class HandleInternshipDocumentUploadService extends BaseService
             ];
         }
 
-        // Bulk insert the file records
+        // bulk insert the file records
         $document->files()->createMany($fileRecords);
 
         // response

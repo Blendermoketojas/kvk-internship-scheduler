@@ -50,7 +50,7 @@ class RealStudentSeeder extends Seeder
             $roleId = rand(1, 4);
 
             $this->createUserCredentials($firstName, $lastName);
-            $this->createUserProfile($index, $firstName, $lastName, $rolesNames[$roleId], $groupIndex, $roleId);
+            $this->createUserProfile($i, $firstName, $lastName, $rolesNames[$roleId], 0, $roleId);
         }
     }
 

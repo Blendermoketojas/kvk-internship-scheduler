@@ -1,0 +1,16 @@
+--------------------------- Reikiami pakeitimai -------------
+
+1. Kodel prodekanas prisijungia ir mato iskart kalendoriu. Turetu matyt aktyvias praktikas arba grupiu sarasa. Prodekanas mato praktiku sarasa
+2. Praktiku sarase filtras pagal grupes pavadinima. Sarase mato igyvendintas valandas ir bendra skaiciu. Filtras pasibaigusias ir vykdomas. Filtras
+ivertinimui dar vienas field praktkoj is_evaluated
+3. Praktiku sarase: pasirinkus zmogu numestu i jo visas praktikas, jo profilio nuotraukos.
+4. Profilyje ne kompanija o imone, ir kvk naudotojam turi nerodyt, o tik metnoriam isoriniam pvz
+5. Praktikos duomenys kokie priskirti praktikantai (mentoriaus POV).
+6. Mentorius mato savo priskirtu studentu, praktiku sarasa (filtrai) (aktyvios, gavo/negavo ivertinima).
+7. Mentorius turi teise savo ivertinima matyti.
+8. Nera mentoriaus pasirinkimo priskirti praktikos priskiryme.
+9. Prodekanas kuria roles ir zmones.
+10. Gali but ne tik failo ikelimas, bet nuoroda i kazkur. Tiek Dokumentai tiek mokymosi medziaga.
+11. Frontendas mano rezultatai turi but bent padarytas.
+12. Studentas isivertina kompentencija sau praktika.
+13. Kalendorius i lietuviska, SIAIP VISKAS I LIETUVISKA

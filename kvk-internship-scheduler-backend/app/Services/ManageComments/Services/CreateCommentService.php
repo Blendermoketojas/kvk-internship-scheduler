@@ -63,7 +63,7 @@ class CreateCommentService extends BaseService
             $internship->date_from, $internship->date_to);
 
         if (TimeHelper::doesTimeOverlap($this->data()['date_from'], $this->data()['date_to']))
-        { 
+        {
             return response()->json(['error' => 'Cannot save the comment because it overlaps another comment'],
                 405);
         }

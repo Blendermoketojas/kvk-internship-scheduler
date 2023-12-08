@@ -72,6 +72,8 @@ Route::middleware('api')->prefix('v2')->group(function () {
         Route::post('/search-student-groups', [StudentController::class, 'searchStudentGroups']);
         Route::post('/search-students', [StudentController::class, 'searchStudents']);
 
+        Route::get('/linked-students', [StudentController::class, 'getLinkedStudents']);
+
         // Internships
 
         Route::get('/internship-active', [InternshipController::class, 'getActiveInternship']);

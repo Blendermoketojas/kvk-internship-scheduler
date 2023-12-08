@@ -5,6 +5,7 @@ namespace App\Http\Controllers\v2;
 use App\Http\Controllers\Controller;
 use App\Models\StudentGroup;
 use App\Models\UserProfile;
+use App\Services\ManageStudents\GetLinkedStudentsService;
 use App\Services\ManageStudents\SearchStudentGroupsService;
 use App\Services\ManageStudents\SearchStudentsService;
 use Illuminate\Http\JsonResponse;
@@ -27,5 +28,13 @@ class StudentController extends Controller
     public function searchStudents(Request $request): JsonResponse
     {
         return (new SearchStudentsService($request))->execute();
+    }
+
+    /**
+     * @throws ValidationException
+     */
+    public function getLinkedStudents(Request $request): JsonResponse
+    {
+        return (new GetLinkedStudentsService($request))->execute();
     }
 }

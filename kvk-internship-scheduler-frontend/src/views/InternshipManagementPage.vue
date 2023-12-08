@@ -30,6 +30,21 @@
           label="Pasirinkite praktikos pavadinimą"
         ></v-combobox>
         </div>
+        <div class="fieldDiv">
+          <div class="text-subtitle-1 text-bold-emphasis">Mentorius</div>
+          <v-combobox
+          v-model="selectedMentor"
+          :items="mentors"
+          item-title="fullName"
+          item-value="id"
+          multiple
+          clearable
+          chips
+          @input="onMentorInput"
+          return-object
+          label="Vardas Pavardė"
+        ></v-combobox>
+        </div>
 
         <div class="fieldDiv">
           <div class="multiple-divs">
@@ -140,6 +155,9 @@ export default {
       companyName: null,
       internshipName: null,
       selectedInternship:null,
+      mentors:[],
+      mentorName:null,
+      selectedMentor:[],
     };
   },
   components: {
@@ -163,6 +181,9 @@ export default {
       this.searchInternships(internshipName);
     }, 500);
 
+    this.debouncedSearchMentors = debounce((mentorName) => {
+      this.searchMentors(mentorName);
+    }, 500);
 
   },
   methods: {
@@ -191,6 +212,13 @@ export default {
       const internshipName = event.target.value;
       if (typeof internshipName === "string" && internshipName.trim() !== "") {
         this.debouncedSearchInternships(internshipName);
+      }
+    },
+
+    onMentorInput(event) {
+      const mentorName = event.target.value;
+      if (typeof mentorName === "string" && mentorName.trim() !== "") {
+        this.debouncedSearchMentors(mentorName);
       }
     },
 
@@ -264,6 +292,29 @@ export default {
       }
     },
 
+    searchMentors(mentorName) {
+      if (typeof mentorName !== "string") {
+        console.error(
+          "mentorName called with non-string argument:",
+          mentorName
+        );
+        return;
+      }
+      if (mentorName && mentorName.trim() !== "") {
+        apiClient
+          .post("/search-profiles-role", { fullName: mentorName, roleId: 4 })
+          .then((response) => {
+            this.mentors = response.data.map((mentor) => ({
+              id: mentor.id,
+              fullName: mentor.fullname,
+            }));
+          })
+          .catch((error) => {
+            console.error("Error searching for mentors:", error);
+          });
+      }
+    },
+
     searchInternships(internshipName) {
       if (typeof internshipName !== "string") {
         console.error(
@@ -294,6 +345,9 @@ export default {
     triggerSearchCounselors() {
       this.debouncedSearchGroups(this.selectedCounselors);
     },
+    triggerSearchMentors() {
+      this.debouncedSearchGroups(this.selectedMentor);
+    },
 
     submitInternship() {
      
@@ -301,7 +355,7 @@ export default {
       if (
         this.selectedCompany &&
         (this.selectedStudents.length > 0 ||
-          this.selectedCounselors.length > 0) &&
+          this.selectedCounselors.length > 0 || this.selectedMentor.length > 0) &&
         this.dateFrom &&
         this.dateTo &&
         internshipName
@@ -310,8 +364,11 @@ export default {
         const counselorIds = this.selectedCounselors.map(
           (counselor) => counselor.id
         );
+        const mentorsId = this.selectedMentor.map(
+          (mentor) => mentor.id
+        );
 
-        const userIds = [...studentIds, ...counselorIds];
+        const userIds = [...studentIds, ...counselorIds, ...mentorsId];
 
         const payload = {
           companyId: this.selectedCompany.id,
@@ -340,11 +397,7 @@ export default {
 </script>
 
 <style scoped>
-.fieldDiv:nth-child(2) {
-  display: flex;
-  min-width: 300px;
-  justify-content: space-around;
-}
+
 .multiple-divs {
   min-width: 220px;
 }

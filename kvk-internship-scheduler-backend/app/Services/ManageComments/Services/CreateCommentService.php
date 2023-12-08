@@ -62,20 +62,18 @@ class CreateCommentService extends BaseService
         DateHelper::ensureDatesAreBetween([$this->data()['date_from'], $this->data()['date_to']],
             $internship->date_from, $internship->date_to);
 
-        $comment = new Comment([
-            'user_id' => $this->data()['user_id'],
-            'comment' => $this->data()['comment'],
-            'date_from' => $this->data()['date_from'],
-            'date_to' => $this->data()['date_to']
-        ]);
-
-        $internship->comments()->create($comment);
+        if (TimeHelper::doesTimeOverlap($this->data()['date_from'], $this->data()['date_to']))
+        { 
+            return response()->json(['error' => 'Cannot save the comment because it overlaps another comment'],
+                405);
+        }
 
         $hours_logged = TimeHelper::getHoursInFractionFromDate($this->data()['date_from'], $this->data()['date_to']);
 
-        $internship->logged_hours = +$hours_logged;
+        $comment = $internship->comments()->create(array_diff_key([...$this->data(),
+            'logged_duration' => $hours_logged], ['internship_id' => '']));
 
         // response
-        return response()->json(['comment' => $comment, 'hours_logged' => $internship->logged_hours]);
+        return response()->json(['comment' => $comment]);
     }
 }

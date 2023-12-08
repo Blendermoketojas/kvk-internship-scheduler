@@ -3,6 +3,7 @@
 namespace App\Services\ManageComments\Services;
 
 use App\Contracts\Roles\Role;
+use App\Helpers\Time\TimeHelper;
 use App\Models\Comment;
 use App\Services\BaseService;
 use App\Services\ManageComments\Response\CommentResource;
@@ -49,6 +50,9 @@ class UpdateCommentService extends BaseService
 
         // logic execution
 
+        $hours_logged = TimeHelper::getHoursInFractionFromDate($this->data()['date_from'], $this->data()['date_to']);
+
+        $this->modelInstance->logged_hours = $hours_logged;
         $this->modelInstance->update($this->data());
 
         // response

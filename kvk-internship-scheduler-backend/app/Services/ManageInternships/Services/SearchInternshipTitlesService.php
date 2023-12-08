@@ -13,7 +13,7 @@ class SearchInternshipTitlesService extends BaseService
     public function rules(): array
     {
         return [
-            'searchString' => 'required|string|min:5|max:255'
+            'searchString' => 'required|string|max:255'
         ];
     }
 

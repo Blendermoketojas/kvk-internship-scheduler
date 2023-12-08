@@ -18,8 +18,9 @@ return new class extends Migration
             $table->integer('internship_id');
             $table->integer('user_id');
             $table->string('comment');
-            $table->dateTime('date_from');
-            $table->dateTime('date_to');
+            $table->dateTime('date_from')->index();
+            $table->dateTime('date_to')->index();
+            $table->float('logged_duration');
             $table->unsignedBigInteger('created_by')->nullable();
             $table->foreign('created_by')->references('id')->on('users')->onDelete('set null');
             $table->timestamps();

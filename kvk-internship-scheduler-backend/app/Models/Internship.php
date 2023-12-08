@@ -27,7 +27,12 @@ class Internship extends Model
         'company_id',
         'date_from',
         'date_to',
-        'is_active'
+        'is_active',
+        'duration_in_hours',
+        'logged_hours',
+        'is_mentor_evaluated',
+        'is_head_of_internship_evaluated',
+        'is_self_evaluated'
     ];
 
     protected $casts = [

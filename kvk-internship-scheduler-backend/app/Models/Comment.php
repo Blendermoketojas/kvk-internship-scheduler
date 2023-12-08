@@ -19,7 +19,8 @@ class Comment extends Model
         'comment',
         'internship_id',
         'date_from',
-        'date_to'
+        'date_to',
+        'logged_duration',
     ];
 
     protected $hidden = [

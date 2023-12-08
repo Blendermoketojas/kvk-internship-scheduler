@@ -11,7 +11,8 @@ trait HandleInternshipHours
         static::updating(function ($model) {
             if ($model->logged_hours >= $model->duration_in_hours) {
                 $model->is_active = false;
-                $model->save();
+            } else {
+                $model->is_active = true;
             }
         });
     }

@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Traits\AutoCreatedBy;
+use App\Traits\HandleInternshipHours;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -14,6 +15,7 @@ class Internship extends Model
 {
     use HasFactory;
     use AutoCreatedBy;
+    use HandleInternshipHours;
 
     public $timestamps = true;
 

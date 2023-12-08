@@ -1,11 +1,10 @@
 <?php
 
-namespace App\Helpers\Date;
+namespace App\Helpers\Time;
 
 use Carbon\Carbon;
 use App\Exceptions\DateNotInRangeException;
 use Exception;
-
 
 class DateHelper
 {

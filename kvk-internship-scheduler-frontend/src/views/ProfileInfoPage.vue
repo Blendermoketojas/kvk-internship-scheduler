@@ -215,6 +215,7 @@ export default {
       selectedInternshipComments: [],
       selectedStudent: "",
       students: [],
+      internshipsLoaded: false,
     };
   },
   components: {
@@ -273,6 +274,7 @@ export default {
       .get("/internships")
       .then((response) => {
         this.internships = response.data;
+        this.internshipsLoaded = true;
       })
       .catch((error) => {
         console.error("Error fetching internships:", error);
@@ -332,13 +334,13 @@ export default {
   },
 
   watch: {
-  selectedStudent(newVal) {
-    if (newVal && newVal.id) {
-      this.handleStudentSelection(newVal.id);
-    }
-  },
+  // selectedStudent(newVal) {
+  //   if (newVal && newVal.id) {
+  //     this.handleStudentSelection(newVal.id);
+  //   }
+  // },
   tab(newVal) {
-      if (newVal === "2" && this.getUser.role_id === 5) {
+      if (newVal === "2" && !this.internshipsLoaded) {
         this.fetchInternshipsForRoleFive();
       }
     },

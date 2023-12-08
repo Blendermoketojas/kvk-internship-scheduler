@@ -115,14 +115,80 @@
               v-if="userData && userData.description !== undefined"
             ></v-textarea>
           </div>
+          <div class="bottomButtons">
+            <v-btn color="#0D47A1" rounded="xl" variant="elevated" type="submit"
+              >Išsaugoti</v-btn
+            >
+            <v-btn rounded="xl" variant="outlined">Atšaukti</v-btn>
+          </div>
         </v-window-item>
+<v-window-item value="2">
+  <v-expansion-panels v-if="internships && internships.length > 0">
+    <v-expansion-panel 
+      v-for="internship in internships"
+
+      :key="internship.id" 
+    >
+      <v-expansion-panel-title
+        class="panelHeader"
+        @click="handleInternshipClick(internship.id)"
+      >
+        <v-container>
+          <v-row no-gutters>
+            <v-col cols="3">
+              {{ internship.company.company_name }}
+            </v-col>
+            <v-col cols="3">
+              <div>Nuo: {{ internship.date_from }}</div>
+            </v-col>
+            <v-col cols="3">
+              <div>Iki: {{ internship.date_to }}</div>
+            </v-col>
+            <v-col class="d-flex justify-end" cols="3"> </v-col>
+          </v-row>
+        </v-container>
+      </v-expansion-panel-title>
+      <v-expansion-panel-text>
+        <v-container v-if="selectedInternshipComments === null">
+          Kraunama informacija...
+        </v-container>
+
+        <v-container v-else>
+          <v-row v-if="selectedInternshipComments.length > 0">
+            <v-col
+              v-for="comment in selectedInternshipComments"
+              :key="comment.id"
+              cols="12"
+            >
+              <v-row>
+                <v-col cols="4" class="comment-details">
+                  Nuo: {{ comment.date_from }}
+                </v-col>
+                <v-col cols="4" class="comment-details">
+                  Iki: {{ comment.date_to }}
+                </v-col>
+                <v-col cols="4" class="comment-details">
+                  Aprašymas: {{ comment.comment }}
+                </v-col>
+              </v-row>
+            </v-col>
+          </v-row>
+          <v-row v-else>
+            <v-col cols="12">Kraunama informacija...</v-col>
+          </v-row>
+        </v-container>
+      </v-expansion-panel-text>
+    </v-expansion-panel>
+  </v-expansion-panels>
+  <div v-else class="no-internships">
+    Nėra praktikos informacijos.
+  </div>
+
+</v-window-item>
+
+
       </v-window>
-      <div class="bottomButtons">
-        <v-btn color="#0D47A1" rounded="xl" variant="elevated" type="submit"
-          >Išsaugoti</v-btn
-        >
-        <v-btn rounded="xl" variant="outlined">Atšaukti</v-btn>
-      </div>
+  
     </div>
   </form>
 </template>
@@ -131,6 +197,7 @@
 import userIcon from "@/assets/Photos/UserIcon.png";
 import customHeader from "@/components/DesktopHeader.vue";
 import apiClient from "@/utils/api-client";
+import { mapGetters } from "vuex";
 
 export default {
   name: "ProfileInfo",
@@ -143,6 +210,11 @@ export default {
       selectedImage: null,
       showSuccessAlert: false,
       tab: "1",
+      internships: [],
+      selectedInternshipId: null,
+      selectedInternshipComments: [],
+      selectedStudent: "",
+      students: [],
     };
   },
   components: {
@@ -156,8 +228,57 @@ export default {
     });
 
     this.fetchUserData();
+
+    if(this.getUser.role_id === 5) {
+    this.fetchInternshipsForRoleFive();
+  }
   },
   methods: {
+    handleStudentSelection(studentId) {
+    apiClient
+      .post(`/user/internships`,  {userId: studentId} )
+      .then(response => {
+        console.log("Internships for student:", response.data);
+        this.internships=response.data;
+      })
+      .catch(error => {
+        console.error("Error fetching internships for selected student:", error);
+      });
+  },
+
+  handleInternshipClick(internshipId) {
+      if (this.selectedInternshipId === internshipId) {
+        return;
+      }
+      this.selectedInternshipId = internshipId;
+      this.selectedInternshipComments = [];
+
+      apiClient
+        .post(`/internship/comments`, {
+          internshipId: this.selectedInternshipId,
+        })
+        .then((response) => {
+          this.selectedInternshipComments = response.data;
+          console.log(this.selectedInternshipComments.date_from);
+        })
+        .catch((error) => {
+          console.error("Error fetching internship details:", error);
+          this.selectedInternshipComments = [];
+        });
+    },
+
+       
+    fetchInternshipsForRoleFive() {
+    apiClient
+      .get("/internships")
+      .then((response) => {
+        this.internships = response.data;
+      })
+      .catch((error) => {
+        console.error("Error fetching internships:", error);
+      });
+  },
+
     fetchUserData() {
       apiClient.get("/profile", { withCredentials: true }).then((response) => {
         this.userData = response.data;
@@ -207,19 +328,49 @@ export default {
     handleFileChange(event) {
       this.selectedImage = event.target.files[0];
     },
+
   },
+
+  watch: {
+  selectedStudent(newVal) {
+    if (newVal && newVal.id) {
+      this.handleStudentSelection(newVal.id);
+    }
+  },
+},
   computed: {
     imagePreview() {
       return this.selectedImage
         ? URL.createObjectURL(this.selectedImage)
         : null;
     },
+    ...mapGetters(["getUser"]),
+    isRoleFive() {
+    return this.getUser.role_id === 5;
+  },
   },
 };
 </script>
 
 <style scoped>
-.selections{
+.no-internships {
+  text-align: center;
+  padding: 20px;
+  color: #757575;
+}
+
+.v-expansion-panels{
+  border: 1px solid rgb(234, 229, 229);
+  border-radius: 5px;
+}
+
+.comment-details {
+  display: flex;
+  border-bottom: 1px rgb(234, 225, 225) solid;
+  padding: 20px 0;
+}
+
+.selections {
   margin: 10px 0;
 }
 .fieldDiv {

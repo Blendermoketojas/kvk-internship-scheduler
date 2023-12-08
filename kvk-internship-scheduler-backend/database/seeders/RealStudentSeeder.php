@@ -31,8 +31,8 @@ class RealStudentSeeder extends Seeder
         foreach (getGroups() as $group) {
             Log::info($group);
             foreach (getStudentsFromGroup($group) as $student) {
-                $firstName = explode(" ", $student)[0];
-                $lastName = explode(" ", $student)[1];
+                $firstName = explode(" ", $student)[1];
+                $lastName = explode(" ", $student)[0];
 
                 $this->createUserCredentials($firstName, $lastName);
                 $this->createUserProfile($index, $firstName, $lastName, $rolesNames[4], $groupIndex);

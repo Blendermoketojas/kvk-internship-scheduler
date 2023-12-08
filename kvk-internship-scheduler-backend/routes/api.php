@@ -78,6 +78,7 @@ Route::middleware('api')->prefix('v2')->group(function () {
 
         Route::get('/internship-active', [InternshipController::class, 'getActiveInternship']);
         Route::get('/internships', [InternshipController::class, 'getCurrentUserInternships']);
+        Route::get('/linked-students/internships', [InternshipController::class, 'getLinkedStudentsInternships']);
 
         Route::post('/internship', [InternshipController::class, 'getInternship']);
         Route::post('/internships', [InternshipController::class, 'createInternship']);

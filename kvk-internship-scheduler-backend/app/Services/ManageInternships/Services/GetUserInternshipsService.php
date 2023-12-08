@@ -41,8 +41,10 @@ class GetUserInternshipsService extends BaseService
         // logic execution
 
         $user = UserProfile::find($this->data()['userId']);
+        $internships = $user->internships()->with('company')->get();
 
         // response
-        return response()->json($user->internships()->with('company')->get());
+        return response()->json([...$internships,'userProfile' => ['id' => $user->id,
+            'fullname' => $user->fullname]]);
     }
 }

@@ -14,3 +14,5 @@ ivertinimui dar vienas field praktkoj is_evaluated
 11. Frontendas mano rezultatai turi but bent padarytas.
 12. Studentas isivertina kompentencija sau praktika.
 13. Kalendorius i lietuviska, SIAIP VISKAS I LIETUVISKA
+
+2. BACKEND: valandos igyvendintos.

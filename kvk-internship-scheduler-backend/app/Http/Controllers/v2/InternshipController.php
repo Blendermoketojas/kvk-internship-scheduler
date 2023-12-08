@@ -7,6 +7,7 @@ use App\Services\ManageInternships\Services\CreateInternshipService;
 use App\Services\ManageInternships\Services\DeleteInternshipService;
 use App\Services\ManageInternships\Services\GetActiveInternshipService;
 use App\Services\ManageInternships\Services\GetInternshipService;
+use App\Services\ManageInternships\Services\GetLinkedStudentsInternshipsService;
 use App\Services\ManageInternships\Services\GetStudentGroupActiveInternshipsService;
 use App\Services\ManageInternships\Services\GetStudentGroupInternshipsService;
 use App\Services\ManageInternships\Services\GetCurrentUserInternshipsService;
@@ -94,5 +95,13 @@ class InternshipController extends Controller
     public function searchInternshipTitles(Request $request): JsonResponse
     {
         return (new SearchInternshipTitlesService($request))->execute();
+    }
+
+    /**
+     * @throws ValidationException
+     */
+    public function getLinkedStudentsInternships(Request $request): JsonResponse
+    {
+        return (new GetLinkedStudentsInternshipsService($request))->execute();
     }
 }

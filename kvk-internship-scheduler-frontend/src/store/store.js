@@ -4,9 +4,9 @@ export default createStore({
   state: {
     currentInternship: null,
     role_id: null,
-    userInfo: null,
     uploadAction: null,
     internshipDialogData: null,
+    user:null,
   },
   mutations: {
     setCurrentInternship(state, payload) {
@@ -15,8 +15,8 @@ export default createStore({
     setRoleId(state, role_id) {
       state.role_id = role_id;
     },
-    setUser(state, userInfo) {
-      state.userInfo = userInfo;
+    setUser(state, user) {
+      state.user = user;
     },
     setUploadAction(state, payload) {
       state.uploadAction = payload;
@@ -30,14 +30,17 @@ export default createStore({
       return state.currentInternship;
     },
     getUser(state){
-      return state.userInfo || {};
+      return state.user || {};
     },
     getUploadAction(state) {
       return state.uploadAction;
     },
     getInternshipDialogData(state) {
       return state.internshipDialogData;
-    }
+    },
+    getRoleId(state) {
+      return state.user ? state.user.role_id : null;
+    },
   },
   actions: {},
 });

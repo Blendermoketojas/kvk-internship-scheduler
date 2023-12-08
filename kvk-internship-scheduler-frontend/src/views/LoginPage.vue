@@ -119,7 +119,8 @@ export default {
           })
           .then((response) => {
             if (response.data.success) {
-              const { fullname, image_path } = response.data.user;
+              this.$store.commit('setUser', response.data.user);
+              const { fullname, image_path} = response.data.user;
               localStorage.setItem(
                 "user",
                 JSON.stringify({

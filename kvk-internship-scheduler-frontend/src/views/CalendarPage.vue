@@ -115,7 +115,6 @@ export default {
           if (response.data && response.data.id) {
             this.internship_id = response.data.id;
             console.log("Active internship ID:", this.internship_id);
-            this.getUserComments();
           } else {
             this.internship_id = null;
           }

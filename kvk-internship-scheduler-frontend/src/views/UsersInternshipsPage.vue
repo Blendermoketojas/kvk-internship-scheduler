@@ -9,7 +9,7 @@
     <div class="mainInternshipDiv">
       <div class="studentSearchInput">
 
-        <div class="fieldDiv">
+        <div class="fieldDiv" v-if="!isRoleFive">
             <div class="text-subtitle-1 text-bold-emphasis">Vardas Pavardė</div>
             <v-autocomplete
               v-model="selectedStudent"
@@ -126,6 +126,17 @@ export default {
 
   methods: {
    
+    fetchInternshipsForRoleFive() {
+    apiClient
+      .get("/internships")
+      .then((response) => {
+        this.internships = response.data;
+      })
+      .catch((error) => {
+        console.error("Error fetching internships:", error);
+      });
+  },
+
     handleStudentSelection(studentId) {
     apiClient
       .post(`/user/internships`,  {userId: studentId} )
@@ -199,26 +210,20 @@ export default {
 
   mounted() {
     console.log(this.getUser.role_id);
-
-    apiClient
-      .get("/internships")
-      .then((response) => {
-        this.internships = response.data;
-        this.internships.forEach((internship) => {});
-      })
-      .catch((error) => {
-        console.error("Error fetching internships:", error);
-      });
-
-
       this.debouncedSearchStudents = debounce((studentName) => {
       this.searchStudents(studentName);
     }, 500);
 
+    if(this.getUser.role_id === 5) {
+    this.fetchInternshipsForRoleFive();
+  }
 
   },
   computed: {
     ...mapGetters(["getUser"]),
+    isRoleFive() {
+    return this.getUser.role_id === 5;
+  },
   },
 };
 </script>

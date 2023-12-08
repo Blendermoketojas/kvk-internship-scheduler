@@ -11,7 +11,6 @@
     @appointmentUpdated="updatedComment"
     allowDragging="false"
     allowResizing="false"
-
   >
   </DxScheduler>
 </template>
@@ -21,6 +20,8 @@ import { DxScheduler } from "devextreme-vue/scheduler";
 import HeaderNav from "@/components/DesktopHeader.vue";
 import { mapGetters } from "vuex";
 import apiClient from "@/utils/api-client";
+import { locale, loadMessages } from "devextreme/localization";
+import ltMessages from "devextreme/localization/messages/lt.json";
 
 export default {
   components: {
@@ -79,8 +80,7 @@ export default {
         dateFrom: formattedStartDate,
         dateTo: formattedEndDate,
       };
-apiClient.put('/comments', dataToSend);
-
+      apiClient.put("/comments", dataToSend);
     },
 
     formatDate(date) {
@@ -117,7 +117,7 @@ apiClient.put('/comments', dataToSend);
             console.log("Active internship ID:", this.internship_id);
             this.getUserComments();
           } else {
-            this.internship_id=null;
+            this.internship_id = null;
           }
         });
     },
@@ -156,6 +156,10 @@ apiClient.put('/comments', dataToSend);
       .catch((error) => {
         console.error("Error during the active internship retrieval:", error);
       });
+
+    loadMessages(ltMessages);
+
+    locale("lt");
   },
 };
 </script>

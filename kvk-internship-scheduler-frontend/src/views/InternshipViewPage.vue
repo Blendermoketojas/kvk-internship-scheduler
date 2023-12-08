@@ -71,11 +71,10 @@ export default {
         .post("/internships/student-group-active", { studentGroupId: groupId })
         .then((response) => {
           this.internships = response.data.map((internship) => ({
-            name: internship.user_profile.fullname,
-            group: internship.user_profile.company_id,
+            name: internship.user_profiles.fullname,
+            group: internship.user_profiles.company_id,
             dateFrom: internship.date_from,
             dateTo: internship.date_to,
-            company: internship.company.company_name,
           }));
         })
         .catch((error) => {

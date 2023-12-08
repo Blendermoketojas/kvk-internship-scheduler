@@ -337,6 +337,11 @@ export default {
       this.handleStudentSelection(newVal.id);
     }
   },
+  tab(newVal) {
+      if (newVal === "2" && this.getUser.role_id === 5) {
+        this.fetchInternshipsForRoleFive();
+      }
+    },
 },
   computed: {
     imagePreview() {

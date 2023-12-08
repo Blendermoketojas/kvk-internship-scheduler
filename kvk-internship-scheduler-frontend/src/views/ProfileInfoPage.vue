@@ -3,78 +3,125 @@
   <form @submit.prevent="saveChanges">
     <div class="mainProfile">
       <v-alert
-  v-if="showSuccessAlert"
-  color="success"
-  icon="$success"
-  title="Pavyko!"
-  text="Profilio informacija buvo atnaujinta!"
-></v-alert>
+        v-if="showSuccessAlert"
+        color="success"
+        icon="$success"
+        title="Pavyko!"
+        text="Profilio informacija buvo atnaujinta!"
+      ></v-alert>
       <div class="pageDescription">
         <h1>Profilis</h1>
         <h2>Čia galite koreguoti asmeninę informaciją, mokslo duomenis</h2>
       </div>
-      <div class="profileInformation">
-        <div class="selections">
-          <v-tabs v-model="tab" color="black" align-tabs="center">
-            <v-tab :value="1">Asmeninė informacija</v-tab>
-            <v-tab :value="2">Mokslo duomenys</v-tab>
-            <v-tab :value="3">Praktikos duomenys</v-tab>
-          </v-tabs>
-        </div>
-        <div class="changePhotoDiv">
-          <div class="photo">
-            <img :src="imagePreview ?? userIcon" alt="" />
-          </div>
-          <div class="photoChangeBtn">
-            <input type="file" ref="fileInput" style="display: none;" @change="handleFileChange" />
-            <v-btn rounded="xl" variant="outlined" @click="triggerFileInput">Keisti nuotrauką</v-btn>
-            <h2>Nuotraukos reikalavimai: 256 x 256px PNG arba JPG formatas</h2>
-          </div>
-        </div>
-        <div class="inputDiv">
-          <div class="fieldDiv">
-            <div class="text-subtitle-1 text-bold-emphasis">Vardas</div>
-            <v-text-field density="compact" placeholder="Vardenis" variant="outlined"
-              v-if="userData && userData.first_name !== undefined" v-model="userData.first_name"></v-text-field>
-          </div>
+      <div class="selections">
+        <v-tabs v-model="tab" color="black" align-tabs="center">
+          <v-tab value="1">Asmeninė informacija</v-tab>
+          <v-tab value="2">Praktikos duomenys</v-tab>
+        </v-tabs>
+      </div>
 
-          <div class="fieldDiv">
-            <div class="text-subtitle-1 text-bold-emphasis">Pavardė</div>
-            <v-text-field density="compact" placeholder="Pavardenis" variant="outlined"
-              v-if="userData && userData.last_name !== undefined" v-model="userData.last_name"></v-text-field>
-          </div>
+      <v-window v-model="tab">
+        <v-window-item value="1">
+          <div class="profileInformation" value="1">
+            <div class="changePhotoDiv">
+              <div class="photo">
+                <img :src="imagePreview ?? userIcon" alt="" />
+              </div>
+              <div class="photoChangeBtn">
+                <input
+                  type="file"
+                  ref="fileInput"
+                  style="display: none"
+                  @change="handleFileChange"
+                />
+                <v-btn rounded="xl" variant="outlined" @click="triggerFileInput"
+                  >Keisti nuotrauką</v-btn
+                >
+                <h2>
+                  Nuotraukos reikalavimai: 256 x 256px PNG arba JPG formatas
+                </h2>
+              </div>
+            </div>
+            <div class="inputDiv">
+              <div class="fieldDiv">
+                <div class="text-subtitle-1 text-bold-emphasis">Vardas</div>
+                <v-text-field
+                  density="compact"
+                  placeholder="Vardenis"
+                  variant="outlined"
+                  v-if="userData && userData.first_name !== undefined"
+                  v-model="userData.first_name"
+                ></v-text-field>
+              </div>
 
-          <div class="fieldDiv">
-            <div class="text-subtitle-1 text-bold-emphasis">El. paštas</div>
-            <v-text-field density="compact" placeholder="vardenis@kvk.lt" variant="outlined"
-              v-if="userData && userData.user.email !== undefined" v-model="userData.user.email"></v-text-field>
-          </div>
+              <div class="fieldDiv">
+                <div class="text-subtitle-1 text-bold-emphasis">Pavardė</div>
+                <v-text-field
+                  density="compact"
+                  placeholder="Pavardenis"
+                  variant="outlined"
+                  v-if="userData && userData.last_name !== undefined"
+                  v-model="userData.last_name"
+                ></v-text-field>
+              </div>
 
-          <div class="fieldDiv">
-            <div class="text-subtitle-1 text-bold-emphasis">Adresas</div>
-            <v-text-field density="compact" placeholder="Bijunų g. 10A" variant="outlined"
-              v-if="userData && userData.address !== undefined" v-model="userData.address"></v-text-field>
-          </div>
+              <div class="fieldDiv">
+                <div class="text-subtitle-1 text-bold-emphasis">El. paštas</div>
+                <v-text-field
+                  density="compact"
+                  placeholder="vardenis@kvk.lt"
+                  variant="outlined"
+                  v-if="userData && userData.user.email !== undefined"
+                  v-model="userData.user.email"
+                ></v-text-field>
+              </div>
 
-          <div class="fieldDiv">
-            <div class="text-subtitle-1 text-bold-emphasis">Šalis</div>
-            <v-select disabled v-if="userData && userData.country !== undefined" v-model="userData.country"
-              label="Lietuva"></v-select>
-          </div>
-          <div class="fieldDiv">
-            <div class="text-subtitle-1 text-bold-emphasis">Kompanija</div>
-            <v-autocomplete v-model="company_name" item-value="id" item-title="company_name" :items="companies"
-              label="Pasirinkite kompanija" v-if="userData && userData.description !== undefined"></v-autocomplete>
-          </div>
-        </div>
-        <div class="text-subtitle-1 text-bold-emphasis">Aprašas</div>
-        <v-textarea label="Aprašymas" v-model="userData.description"
-          v-if="userData && userData.description !== undefined"></v-textarea>
+              <div class="fieldDiv">
+                <div class="text-subtitle-1 text-bold-emphasis">Adresas</div>
+                <v-text-field
+                  density="compact"
+                  placeholder="Bijunų g. 10A"
+                  variant="outlined"
+                  v-if="userData && userData.address !== undefined"
+                  v-model="userData.address"
+                ></v-text-field>
+              </div>
 
-        <div class="bottomButtons">
-          <v-btn color="#0D47A1" rounded="xl" variant="elevated" type="submit">Išsaugoti</v-btn>
-          <v-btn rounded="xl" variant="outlined">Atšaukti</v-btn>
-        </div>
+              <div class="fieldDiv">
+                <div class="text-subtitle-1 text-bold-emphasis">Šalis</div>
+                <v-select
+                  disabled
+                  v-if="userData && userData.country !== undefined"
+                  v-model="userData.country"
+                  label="Lietuva"
+                ></v-select>
+              </div>
+              <div class="fieldDiv">
+                <div class="text-subtitle-1 text-bold-emphasis">Kompanija</div>
+                <v-autocomplete
+                  v-model="company_name"
+                  item-value="id"
+                  item-title="company_name"
+                  :items="companies"
+                  label="Pasirinkite kompanija"
+                  v-if="userData && userData.description !== undefined"
+                ></v-autocomplete>
+              </div>
+            </div>
+            <div class="text-subtitle-1 text-bold-emphasis">Aprašas</div>
+            <v-textarea
+              label="Aprašymas"
+              v-model="userData.description"
+              v-if="userData && userData.description !== undefined"
+            ></v-textarea>
+          </div>
+        </v-window-item>
+      </v-window>
+      <div class="bottomButtons">
+        <v-btn color="#0D47A1" rounded="xl" variant="elevated" type="submit"
+          >Išsaugoti</v-btn
+        >
+        <v-btn rounded="xl" variant="outlined">Atšaukti</v-btn>
       </div>
     </div>
   </form>
@@ -95,19 +142,18 @@ export default {
       companies: [],
       selectedImage: null,
       showSuccessAlert: false,
+      tab: "1",
     };
   },
   components: {
     customHeader,
   },
   mounted() {
-    apiClient
-      .get("/companies", { withCredentials: true })
-      .then((response) => {
-        this.companies = response.data;
-        this.registrationData.company_id = response.data.id;
-        this.company_id = response.data.id;
-      });
+    apiClient.get("/companies", { withCredentials: true }).then((response) => {
+      this.companies = response.data;
+      this.registrationData.company_id = response.data.id;
+      this.company_id = response.data.id;
+    });
 
     this.fetchUserData();
   },
@@ -129,8 +175,8 @@ export default {
         .put("/profile/update", userDataWithPassword, { withCredentials: true })
         .then((response) => {
           console.log("Changes saved:", response.data);
-          this.showSuccessAlert = true;  
-      setTimeout(() => this.showSuccessAlert = false, 6000);
+          this.showSuccessAlert = true;
+          setTimeout(() => (this.showSuccessAlert = false), 6000);
         })
         .catch((error) => {
           console.error("Error saving changes:", error);
@@ -138,14 +184,14 @@ export default {
 
       if (this.selectedImage) {
         let formData = new FormData();
-        formData.append('image', this.selectedImage);
+        formData.append("image", this.selectedImage);
 
         apiClient
           .post("/profile/update-picture", formData, {
             withCredentials: true,
             headers: {
-              'Content-Type': 'multipart/form-data'
-            }
+              "Content-Type": "multipart/form-data",
+            },
           })
           .then((response) => {
             console.log("Image changes saved:", response.data);
@@ -160,17 +206,22 @@ export default {
     },
     handleFileChange(event) {
       this.selectedImage = event.target.files[0];
-    }
+    },
   },
   computed: {
     imagePreview() {
-      return this.selectedImage ? URL.createObjectURL(this.selectedImage) : null;
+      return this.selectedImage
+        ? URL.createObjectURL(this.selectedImage)
+        : null;
     },
   },
 };
 </script>
 
 <style scoped>
+.selections{
+  margin: 10px 0;
+}
 .fieldDiv {
   width: 450px;
   display: inline-block;

@@ -14,7 +14,6 @@ class AnswerItem extends Model
     protected $fillable = [
         'internship_form_id',
         'item_id',
-        'user_id'
     ];
 
     public function internshipForm(): BelongsTo
@@ -25,10 +24,5 @@ class AnswerItem extends Model
     public function answerItem(): BelongsTo
     {
         return $this->belongsTo(FormAnswerItem::class);
-    }
-
-    public function user(): BelongsTo
-    {
-        return $this->belongsTo(User::class);
     }
 }

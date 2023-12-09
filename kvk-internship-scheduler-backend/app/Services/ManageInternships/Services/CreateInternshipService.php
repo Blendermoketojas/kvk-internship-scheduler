@@ -63,7 +63,7 @@ class CreateInternshipService extends BaseService
             }])
             ->get();
 
-        if (!empty($activeInternshipExists))
+        if (sizeof($activeInternshipExists) > 0)
         {
             $activeInternshipToArray = $activeInternshipExists->toArray();
 

@@ -72,7 +72,7 @@ class CreateInternshipService extends BaseService
             }, $activeInternshipToArray);
 
             return response()->json(['error' => 'Internship could not be created because the following '.
-            'students are already in an active internship', 'students' => $userProfiles]);
+            'students are already in an active internship', 'students' => $userProfiles], 405);
         }
 
         // create the record

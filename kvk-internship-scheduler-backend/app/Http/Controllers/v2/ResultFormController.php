@@ -4,6 +4,7 @@ namespace App\Http\Controllers\v2;
 
 use App\Http\Controllers\Controller;
 use App\Services\ManageResults\Forms\Results\CreateTemplateResultService;
+use App\Services\ManageResults\Forms\Results\GetTemplateResultService;
 use App\Services\ManageResults\Forms\Templates\AttachTemplateToInternshipService;
 use App\Services\ManageResults\Forms\Templates\DetachTemplateFromInternshipService;
 use App\Services\ManageResults\Forms\Templates\GetTemplateByNameService;
@@ -60,5 +61,9 @@ class ResultFormController extends Controller
 
     public function createResult(Request $request): JsonResponse {
         return (new CreateTemplateResultService($request))->execute();
+    }
+
+    public function getResult(Request $request): JsonResponse {
+        return (new GetTemplateResultService($request))->execute();
     }
 }

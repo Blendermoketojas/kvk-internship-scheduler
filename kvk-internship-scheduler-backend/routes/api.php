@@ -115,6 +115,7 @@ Route::middleware('api')->prefix('v2')->group(function () {
         Route::post('/result/template/detach', [ResultFormController::class, 'detachTemplate']);
         Route::post('/result/search/template', [ResultFormController::class, 'searchTemplate']);
         Route::post('/result/answer/create', [ResultFormController::class, 'createResult']);
+        Route::post('/result/answer/get', [ResultFormController::class, 'getResult']);
         // Internship File Management
 
         Route::post('/internship/upload-document-with-files',

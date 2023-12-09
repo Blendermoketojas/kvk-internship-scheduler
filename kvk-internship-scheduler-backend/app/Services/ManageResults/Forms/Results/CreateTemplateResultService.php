@@ -3,6 +3,8 @@
 namespace App\Services\ManageResults\Forms\Results;
 
 use App\Contracts\Roles\RolePermissions;
+use App\Models\AnswerItem;
+use App\Models\FormAnswerItem;
 use App\Models\FormTemplate;
 use App\Models\Internship;
 use App\Services\BaseService;
@@ -14,8 +16,8 @@ class CreateTemplateResultService extends BaseService
     public function rules(): array
     {
         return [
-            'template_id' => 'required|number',
-            'internship_id' => 'required|number',
+            'template_id' => 'required|integer',
+            'internship_id' => 'required|integer',
             'answers' => 'required|array'
         ];
     }
@@ -43,13 +45,22 @@ class CreateTemplateResultService extends BaseService
         if (!$this->validateRules()) return response()->json("Action not allowed", 401);
 
         // logic execution
-        $pivot = Internship::find($this->data()['internship_id'])->templates()->wherePivot(['template_id' => $this->data()['template_id']]);
+        $pivot = Internship::find($this->data()['internship_id'])->templates()->wherePivot('template_id', $this->data()['template_id'])->get();
 
+        $pivotId = $pivot->first()->pivot->id;
 
+        if (sizeof(AnswerItem::find(['item_id' => $pivotId])) > 0) {
+            return response()->json("Already answered!");
+        }
 
+        // Need to find better implementation
+        foreach ($this->data()['answers'] as $answerItem) {
+            $answer = FormAnswerItem::create($answerItem);
+            $answer->formAnswers()->sync($pivotId);
+        }
 
 
         // response
-        return response()->json($pivot);
+        return response()->json("Cool");
     }
 }

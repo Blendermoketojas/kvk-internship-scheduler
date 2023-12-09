@@ -49,6 +49,10 @@ const routes = [
     path: "/user-internships",
     component: () => import("@/views/UsersInternshipsPage.vue"),
   },
+  {
+    path: "/user-creation",
+    component: () => import("@/views/UserCreationPage.vue"),
+  },
 ];
 
 const router = createRouter({

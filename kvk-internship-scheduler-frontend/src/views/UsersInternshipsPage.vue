@@ -7,22 +7,34 @@
       <h2>Čia galite peržiūrėti vykstamas ir pasibaigusias praktikas</h2>
     </div>
     <div class="mainInternshipDiv">
-      <div class="studentSearchInput">
+      <div class="studentSearchInput" v-if="!isRoleFive">
+        <div class="fieldDiv">
+          <div class="text-subtitle-1 text-bold-emphasis">Filtruoti pagal:</div>
+          <v-select
+            v-model="selectedFilter"
+            :items="filterBy"
+            density="comfortable"
+            label="Pasirinkite filtrą"
+          ></v-select>
+        </div>
 
-        <div class="fieldDiv" v-if="!isRoleFive">
-            <div class="text-subtitle-1 text-bold-emphasis">Vardas Pavardė</div>
-            <v-autocomplete
-              v-model="selectedStudent"
-              :items="students"
-              item-title="fullName"
-              item-value="id"
-              @input="onStudentInput"
-              return-object
-              label="Įrašykite vardą"
-            ></v-autocomplete>
+        <div class="fieldDiv" v-if="showStudentInput">
+          <div class="text-subtitle-1 text-bold-emphasis">Vardas Pavardė</div>
+          <v-autocomplete
+            v-model="selectedStudent"
+            :items="students"
+            item-title="fullName"
+            item-value="id"
+            @input="onStudentInput"
+            return-object
+            label="Įrašykite vardą"
+          ></v-autocomplete>
+        </div>
 
-          </div>
-
+        <group-search
+          v-if="showGroupInput"
+          @update:selectedGroupId="handleSelectedGroupId"
+        ></group-search>
       </div>
       <v-expansion-panels>
         <v-expansion-panel
@@ -36,13 +48,16 @@
             <v-container>
               <v-row no-gutters>
                 <v-col cols="3">
-                  {{ internship.company.company_name }}
+                  <div><b>Studentas:</b> {{ internship.student_name }}</div>
                 </v-col>
                 <v-col cols="3">
-                  <div>Nuo: {{ internship.date_from }}</div>
+                  <b>Įmonė:</b> {{ internship.company_name }}
                 </v-col>
                 <v-col cols="3">
-                  <div>Iki: {{ internship.date_to }}</div>
+                  <div><b>Nuo:</b> {{ internship.date_from }}</div>
+                </v-col>
+                <v-col cols="3">
+                  <div><b>Iki:</b> {{ internship.date_to }}</div>
                 </v-col>
                 <v-col class="d-flex justify-end" cols="3"> </v-col>
               </v-row>
@@ -89,7 +104,7 @@ import headerNav from "@/components/DesktopHeader.vue";
 import apiClient from "@/utils/api-client";
 import searchStudent from "@/components/StudentSearch.vue";
 import { mapGetters } from "vuex";
-
+import groupSearch from "@/components/GroupSearch.vue";
 
 const debounce = (func, delay) => {
   let timeoutId;
@@ -110,45 +125,104 @@ export default {
       selectedInternshipComments: [],
       selectedStudent: "",
       students: [],
+      selectedFilter: null,
+      filterBy: ["Pagal grupę", "Pagal Vardą Pavardę"],
     };
   },
   components: {
     headerNav,
     searchStudent,
+    groupSearch,
   },
   watch: {
-  selectedStudent(newVal) {
-    if (newVal && newVal.id) {
-      this.handleStudentSelection(newVal.id);
-    }
+    selectedStudent(newVal) {
+      if (newVal && newVal.id) {
+        this.handleStudentSelection(newVal.id);
+      }
+    },
+
+    selectedFilter(newVal, oldVal) {
+      if (newVal !== oldVal) {
+        this.internships = [];
+        this.selectedStudent = "";
+        this.selectedGroupId = null;
+        this.selectedInternshipComments = [];
+      }
+    },
   },
-},
 
   methods: {
-   
+    processInternshipData(response) {
+      if (Array.isArray(response)) {
+        return response.map((internship) =>
+          this.formatInternshipData(internship)
+        );
+      } else {
+        return Object.values(response).map((internship) =>
+          this.formatInternshipData(internship)
+        );
+      }
+    },
+    formatInternshipData(internship) {
+      console.log('Processing internship data:', internship);
+      const userProfile = internship.userProfile || internship.user_profiles?.[0];
+      return {
+        company_name: internship.company?.company_name || "No Company",
+        id: internship.id,
+        date_from: internship.date_from,
+        date_to: internship.date_to,
+        student_name: userProfile ? userProfile.fullname : "No name available",
+            };
+    },
+
+    handleSelectedGroupId(groupId) {
+      apiClient
+        .post("/internships/student-group-active", { studentGroupId: groupId })
+        .then((response) => {
+          this.internships = response.data.map((internship) => ({
+            company_name: internship.company.company_name,
+            id: internship.id,
+            name: internship.user_profiles.fullname,
+            date_from: internship.date_from,
+            date_to: internship.date_to,
+            student_name: internship.user_profiles[0]
+              ? internship.user_profiles[0].fullname
+              : "No name available",
+          }));
+        })
+        .catch((error) => {
+          console.error("Error searching for students:", error);
+        });
+      console.log(groupId);
+    },
+
     fetchInternshipsForRoleFive() {
-    apiClient
-      .get("/internships")
-      .then((response) => {
-        this.internships = response.data;
-      })
-      .catch((error) => {
-        console.error("Error fetching internships:", error);
-      });
-  },
+      apiClient
+        .get("/internships")
+        .then((response) => {
+          this.internships = response.data;
+        })
+        .catch((error) => {
+          console.error("Error fetching internships:", error);
+        });
+    },
 
     handleStudentSelection(studentId) {
-    apiClient
-      .post(`/user/internships`,  {userId: studentId} )
-      .then(response => {
-        console.log("Internships for student:", response.data);
-        this.internships=response.data;
-      })
-      .catch(error => {
-        console.error("Error fetching internships for selected student:", error);
-      });
-  },
-
+      apiClient
+        .post(`/user/internships`, { userId: studentId })
+        .then((response) => {
+          this.internships = this.processInternshipData(response.data);
+          console.log("STUDENTO BLET INFORMACIJA", response.data);
+          const fullname = response.data.userProfile.fullname;
+      console.log("Student's Full Name:", fullname);
+        })
+        .catch((error) => {
+          console.error(
+            "Error fetching internships for selected student:",
+            error
+          );
+        });
+    },
 
     handleInternshipClick(internshipId) {
       if (this.selectedInternshipId === internshipId) {
@@ -170,7 +244,6 @@ export default {
           this.selectedInternshipComments = [];
         });
     },
-
 
     onStudentInput(value) {
       const studentName = event.target.value;
@@ -205,38 +278,46 @@ export default {
     triggerSearchStudents() {
       this.debouncedSearchStudents(this.selectedStudent);
     },
-
   },
 
   mounted() {
     console.log(this.getUser.role_id);
-      this.debouncedSearchStudents = debounce((studentName) => {
+    this.debouncedSearchStudents = debounce((studentName) => {
       this.searchStudents(studentName);
     }, 500);
 
-    if(this.getUser.role_id === 5) {
-    this.fetchInternshipsForRoleFive();
-  }
-
+    if (this.getUser.role_id === 5) {
+      this.fetchInternshipsForRoleFive();
+    }
   },
   computed: {
     ...mapGetters(["getUser"]),
+
     isRoleFive() {
-    return this.getUser.role_id === 5;
-  },
+      return this.getUser.role_id === 5;
+    },
+
+    showStudentInput() {
+      return this.selectedFilter === "Pagal Vardą Pavardę";
+    },
+
+    showGroupInput() {
+      return this.selectedFilter === "Pagal grupę";
+    },
   },
 };
 </script>
 
 <style>
-
-.fieldDiv{
-    width: 500px;
-  }
+.fieldDiv {
+  width: 500px;
+}
 
 .studentSearchInput {
   display: flex;
   justify-content: center;
+  flex-direction: column;
+  align-items: center;
 }
 
 h2 {

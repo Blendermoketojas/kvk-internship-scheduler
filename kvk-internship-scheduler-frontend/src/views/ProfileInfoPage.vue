@@ -96,8 +96,8 @@
                   label="Lietuva"
                 ></v-select>
               </div>
-              <div class="fieldDiv">
-                <div class="text-subtitle-1 text-bold-emphasis">Kompanija</div>
+              <div class="fieldDiv" v-if="isRoleFour">
+                <div class="text-subtitle-1 text-bold-emphasis">Įmonė</div>
                 <v-autocomplete
                   v-model="company_name"
                   item-value="id"
@@ -354,6 +354,9 @@ export default {
     ...mapGetters(["getUser"]),
     isRoleFive() {
     return this.getUser.role_id === 5;
+  },
+  isRoleFour() {
+    return this.getUser.role_id === 4;
   },
   },
 };

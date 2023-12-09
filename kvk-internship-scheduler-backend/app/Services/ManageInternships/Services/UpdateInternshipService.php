@@ -19,7 +19,7 @@ class UpdateInternshipService extends BaseService
             'company_id' => 'required|integer',
             'date_from' => 'required|date',
             'date_to' => 'required|date',
-            'is_active' => 'required|boolean'];
+        ];
     }
 
     public function data(): array
@@ -31,7 +31,6 @@ class UpdateInternshipService extends BaseService
             'company_id' => $this->request['companyId'],
             'date_from' => $this->request['dateFrom'],
             'date_to' => $this->request['dateTo'],
-            'is_active' => $this->request['isActive'],
             'forms' => $this->request['forms']];
     }
 

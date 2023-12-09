@@ -39,12 +39,17 @@ class GetUserInternshipsService extends BaseService
         if (!$this->validateRules()) return response()->json("Action not allowed", 401);
 
         // logic execution
-
         $user = UserProfile::find($this->data()['userId']);
         $internships = $user->internships()->with('company')->get();
 
-        // response
-        return response()->json([...$internships[0],'userProfile' => ['id' => $user->id,
-            'fullname' => $user->fullname]]);
+        $response = [
+            'internships' => $internships,
+            'userProfile' => [
+                'id' => $user->id,
+                'fullname' => $user->fullname
+            ]
+        ];
+
+        return response()->json($response);
     }
 }

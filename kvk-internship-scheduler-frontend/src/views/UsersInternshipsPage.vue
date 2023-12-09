@@ -36,14 +36,14 @@
           @update:selectedGroupId="handleSelectedGroupId"
         ></group-search>
       </div>
-      <v-expansion-panels>
+      <v-expansion-panels v-model="openedPanel">
         <v-expansion-panel
           v-for="internship in internships"
           :key="internship.id"
         >
           <v-expansion-panel-title
             class="panelHeader"
-            @click="handleInternshipClick(internship.id)"
+            @click="handleInternshipClick(internship.internshipId)"
           >
             <v-container>
               <v-row no-gutters>
@@ -127,6 +127,7 @@ export default {
       students: [],
       selectedFilter: null,
       filterBy: ["Pagal grupę", "Pagal Vardą Pavardę"],
+      openedPanel: null,
     };
   },
   components: {
@@ -147,53 +148,48 @@ export default {
         this.selectedStudent = "";
         this.selectedGroupId = null;
         this.selectedInternshipComments = [];
+        this.openedPanel = null;
       }
     },
   },
 
   methods: {
-    processInternshipData(response) {
-      if (Array.isArray(response)) {
-        return response.map((internship) =>
-          this.formatInternshipData(internship)
-        );
-      } else {
-        return Object.values(response).map((internship) =>
-          this.formatInternshipData(internship)
-        );
-      }
-    },
-    formatInternshipData(internship) {
-      console.log('Processing internship data:', internship);
-      const userProfile = internship.userProfile || internship.user_profiles?.[0];
-      return {
-        company_name: internship.company?.company_name || "No Company",
-        id: internship.id,
-        date_from: internship.date_from,
-        date_to: internship.date_to,
-        student_name: userProfile ? userProfile.fullname : "No name available",
-            };
-    },
+
 
     handleSelectedGroupId(groupId) {
       apiClient
         .post("/internships/student-group-active", { studentGroupId: groupId })
         .then((response) => {
-          this.internships = response.data.map((internship) => ({
-            company_name: internship.company.company_name,
-            id: internship.id,
-            name: internship.user_profiles.fullname,
-            date_from: internship.date_from,
-            date_to: internship.date_to,
-            student_name: internship.user_profiles[0]
-              ? internship.user_profiles[0].fullname
-              : "No name available",
-          }));
+          if (response.data) {
+            const formattedInternships = response.data.map((internship) => {
+              const studentName =
+                internship.user_profiles && internship.user_profiles.length > 0
+                  ? internship.user_profiles[0].fullname
+                  : "No name available";
+
+              return {
+                internshipId:internship.id,
+                company_name: internship.company.company_name,
+                date_from: internship.date_from,
+                date_to: internship.date_to,
+                student_name: studentName,
+              };
+            });
+
+            this.internships = formattedInternships;
+
+            formattedInternships.forEach((internship) => {
+              console.log(
+                `Internship for ${internship.student_name}: Company - ${internship.company_name}, from ${internship.date_from} to ${internship.date_to}`
+              );
+            });
+          } else {
+            console.log("No internships found in response.");
+          }
         })
         .catch((error) => {
           console.error("Error searching for students:", error);
         });
-      console.log(groupId);
     },
 
     fetchInternshipsForRoleFive() {
@@ -211,10 +207,28 @@ export default {
       apiClient
         .post(`/user/internships`, { userId: studentId })
         .then((response) => {
-          this.internships = this.processInternshipData(response.data);
-          console.log("STUDENTO BLET INFORMACIJA", response.data);
-          const fullname = response.data.userProfile.fullname;
-      console.log("Student's Full Name:", fullname);
+          if (response.data.internships && response.data.userProfile) {
+            const formattedInternships = response.data.internships.map(
+              (internship) => {
+                return {
+                  internshipId:internship.id,
+                  company_name: internship.company.company_name,
+                  date_from: internship.date_from,
+                  date_to: internship.date_to,
+                  student_name: response.data.userProfile.fullname,
+                };
+              }
+            );
+
+            this.internships = formattedInternships;
+            formattedInternships.forEach((internship) => {
+              console.log(
+                `Internship for ${internship.student_name}: Company - ${internship.company_name}, from ${internship.date_from} to ${internship.date_to}`
+              );
+            });
+          } else {
+            console.log("No internships or user profile found in response.");
+          }
         })
         .catch((error) => {
           console.error(
@@ -225,7 +239,9 @@ export default {
     },
 
     handleInternshipClick(internshipId) {
+      console.log("Clicked internship ID:", internshipId);
       if (this.selectedInternshipId === internshipId) {
+        this.selectedInternshipId = null;
         return;
       }
       this.selectedInternshipId = internshipId;
@@ -284,7 +300,7 @@ export default {
     console.log(this.getUser.role_id);
     this.debouncedSearchStudents = debounce((studentName) => {
       this.searchStudents(studentName);
-    }, 500);
+    }, 50);
 
     if (this.getUser.role_id === 5) {
       this.fetchInternshipsForRoleFive();

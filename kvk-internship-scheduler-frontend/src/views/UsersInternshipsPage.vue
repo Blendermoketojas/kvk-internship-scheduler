@@ -48,7 +48,15 @@
             <v-container>
               <v-row no-gutters>
                 <v-col cols="3">
-                  <div><b>Studentas:</b> {{ internship.student_name }}</div>
+                  <div>
+                    <b>Studentas:</b>
+                    <router-link
+                    :to="{ name: 'StudentProfile', params: { userId: internship.student_id } }"
+                      @click="checkStudentId(internship.student_id)"
+                      class="student-name"
+                      >{{ internship.student_name }}</router-link
+                    >
+                  </div>
                 </v-col>
                 <v-col cols="3">
                   <b>Įmonė:</b> {{ internship.company_name }}
@@ -154,7 +162,9 @@ export default {
   },
 
   methods: {
-
+    checkStudentId(studentId) {
+    console.log("Student ID:", studentId);
+  },
 
     handleSelectedGroupId(groupId) {
       apiClient
@@ -168,11 +178,14 @@ export default {
                   : "No name available";
 
               return {
-                internshipId:internship.id,
+                internshipId: internship.id,
                 company_name: internship.company.company_name,
                 date_from: internship.date_from,
                 date_to: internship.date_to,
                 student_name: studentName,
+                student_id: internship.user_profiles && internship.user_profiles.length > 0
+              ? internship.user_profiles[0].user_id
+              : null,
               };
             });
 
@@ -211,11 +224,14 @@ export default {
             const formattedInternships = response.data.internships.map(
               (internship) => {
                 return {
-                  internshipId:internship.id,
+                  internshipId: internship.id,
                   company_name: internship.company.company_name,
                   date_from: internship.date_from,
                   date_to: internship.date_to,
                   student_name: response.data.userProfile.fullname,
+                  student_id: internship.user_profiles && internship.user_profiles.length > 0
+              ? internship.user_profiles[0].user_id
+              : null,
                 };
               }
             );
@@ -325,6 +341,11 @@ export default {
 </script>
 
 <style>
+.student-name {
+  position: relative;
+  z-index: 2000;
+}
+
 .fieldDiv {
   width: 500px;
 }

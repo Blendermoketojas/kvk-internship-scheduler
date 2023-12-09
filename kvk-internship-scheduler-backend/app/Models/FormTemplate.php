@@ -21,13 +21,13 @@ class FormTemplate extends Model
     public function templateQuestions(): BelongsToMany
     {
         return $this->belongsToMany(FormQuestion::class, 'template_question',
-        'template_id', 'question_id');
+        'template_id', 'question_id')->withPivot('sequence');
     }
 
     public function templateLikerts(): BelongsToMany
     {
         return $this->belongsToMany(FormLikert::class, 'template_likert',
-        'template_id', 'likert_id');
+        'template_id', 'likert_id')->withPivot('sequence');
     }
 
     public function internshipForms(): HasMany

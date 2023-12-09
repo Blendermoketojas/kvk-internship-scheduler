@@ -156,10 +156,12 @@ export default {
         console.error("Error during the active internship retrieval:", error);
       });
 
-    loadMessages(ltMessages);
 
-    locale("lt");
   },
+  created() {
+  loadMessages(ltMessages);
+  locale("lt");
+},
 };
 </script>
 <style scoped>

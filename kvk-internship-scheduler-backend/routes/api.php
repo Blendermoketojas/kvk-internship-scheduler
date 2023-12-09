@@ -113,7 +113,7 @@ Route::middleware('api')->prefix('v2')->group(function () {
         Route::post('/result/search/likert', [ResultFormController::class, 'searchLikert']);
         Route::post('/result/template/attach', [ResultFormController::class, 'attachTemplate']);
         Route::post('/result/template/detach', [ResultFormController::class, 'detachTemplate']);
-
+        Route::post('/result/search/template', [ResultFormController::class, 'searchTemplate']);
         // Internship File Management
 
         Route::post('/internship/upload-document-with-files',

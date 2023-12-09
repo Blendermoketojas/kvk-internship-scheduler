@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\v2;
 
 use App\Http\Controllers\Controller;
+use App\Services\ManageUserProfile\GetUserProfileByIdService;
 use App\Services\ManageUserProfile\SearchUserProfilesByRoleService;
 use App\Services\ManageUserProfile\SearchUserProfilesService;
 use App\Services\ManageUserProfile\UpdateUserProfilePictureService;
@@ -50,5 +51,13 @@ class UserProfileController extends Controller
     public function update(Request $request): JsonResponse
     {
         return (new UpdateUserProfileService($request))->execute();
+    }
+
+    /**
+     * @throws ValidationException
+     */
+    public function getUserProfileById(Request $request): JsonResponse
+    {
+        return (new GetUserProfileByIdService($request))->execute();
     }
 }

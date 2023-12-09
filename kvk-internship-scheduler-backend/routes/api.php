@@ -54,6 +54,10 @@ Route::middleware('api')->prefix('v2')->group(function () {
     // routes that are reachable only by authenticated users
     Route::middleware(['jwt.from.cookie', 'jwt.auth'])->group(function () {
 
+        // Register external
+
+        Route::post('/register-external', [AuthController::class, 'registerExternalUser']);
+
         // Logout
         Route::post('/logout', [AuthController::class, 'logout']);
 
@@ -66,6 +70,7 @@ Route::middleware('api')->prefix('v2')->group(function () {
         Route::post('/search-profiles-role', [UserProfileController::class, 'searchProfilesByRole']);
         Route::post('/search-profiles', [UserProfileController::class, 'searchUserProfiles']);
         Route::post('/profile/update-picture', [UserProfileController::class, 'updateProfilePicture']);
+        Route::post('/profile/id', [UserProfileController::class, 'getUserProfileById']);
 
         // StudentGroups
 

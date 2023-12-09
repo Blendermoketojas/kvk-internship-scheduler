@@ -16,7 +16,7 @@ return new class extends Migration
         Schema::create('userprofiles', function (Blueprint $table) {
             $table->id();
             $table->integer('user_id');
-            $table->integer('company_id');
+            $table->integer('company_id')->nullable();
             $table->string('student_group_id')->nullable();
             $table->integer('role_id')->default(0);
             $table->string('first_name');

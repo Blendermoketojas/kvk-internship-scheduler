@@ -34,7 +34,11 @@
                   style="display: none"
                   @change="handleFileChange"
                 />
-                <v-btn rounded="xl" variant="outlined" @click="triggerFileInput"
+                <v-btn
+                  :disabled="isStudentProfilePage"
+                  rounded="xl"
+                  variant="outlined"
+                  @click="triggerFileInput"
                   >Keisti nuotrauką</v-btn
                 >
                 <h2>
@@ -51,6 +55,7 @@
                   variant="outlined"
                   v-if="userData && userData.first_name !== undefined"
                   v-model="userData.first_name"
+                  :disabled="isStudentProfilePage"
                 ></v-text-field>
               </div>
 
@@ -62,6 +67,7 @@
                   variant="outlined"
                   v-if="userData && userData.last_name !== undefined"
                   v-model="userData.last_name"
+                  :disabled="isStudentProfilePage"
                 ></v-text-field>
               </div>
 
@@ -73,6 +79,7 @@
                   variant="outlined"
                   v-if="userData && userData.user.email !== undefined"
                   v-model="userData.user.email"
+                  :disabled="isStudentProfilePage"
                 ></v-text-field>
               </div>
 
@@ -84,6 +91,7 @@
                   variant="outlined"
                   v-if="userData && userData.address !== undefined"
                   v-model="userData.address"
+                  :disabled="isStudentProfilePage"
                 ></v-text-field>
               </div>
 
@@ -105,6 +113,7 @@
                   :items="companies"
                   label="Pasirinkite kompanija"
                   v-if="userData && userData.description !== undefined"
+                  :disabled="isStudentProfilePage"
                 ></v-autocomplete>
               </div>
             </div>
@@ -122,73 +131,66 @@
             <v-btn rounded="xl" variant="outlined">Atšaukti</v-btn>
           </div>
         </v-window-item>
-<v-window-item value="2">
-  <v-expansion-panels v-if="internships && internships.length > 0">
-    <v-expansion-panel 
-      v-for="internship in internships"
-
-      :key="internship.id" 
-    >
-      <v-expansion-panel-title
-        class="panelHeader"
-        @click="handleInternshipClick(internship.id)"
-      >
-        <v-container>
-          <v-row no-gutters>
-            <v-col cols="3">
-              {{ internship.company.company_name }}
-            </v-col>
-            <v-col cols="3">
-              <div>Nuo: {{ internship.date_from }}</div>
-            </v-col>
-            <v-col cols="3">
-              <div>Iki: {{ internship.date_to }}</div>
-            </v-col>
-            <v-col class="d-flex justify-end" cols="3"> </v-col>
-          </v-row>
-        </v-container>
-      </v-expansion-panel-title>
-      <v-expansion-panel-text>
-        <v-container v-if="selectedInternshipComments === null">
-          Kraunama informacija...
-        </v-container>
-
-        <v-container v-else>
-          <v-row v-if="selectedInternshipComments.length > 0">
-            <v-col
-              v-for="comment in selectedInternshipComments"
-              :key="comment.id"
-              cols="12"
+        <v-window-item value="2">
+          <v-expansion-panels v-if="internships && internships.length > 0">
+            <v-expansion-panel
+              v-for="internship in internships"
+              :key="internship.id"
             >
-              <v-row>
-                <v-col cols="4" class="comment-details">
-                  Nuo: {{ comment.date_from }}
-                </v-col>
-                <v-col cols="4" class="comment-details">
-                  Iki: {{ comment.date_to }}
-                </v-col>
-                <v-col cols="4" class="comment-details">
-                  Aprašymas: {{ comment.comment }}
-                </v-col>
-              </v-row>
-            </v-col>
-          </v-row>
-          <v-row v-else>
-            <v-col cols="12">Kraunama informacija...</v-col>
-          </v-row>
-        </v-container>
-      </v-expansion-panel-text>
-    </v-expansion-panel>
-  </v-expansion-panels>
-  <div v-else class="no-internships">
-    Nėra praktikos informacijos.
-  </div>
+              <v-expansion-panel-title
+                class="panelHeader"
+                @click="handleInternshipClick(internship.id)"
+              >
+                <v-container>
+                  <v-row no-gutters>
+                    <v-col cols="3">
+                      {{ internship.company.company_name }}
+                    </v-col>
+                    <v-col cols="3">
+                      <div>Nuo: {{ internship.date_from }}</div>
+                    </v-col>
+                    <v-col cols="3">
+                      <div>Iki: {{ internship.date_to }}</div>
+                    </v-col>
+                    <v-col class="d-flex justify-end" cols="3"> </v-col>
+                  </v-row>
+                </v-container>
+              </v-expansion-panel-title>
+              <v-expansion-panel-text>
+                <v-container v-if="selectedInternshipComments === null">
+                  Kraunama informacija...
+                </v-container>
 
-</v-window-item>
-
-
+                <v-container v-else>
+                  <v-row v-if="selectedInternshipComments.length > 0">
+                    <v-col
+                      v-for="comment in selectedInternshipComments"
+                      :key="comment.id"
+                      cols="12"
+                    >
+                      <v-row>
+                        <v-col cols="4" class="comment-details">
+                          Nuo: {{ comment.date_from }}
+                        </v-col>
+                        <v-col cols="4" class="comment-details">
+                          Iki: {{ comment.date_to }}
+                        </v-col>
+                        <v-col cols="4" class="comment-details">
+                          Aprašymas: {{ comment.comment }}
+                        </v-col>
+                      </v-row>
+                    </v-col>
+                  </v-row>
+                  <v-row v-else>
+                    <v-col cols="12">Kraunama informacija...</v-col>
+                  </v-row>
+                </v-container>
+              </v-expansion-panel-text>
+            </v-expansion-panel>
+          </v-expansion-panels>
+          <div v-else class="no-internships">Nėra praktikos informacijos.</div>
+        </v-window-item>
       </v-window>
-  
     </div>
   </form>
 </template>
@@ -198,6 +200,7 @@ import userIcon from "@/assets/Photos/UserIcon.png";
 import customHeader from "@/components/DesktopHeader.vue";
 import apiClient from "@/utils/api-client";
 import { mapGetters } from "vuex";
+import groupSearch from "@/components/GroupSearch.vue";
 
 export default {
   name: "ProfileInfo",
@@ -220,6 +223,7 @@ export default {
   },
   components: {
     customHeader,
+    groupSearch,
   },
   mounted() {
     apiClient.get("/companies", { withCredentials: true }).then((response) => {
@@ -228,26 +232,31 @@ export default {
       this.company_id = response.data.id;
     });
 
-    this.fetchUserData();
+    if (!this.isStudentProfilePage) {
+      this.fetchUserData();
+    }
 
-    if(this.getUser.role_id === 5) {
-    this.fetchInternshipsForRoleFive();
-  }
+    if (this.getUser.role_id === 5) {
+      this.fetchInternshipsForRoleFive();
+    }
   },
   methods: {
     handleStudentSelection(studentId) {
-    apiClient
-      .post(`/user/internships`,  {userId: studentId} )
-      .then(response => {
-        console.log("Internships for student:", response.data);
-        this.internships=response.data;
-      })
-      .catch(error => {
-        console.error("Error fetching internships for selected student:", error);
-      });
-  },
+      apiClient
+        .post(`/user/internships`, { userId: studentId })
+        .then((response) => {
+          console.log("Internships for student:", response.data);
+          this.internships = response.data;
+        })
+        .catch((error) => {
+          console.error(
+            "Error fetching internships for selected student:",
+            error
+          );
+        });
+    },
 
-  handleInternshipClick(internshipId) {
+    handleInternshipClick(internshipId) {
       if (this.selectedInternshipId === internshipId) {
         return;
       }
@@ -268,18 +277,17 @@ export default {
         });
     },
 
-       
     fetchInternshipsForRoleFive() {
-    apiClient
-      .get("/internships")
-      .then((response) => {
-        this.internships = response.data;
-        this.internshipsLoaded = true;
-      })
-      .catch((error) => {
-        console.error("Error fetching internships:", error);
-      });
-  },
+      apiClient
+        .get("/internships")
+        .then((response) => {
+          this.internships = response.data;
+          this.internshipsLoaded = true;
+        })
+        .catch((error) => {
+          console.error("Error fetching internships:", error);
+        });
+    },
 
     fetchUserData() {
       apiClient.get("/profile", { withCredentials: true }).then((response) => {
@@ -330,22 +338,25 @@ export default {
     handleFileChange(event) {
       this.selectedImage = event.target.files[0];
     },
-
   },
-
+  created() {
+    const userId = this.$route.query.userId;
+    console.log("Received user ID:", userId);
+  },
   watch: {
-  // selectedStudent(newVal) {
-  //   if (newVal && newVal.id) {
-  //     this.handleStudentSelection(newVal.id);
-  //   }
-  // },
-  tab(newVal) {
+    tab(newVal) {
       if (newVal === "2" && !this.internshipsLoaded) {
         this.fetchInternshipsForRoleFive();
       }
     },
-},
+  },
   computed: {
+    isStudentProfilePage() {
+      return this.$route.path.includes("/student-profile-info");
+    },
+    metodas() {
+      console.log("URL Tinka", isStudentProfilePage);
+    },
     imagePreview() {
       return this.selectedImage
         ? URL.createObjectURL(this.selectedImage)
@@ -353,11 +364,11 @@ export default {
     },
     ...mapGetters(["getUser"]),
     isRoleFive() {
-    return this.getUser.role_id === 5;
-  },
-  isRoleFour() {
-    return this.getUser.role_id === 4;
-  },
+      return this.getUser.role_id === 5;
+    },
+    isRoleFour() {
+      return this.getUser.role_id === 4;
+    },
   },
 };
 </script>
@@ -369,7 +380,7 @@ export default {
   color: #757575;
 }
 
-.v-expansion-panels{
+.v-expansion-panels {
   border: 1px solid rgb(234, 229, 229);
   border-radius: 5px;
 }

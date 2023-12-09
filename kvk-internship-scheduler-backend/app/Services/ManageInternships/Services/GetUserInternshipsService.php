@@ -43,16 +43,29 @@ class GetUserInternshipsService extends BaseService
         // logic execution
         $user = UserProfile::find($this->data()['userId']);
 
-        if ($this->data()['page'] == null) $internships = $user->internships()->with('company')->get();
-        else $internships = $user->internships()->with('company')->paginate(5, ['*'], 'page', $this->data()['page']);
+        $response = [['error' =>'Unknown error occurred'], 500];
 
-        $response = [
-            'internships' => $internships->items(),
-            'userProfile' => [
-                'id' => $user->id,
-                'fullname' => $user->fullname
-            ]
-        ];
+        if ($this->data()['page'] == null)
+        {
+            $internships = $user->internships()->with('company')->get();
+            $response = [
+                'internships' => $internships,
+                'userProfile' => [
+                    'id' => $user->id,
+                    'fullname' => $user->fullname
+                ]
+            ];
+        }
+        else {
+            $internships = $user->internships()->with('company')->paginate(5, ['*'], 'page', $this->data()['page']);
+            $response = [
+                'internships' => $internships->items(),
+                'userProfile' => [
+                    'id' => $user->id,
+                    'fullname' => $user->fullname
+                ]
+            ];
+        }
 
         return response()->json($response);
     }

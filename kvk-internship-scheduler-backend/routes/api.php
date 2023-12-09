@@ -94,7 +94,7 @@ Route::middleware('api')->prefix('v2')->group(function () {
 
         Route::put('/internship-update', [InternshipController::class, 'updateInternship']);
 
-        Route::delete('/internship-delete', [InternshipController::class, 'deleteInternship']);
+        Route::post('/internship-delete', [InternshipController::class, 'deleteInternship']);
 
         // Comments
 
@@ -115,6 +115,7 @@ Route::middleware('api')->prefix('v2')->group(function () {
         Route::post('/result/template/detach', [ResultFormController::class, 'detachTemplate']);
         Route::post('/result/search/template', [ResultFormController::class, 'searchTemplate']);
         Route::post('/result/answer/create', [ResultFormController::class, 'createResult']);
+
         // Internship File Management
 
         Route::post('/internship/upload-document-with-files',
@@ -137,6 +138,9 @@ Route::middleware('api')->prefix('v2')->group(function () {
 
         Route::post('/internship/documents-files', [InternshipFileManagementController::class,
             'getInternshipDocumentsWithFiles']);
+
+        Route::post('/documents/internship-by-id', [InternshipFileManagementController::class,
+            'getDocumentsByInternshipId']);
 
         // File Management
 

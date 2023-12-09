@@ -2,16 +2,13 @@
 
 namespace App\Http\Controllers\v2\Auth;
 
+use App\Exceptions\ModelNotProvidedInServiceException;
 use App\Http\Controllers\Controller;
-use App\Models\Company;
-use App\Models\User;
 use App\Services\ManageAuth\LoginService;
+use App\Services\ManageAuth\RegisterExternalUserService;
 use App\Services\ManageAuth\RegisterService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Cookie;
-use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\ValidationException;
 use Tymon\JWTAuth\Facades\JWTAuth;
 
@@ -33,19 +30,20 @@ class AuthController extends Controller
         return (new RegisterService($request))->execute();
     }
 
-    public function logout(): JsonResponse
+    /**
+     * @throws ValidationException
+     */
+    public function registerExternalUser(Request $request) : JsonResponse
     {
-        try {
-            // Get the token from the request
-            $token = JWTAuth::getToken();
+        return (new RegisterExternalUserService($request))->execute();
+    }
 
-            // Invalidate the token
-            JWTAuth::invalidate($token);
-
-            return response()->json(['success' => true, 'message' => 'Successfully logged out']);
-        } catch (\Exception $e) {
-            // Something went wrong whilst attempting to encode the token
-            return response()->json(['success' => false, 'error' => 'Failed to logout, please try again.'], 500);
-        }
+    /**
+     * @throws ValidationException
+     * @throws ModelNotProvidedInServiceException
+     */
+    public function logout(Request $request): JsonResponse
+    {
+        return (new LoginService($request))->execute();
     }
 }

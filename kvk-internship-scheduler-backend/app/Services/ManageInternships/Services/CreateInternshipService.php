@@ -30,7 +30,8 @@ class CreateInternshipService extends BaseService
             'users' => $this->request['users'],
             'date_from' => $this->request['dateFrom'],
             'date_to' => $this->request['dateTo'],
-            'is_active' => 1
+            'is_active' => 1,
+            'forms' => $this->request['forms'],
         ];
     }
 
@@ -53,6 +54,10 @@ class CreateInternshipService extends BaseService
 
         // save entries to pivot table
         $internship->userProfiles()->attach($this->data()['users']);
+
+        if ($this->data()['forms'] != null) {
+            $internship->templates()->attach($this->data()['forms']);
+        }
 
         // respond
         return response()->json($internship);

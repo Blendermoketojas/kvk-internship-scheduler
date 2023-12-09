@@ -53,6 +53,12 @@ const routes = [
     path: "/user-creation",
     component: () => import("@/views/UserCreationPage.vue"),
   },
+  {
+    path: "/student-profile-info/:userId",
+    name: 'StudentProfile',
+    component: () => import("@/views/ProfileInfoPage.vue"),
+  },
+
 ];
 
 const router = createRouter({

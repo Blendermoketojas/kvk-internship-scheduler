@@ -50,6 +50,6 @@ class CreateTemplateResultService extends BaseService
 
 
         // response
-        return response()->json('Not implemented');
+        return response()->json($pivot);
     }
 }

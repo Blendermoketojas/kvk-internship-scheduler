@@ -71,7 +71,7 @@
                 ></v-text-field>
               </div>
 
-              <!-- <div class="fieldDiv">
+              <div class="fieldDiv">
                 <div class="text-subtitle-1 text-bold-emphasis">El. paštas</div>
                 <v-text-field
                   density="compact"
@@ -81,7 +81,7 @@
                   v-model="userData.user.email"
                   :disabled="isStudentProfilePage"
                 ></v-text-field>
-              </div> -->
+              </div>
 
               <div class="fieldDiv">
                 <div class="text-subtitle-1 text-bold-emphasis">Adresas</div>

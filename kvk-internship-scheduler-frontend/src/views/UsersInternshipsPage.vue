@@ -49,7 +49,7 @@
               <v-row no-gutters>
                 <v-col cols="3">
                   <div>
-                    <b>Studentas:</b>
+                    <b>Studentas: </b>
                     <router-link
                     :to="{ name: 'StudentProfile', params: { userId: internship.student_id } }"
                       @click="checkStudentId(internship.student_id)"
@@ -58,16 +58,16 @@
                     >
                   </div>
                 </v-col>
-                <v-col cols="3">
-                  <b>Įmonė:</b> {{ internship.company_name }}
+                <v-col cols="2">
+                  <b>Įmonė: </b> {{ internship.company_name }}
                 </v-col>
-                <v-col cols="3">
-                  <div><b>Nuo:</b> {{ internship.date_from }}</div>
+                <v-col cols="2">
+                  <div><b>Nuo: </b> {{ internship.date_from }}</div>
                 </v-col>
-                <v-col cols="3">
-                  <div><b>Iki:</b> {{ internship.date_to }}</div>
+                <v-col cols="2">
+                  <div><b>Iki: </b> {{ internship.date_to }}</div>
                 </v-col>
-                <v-col class="d-flex justify-end" cols="3"> </v-col>
+                <v-col cols="2"><b>Valandos: </b> {{internship.loggedHours }}/{{internship.totalHours}}</v-col>
               </v-row>
             </v-container>
           </v-expansion-panel-title>
@@ -179,6 +179,8 @@ export default {
 
               return {
                 internshipId: internship.id,
+                loggedHours: internship.logged_hours,
+                totalHours: internship.duration_in_hours,
                 company_name: internship.company.company_name,
                 date_from: internship.date_from,
                 date_to: internship.date_to,
@@ -221,20 +223,20 @@ export default {
         .post(`/user/internships`, { userId: studentId })
         .then((response) => {
           if (response.data.internships && response.data.userProfile) {
-            const formattedInternships = response.data.internships.map(
-              (internship) => {
-                return {
-                  internshipId: internship.id,
-                  company_name: internship.company.company_name,
-                  date_from: internship.date_from,
-                  date_to: internship.date_to,
-                  student_name: response.data.userProfile.fullname,
-                  student_id: internship.user_profiles && internship.user_profiles.length > 0
-              ? internship.user_profiles[0].user_id
-              : null,
-                };
-              }
-            );
+        const studentId = response.data.userProfile.id;
+        const formattedInternships = response.data.internships.map((internship) => {
+          return {
+            internshipId: internship.id,
+            loggedHours: internship.logged_hours,
+            totalHours: internship.duration_in_hours,
+            company_name: internship.company.company_name,
+            date_from: internship.date_from,
+            date_to: internship.date_to,
+            student_name: response.data.userProfile.fullname,
+            student_id: studentId, 
+          };
+        });
+  
 
             this.internships = formattedInternships;
             formattedInternships.forEach((internship) => {

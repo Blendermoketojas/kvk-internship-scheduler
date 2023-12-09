@@ -47,15 +47,9 @@ class RegisterService extends BaseService
     {
         // input validation
 
-        $validation = $this->validateRules();
-        if (!is_bool($validation)) {
-            return $validation;
-        }
+        if (!$this->validateRules()) return response()->json("Action not allowed", 401);
 
         // logic execution
-
-        Log::info($this->data()['company_id']);
-
 
         $company = Company::find($this->data()['company_id']);
 

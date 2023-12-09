@@ -35,7 +35,7 @@ class GetUserInternshipsService extends BaseService
     /**
      * @throws ValidationException
      */
-    function execute() : JsonResponse
+    function execute(): JsonResponse
     {
         // input validation
         if (!$this->validateRules()) return response()->json("Action not allowed", 401);
@@ -43,13 +43,8 @@ class GetUserInternshipsService extends BaseService
         // logic execution
         $user = UserProfile::find($this->data()['userId']);
 
-        if ($this->data()['page'] == null)
-        {
-            $internships = $user->internships()->with('company')->get();
-        } else
-        {
-            $internships = $user->internships()->with('company')->paginate(5, ['*'], 'page', $this->data()['page']);
-        }
+        if ($this->data()['page'] == null) $internships = $user->internships()->with('company')->get();
+        else $internships = $user->internships()->with('company')->paginate(5, ['*'], 'page', $this->data()['page']);
 
         $response = [
             'internships' => $internships->items(),

@@ -107,6 +107,7 @@ export default {
       resultItems: [
         { title: "Rezultatų kūrimo forma", route: "/evaluation-creation" },
         { title: "Įsivertimas", route: "/evaluation-demo" },
+        { title: "Įvertinimai", route: "/evaluation"},
       ],
 
       internshipItems: [

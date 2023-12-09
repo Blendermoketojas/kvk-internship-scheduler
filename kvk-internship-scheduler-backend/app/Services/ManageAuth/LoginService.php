@@ -2,6 +2,7 @@
 
 namespace App\Services\ManageAuth;
 
+use App\Exceptions\ModelNotProvidedInServiceException;
 use App\Helpers\Cookie\CookieHelper;
 use App\Helpers\TokenHelper\TokenHelper;
 use App\Models\User;
@@ -33,15 +34,13 @@ class LoginService extends BaseService
 
     /**
      * @throws ValidationException
+     * @throws ModelNotProvidedInServiceException
      */
     function execute(): JsonResponse
     {
         // input validation
 
-        $validation = $this->validateRules();
-        if (!is_bool($validation)) {
-            return $validation;
-        }
+        if (!$this->validateRules()) return response()->json("Action not allowed", 401);
 
         // logic execution
 

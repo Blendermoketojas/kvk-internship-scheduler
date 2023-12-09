@@ -59,6 +59,8 @@ class UpdateInternshipService extends BaseService
 
         if ($this->data()['forms'] != null) {
             $internship->templates()->sync($this->data()['forms']);
+        } else {
+            $internship->templates()->detach();
         }
 
         // response

@@ -1,13 +1,7 @@
 <template>
   <custom-header></custom-header>
   <div class="mainManagement">
-    <v-alert
-      v-if="showSuccessAlert"
-      color="success"
-      icon="$success"
-      title="Pavyko!"
-      text="Praktika išsaugota!"
-    ></v-alert>
+    <v-alert v-if="showSuccessAlert" color="success" icon="$success" title="Pavyko!" text="Praktika išsaugota!"></v-alert>
     <div class="pageDescription">
       <h1>Praktikos priskyrimas</h1>
       <h2>Čia galite priskirti studento praktiką</h2>
@@ -18,118 +12,62 @@
       <div class="inputDiv">
         <div class="fieldDiv">
           <div class="text-subtitle-1 text-bold-emphasis">
-            Praktikos pavadinimas
+            Praktikos pavadinimas*
           </div>
-          <v-combobox
-            v-model="selectedInternship"
-            :items="internships"
-            @input="onInternshipInput"
-            item-value="id"
-            item-title="internshipName"
-            return-object
-            label="Pasirinkite praktikos pavadinimą"
-          ></v-combobox>
+          <v-combobox v-model="selectedInternship" :items="internships" @input="onInternshipInput" item-value="id"
+            item-title="internshipName" return-object label="Pasirinkite praktikos pavadinimą"></v-combobox>
         </div>
         <div class="fieldDiv">
-          <div class="text-subtitle-1 text-bold-emphasis">Mentorius</div>
-          <v-combobox
-            v-model="selectedMentor"
-            :items="mentors"
-            item-title="fullName"
-            item-value="id"
-            multiple
-            clearable
-            chips
-            @input="onMentorInput"
-            return-object
-            label="Vardas Pavardė"
-          ></v-combobox>
+          <div class="text-subtitle-1 text-bold-emphasis">Mentorius*</div>
+          <v-combobox v-model="selectedMentor" :items="mentors" item-title="fullName" item-value="id" multiple clearable
+            chips @input="onMentorInput" return-object label="Vardas Pavardė"></v-combobox>
         </div>
 
         <div class="fieldDiv">
           <div class="multiple-divs">
             <div class="text-subtitle-1 text-bold-emphasis">
-              Praktikos vadovas
+              Praktikos vadovas*
             </div>
-            <v-combobox
-              v-model="selectedCounselors"
-              :items="counselors"
-              item-title="fullName"
-              item-value="id"
-              multiple
-              clearable
-              chips
-              @input="onCounsolerInput"
-              return-object
-              label="Vardas Pavardė"
-            ></v-combobox>
+            <v-combobox v-model="selectedCounselors" :items="counselors" item-title="fullName" item-value="id" multiple
+              clearable chips @input="onCounsolerInput" return-object label="Vardas Pavardė"></v-combobox>
           </div>
           <div class="multiple-divs">
-            <div class="text-subtitle-1 text-bold-emphasis">Studentai</div>
-            <v-combobox
-              v-model="selectedStudents"
-              :items="students"
-              item-title="fullName"
-              item-value="id"
-              multiple
-              clearable
-              chips
-              @input="onStudentInput"
-              return-object
-              label="Vardas Pavardė"
-            ></v-combobox>
+            <div class="text-subtitle-1 text-bold-emphasis">Studentai*</div>
+            <v-combobox v-model="selectedStudents" :items="students" item-title="fullName" item-value="id" multiple
+              clearable chips @input="onStudentInput" return-object label="Vardas Pavardė"></v-combobox>
           </div>
         </div>
         <div class="fieldDivDate">
           <div class="d-inline-block dateInput">
-            <div class="text-subtitle-1 text-bold-emphasis">Nuo:</div>
+            <div class="text-subtitle-1 text-bold-emphasis">Nuo:*</div>
             <input type="date" v-model="dateFrom" />
           </div>
           <div class="d-inline-block dateInput">
-            <div class="text-subtitle-1 text-bold-emphasis">Iki:</div>
+            <div class="text-subtitle-1 text-bold-emphasis">Iki:*</div>
             <input type="date" v-model="dateTo" />
           </div>
         </div>
 
         <div class="fieldDiv">
           <div class="text-subtitle-1 text-bold-emphasis">Likerto forma</div>
-          <v-combobox
-            v-model="selectedForms"
-            :items="forms"
-            @input="onFormInput"
-            multiple
-            item-value="id"
-            item-title="name"
-            return-object
-            label="Pasirinkite vertinimo formą"
-          ></v-combobox>
+          <v-combobox v-model="selectedForms" :items="forms" @input="onFormInput" multiple item-value="id"
+            item-title="name" return-object label="Pasirinkite vertinimo formą"></v-combobox>
         </div>
 
         <div class="fieldDiv">
-          <div class="text-subtitle-1 text-bold-emphasis">Praktikos vieta</div>
-          <v-autocomplete
-            v-model="selectedCompany"
-            :items="companies"
-            @input="onCompanyInput"
-            item-value="id"
-            item-title="company_name"
-            return-object
-            label="Pasirinkite praktikos vietą"
-          ></v-autocomplete>
+          <div class="text-subtitle-1 text-bold-emphasis">Praktikos vieta*</div>
+          <v-autocomplete v-model="selectedCompany" :items="companies" @input="onCompanyInput" item-value="id"
+            item-title="company_name" return-object label="Pasirinkite praktikos vietą"></v-autocomplete>
         </div>
       </div>
 
       <div class="bottomButtons">
-        <v-btn
-          color="#0D47A1"
-          rounded="xl"
-          variant="elevated"
-          @click="submitInternship"
-          >Išsaugoti</v-btn
-        >
+        <v-btn color="#0D47A1" rounded="xl" variant="elevated" @click="submitInternship">Išsaugoti
+          <v-progress-circular v-if="isLoading" size="small" indeterminate color="white"></v-progress-circular></v-btn>
 
         <v-btn rounded="xl" variant="outlined">Atšaukti</v-btn>
       </div>
+      <span v-if="isError" class="text-danger fs-5 fw-bolder">Klaida: {{ errorMessage }}*</span>
     </div>
   </div>
 </template>
@@ -174,6 +112,9 @@ export default {
       mentors: [],
       mentorName: null,
       selectedMentor: [],
+      isLoading: false,
+      isError: false,
+      errorMessage: '',
     };
   },
   components: {
@@ -244,7 +185,7 @@ export default {
         .filter((user) => user.role_id === 5)
         .map((user) => ({ fullName: user.fullname, id: user.id }));
 
-        this.selectedCompany = {
+      this.selectedCompany = {
         company_name: data[0].company.company_name,
         id: data[0].company.id,
       };
@@ -452,6 +393,8 @@ export default {
     },
 
     submitInternship() {
+      this.isError = false;
+      this.isLoading = true;
       let internshipName =
         this.selectedInternship?.internshipName || this.selectedInternship;
       if (
@@ -491,14 +434,22 @@ export default {
 
         apiClient[method](apiEndpoint, payload)
           .then((response) => {
+            this.isLoading = false;
+            this.isError = false;
             console.log("Internship saved:", response.data);
             this.showSuccessAlert = true;
             setTimeout(() => (this.showSuccessAlert = false), 6000);
           })
           .catch((error) => {
+            this.isLoading = false;
+            this.errorMessage = error;
+            this.isError = true;
             console.error("Error saving internship:", error);
           });
       } else {
+        this.isLoading = false;
+        this.errorMessage = "Yra neužpildytų laukų";
+        this.isError = true;
         console.error("All fields are required");
       }
     },
@@ -517,13 +468,16 @@ export default {
   justify-content: space-between;
   margin-bottom: 22px;
 }
+
 .dateInput {
   width: 49%;
 }
+
 .fieldDiv {
   width: 450px;
   display: inline-block;
 }
+
 .inputDiv {
   display: flex;
   flex-direction: row;
@@ -535,14 +489,17 @@ export default {
 .mainManagement {
   padding: 0 200px;
 }
+
 .bottomButtons {
   display: flex;
   justify-content: center;
 }
+
 .bottomButtons .v-btn {
   width: 200px;
   margin: 0 10px;
 }
+
 .managementInformation {
   padding: 0 250px;
 }
@@ -553,6 +510,7 @@ h2 {
   color: rgb(170, 167, 167);
   font-weight: 400;
 }
+
 input[type="date"]::-webkit-clear-button {
   display: none;
 }

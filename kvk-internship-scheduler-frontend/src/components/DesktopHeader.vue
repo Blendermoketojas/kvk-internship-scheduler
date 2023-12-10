@@ -142,7 +142,7 @@ export default {
   },
 
   filteredDocumentItems() {
-    if (this.userRoleId === 1) {
+    if (this.userRoleId !=5) {
       return this.documentItems;
     } else if (this.userRoleId === 5) {
       return this.documentItems.filter(item => item.title !== "Dokumentų įkėlimas");
@@ -152,7 +152,7 @@ export default {
   },
 
   filteredResultItems() {
-    if (this.userRoleId === 1) {
+    if (this.userRoleId !=5) {
       return this.resultItems;
     } else if (this.userRoleId === 5) {
       return this.resultItems.filter(item => item.title !== "Rezultatų kūrimo forma");
@@ -161,7 +161,7 @@ export default {
     }
   },
   filteredInternshipItems() {
-    if (this.userRoleId === 1) {
+    if (this.userRoleId !=5) {
       return this.internshipItems;
     } else if (this.userRoleId === 5) {
       return this.internshipItems.filter(item => item.title !== "Praktikos priskyrimas");

@@ -50,6 +50,7 @@
             @input="onStudentInput"
             return-object
             label="Įrašykite vardą"
+            no-data-text="Nėra ieškomo studento"
           ></v-autocomplete>
         </div>
 
@@ -61,7 +62,7 @@
       <v-expansion-panels v-model="openedPanel">
         <v-expansion-panel
           v-for="internship in internships"
-          :key="internship.intenrshipId"
+          :key="internship.internshipId"
         >
           <v-expansion-panel-title
             class="panelHeader"
@@ -380,7 +381,7 @@ export default {
         });
     },
 
-    onStudentInput(value) {
+    onStudentInput(event) {
       const studentName = event.target.value;
       if (typeof studentName === "string" && studentName.trim() !== "") {
         this.debouncedSearchStudents(studentName);
@@ -417,13 +418,26 @@ export default {
 
   mounted() {
     console.log(this.getUser.role_id);
+    
     this.debouncedSearchStudents = debounce((studentName) => {
       this.searchStudents(studentName);
     }, 50);
 
-    if (this.getUser.role_id === 5) {
+    if (this.getUser.role_id !=1) {
       this.fetchInternshipsForRoleFive();
     }
+
+    // apiClient
+    //       .get("/linked-students")
+    //       .then((response) => {
+    //         this.students = response.data;
+    //         console.log(this.students);
+    //       })
+    //       .catch((error) => {
+    //         console.error("Error searching for students:", error);
+    //       });
+
+
   },
   computed: {
     ...mapGetters(["getUser"]),

@@ -4,6 +4,14 @@ function getAllUserInternshipDocuments() {
     return apiClient.get('/user/internship/documents', { withCredentials: true })
 }
 
+function getInternshipDocumentWithFiles(documentId) {
+    return apiClient.post('/internship/documents-files', { documentId }, { withCredentials: true })
+}
+
+function getDocumentsByInternshipId(internshipId) {
+    return apiClient.post('/documents/internship-by-id', { internshipId: internshipId }, { withCredentials: true })
+}
+
 function downloadFile(fileId) {
     return apiClient.post('/internship/document-download', { fileId }, { withCredentials: true, responseType: 'blob' })
 }
@@ -14,6 +22,15 @@ function deleteFile(fileId) {
 
 function uploadFiles(data) {
     return apiClient.post('/files/create', { ...data }, {
+        withCredentials: true, headers: {
+            'Content-Type': 'multipart/form-data'
+        }
+    })
+}
+
+function handleInternshipDocumentUploadService(title, description, internshipId) {
+    return apiClient.post('/internship/upload-document-with-files', { title: title, description: description,
+        internshipId: internshipId }, {
         withCredentials: true, headers: {
             'Content-Type': 'multipart/form-data'
         }
@@ -31,5 +48,8 @@ export default {
     downloadFile,
     uploadFiles,
     getInternshipDocumentsWithFiles,
-    deleteFile
+    deleteFile,
+    getDocumentsByInternshipId,
+    getInternshipDocumentWithFiles,
+    handleInternshipDocumentUploadService
 }

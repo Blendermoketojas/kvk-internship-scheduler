@@ -42,7 +42,7 @@ class GetInternshipService extends BaseService
         if($internship = Internship::find($this->data())) {
             $internship->load('templates');
             $internship->load('company');
-            $internship->load('userProfiles.role');
+            $internship->load('userProfiles');
         }
 
         // response

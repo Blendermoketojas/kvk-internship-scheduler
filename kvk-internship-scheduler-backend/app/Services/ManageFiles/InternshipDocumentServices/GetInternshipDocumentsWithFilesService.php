@@ -42,7 +42,7 @@ class GetInternshipDocumentsWithFilesService extends BaseService
 
         // TODO: IMPLEMENT POLICY VERIFICATION FOR DOCUMENT RETRIEVAL
 
-        $document = Document::find($this->data()['documentId'])->with('files')->first();
+        $document = Document::with('files')->find($this->data()['documentId']);
 
         // response
         return response()->json($document);

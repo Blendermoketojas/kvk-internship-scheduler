@@ -10,7 +10,7 @@
         <v-select label="Katalogas" v-model="selectedCatalog" item-title="title" item-value="id"
           :items="catalogs"></v-select>
         <v-btn @click="openDialog" color="#0D47A1" height="57px" variant="elevated">Naujas</v-btn>
-        <v-btn v-if="selectedCatalog" @click="openDialog" color="red" height="57px" variant="elevated">Pašalinti</v-btn>
+        <v-btn v-if="selectedCatalog" @click="deleteDocument" color="red" height="57px" variant="elevated">Pašalinti</v-btn>
       </div>
       <h2>Čia galite įkelti reikalingus dokumentus</h2>
       <h1>Įkelti dokumentai</h1>
@@ -108,6 +108,10 @@ export default {
       if (this.uploaderInstance) {
         this.uploaderInstance.reset();
       }
+    },
+    deleteDocument() {
+      IDS.deleteDocumentWithFilesService(this.selectedCatalog)
+      .then(response => response.data.status);
     },
     addCatalog(e) {
       this.catalogs.push(e);

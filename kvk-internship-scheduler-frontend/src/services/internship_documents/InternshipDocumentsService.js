@@ -43,6 +43,12 @@ function getInternshipDocumentsWithFiles(documentId) {
     })
 }
 
+function deleteDocumentWithFilesService(documentId) {
+    return apiClient.post('/internship/delete-document-with-files', { documentId: documentId }, {
+        withCredentials: true
+    })
+}
+
 export default {
     getAllUserInternshipDocuments,
     downloadFile,
@@ -51,5 +57,6 @@ export default {
     deleteFile,
     getDocumentsByInternshipId,
     getInternshipDocumentWithFiles,
-    handleInternshipDocumentUploadService
+    handleInternshipDocumentUploadService,
+    deleteDocumentWithFilesService
 }

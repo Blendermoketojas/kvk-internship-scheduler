@@ -357,7 +357,7 @@ export default {
 
     handleInternshipClick(internshipId) {
       console.log("Clicked internship ID:", internshipId);
-      localStorage.setItem("uploadInternshipId", internshipId);
+      localStorage.setItem("uploadInternshipId", `Internships|${internshipId}`);
       if (this.selectedInternshipId === internshipId) {
         this.selectedInternshipId = null;
         return;

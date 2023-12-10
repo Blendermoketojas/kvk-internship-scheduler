@@ -15,8 +15,8 @@ class RealSeeder extends Seeder
     {
         $this->call([
             CompanySeeder::class,
+            RealGroupSeeder::class,
             RoleSeeder::class,
-            StudentGroupsSeeder::class,
             RealStudentSeeder::class,
         ]);
     }

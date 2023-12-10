@@ -40,7 +40,7 @@ class GetStudentGradesService extends BaseService
         if (!$this->validateRules()) return response()->json("Action not allowed", 401);
 
         // logic execution
-        switch ($this->user->role()) {
+        switch ($this->user->role_id) {
             case Role::STUDENTAS->value:
                 $response = $this->getStudent();
                 break;
@@ -48,7 +48,7 @@ class GetStudentGradesService extends BaseService
                 $response = $this->getMentor();
                 break;
             case Role::PRAKTIKOS_VADOVAS->value:
-                $response = $this->getVadov();
+                $response = $this->getVadovas();
                 break;
         }
 

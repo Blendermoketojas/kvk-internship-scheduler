@@ -10,43 +10,121 @@
       <div class="studentSearchInput" v-if="!isRoleFive">
         <div class="fieldDiv">
           <div class="text-subtitle-1 text-bold-emphasis">Filtruoti pagal:</div>
-          <v-select v-model="selectedFilter" :items="filterBy" density="comfortable"
-            label="Pasirinkite filtrą"></v-select>
+          <v-select
+            v-model="selectedFilter"
+            :items="filterBy"
+            density="comfortable"
+            label="Pasirinkite filtrą"
+          ></v-select>
+        </div>
+        <div v-if="isModalVisible" class="modal">
+          <div class="modal-content">
+            <h1>Ar norite pašalinti šią praktiką?</h1>
+            <div class="modalBtn">
+              <v-btn
+                variant="tonal"
+                width="150px"
+                color="red"
+                rounded="lg"
+                @click="confirmDelete"
+                >Taip</v-btn
+              >
+              <v-btn
+                variant="tonal"
+                width="150px"
+                rounded="lg"
+                @click="isModalVisible = false"
+                >Ne</v-btn
+              >
+            </div>
+          </div>
         </div>
 
         <div class="fieldDiv" v-if="showStudentInput">
           <div class="text-subtitle-1 text-bold-emphasis">Vardas Pavardė</div>
-          <v-autocomplete v-model="selectedStudent" :items="students" item-title="fullName" item-value="id"
-            @input="onStudentInput" return-object label="Įrašykite vardą"></v-autocomplete>
+          <v-autocomplete
+            v-model="selectedStudent"
+            :items="students"
+            item-title="fullName"
+            item-value="id"
+            @input="onStudentInput"
+            return-object
+            label="Įrašykite vardą"
+          ></v-autocomplete>
         </div>
 
-        <group-search v-if="showGroupInput" @update:selectedGroupId="handleSelectedGroupId"></group-search>
+        <group-search
+          v-if="showGroupInput"
+          @update:selectedGroupId="handleSelectedGroupId"
+        ></group-search>
       </div>
       <v-expansion-panels v-model="openedPanel">
-        <v-expansion-panel v-for="internship in internships" :key="internship.id">
-          <v-expansion-panel-title class="panelHeader" @click="handleInternshipClick(internship.internshipId)">
+        <v-expansion-panel
+          v-for="internship in internships"
+          :key="internship.internshipId"
+        >
+          <v-expansion-panel-title
+            class="panelHeader"
+            @click="handleInternshipClick(internship.internshipId)"
+          >
             <v-container>
               <v-row no-gutters>
                 <v-col cols="2">
                   <div>
-                    <b>Studentas: </b>
-                    <router-link :to="{ name: 'StudentProfile', params: { userId: internship.student_id } }"
-                      @click="checkStudentId(internship.student_id)" class="student-name">{{ internship.student_name
-                      }}</router-link>
+                    <div><b>Studentas:</b></div>
+                    <br />
+                    <router-link
+                      :to="{
+                        name: 'StudentProfile',
+                        params: { userId: internship.student_id },
+                      }"
+                      @click="checkStudentId(internship.student_id)"
+                      class="student-name"
+                      >{{ internship.student_name }}</router-link
+                    >
                   </div>
                 </v-col>
                 <v-col cols="2">
-                  <b>Įmonė: </b> {{ internship.company_name }}
+                  <div><b>Įmonė: </b></div>
+                  <br />{{ internship.company_name }}
                 </v-col>
                 <v-col cols="2">
-                  <div><b>Nuo: </b> {{ internship.date_from }}</div>
+                  <div>
+                    <div><b>Nuo: </b></div>
+                    <br />{{ internship.date_from }}
+                  </div>
                 </v-col>
                 <v-col cols="2">
-                  <div><b>Iki: </b> {{ internship.date_to }}</div>
+                  <div>
+                    <div><b>Iki: </b></div>
+                    <br />{{ internship.date_to }}
+                  </div>
                 </v-col>
-                <v-col cols="2"><b>Valandos: </b> {{ internship.loggedHours }}/{{ internship.totalHours }}</v-col>
+                <v-col cols="2"
+                  ><div><b>Valandos: </b></div>
+                  <br />{{ internship.loggedHours }}/{{
+                    internship.totalHours
+                  }}</v-col
+                >
                 <v-col cols="2">
-                  <div><button class="styleless-button" @click="handleUpload"><v-icon icon="mdi-upload"></v-icon></button>
+                  <div class="iconButtons">
+                    <button class="styleless-button" @click="handleUpload">
+                      <v-icon icon="mdi-upload"></v-icon>
+                    </button>
+
+                    <button
+                      class="styleless-button"
+                      @click="handleEditInternship(internship.internshipId)"
+                    >
+                      <v-icon icon="mdi-pencil"></v-icon>
+                    </button>
+
+                    <button
+                      class="styleless-button"
+                      @click="openDeleteModal(internship.internshipId)"
+                    >
+                      <v-icon icon="mdi-delete"></v-icon>
+                    </button>
                   </div>
                 </v-col>
               </v-row>
@@ -59,7 +137,11 @@
 
             <v-container v-else>
               <v-row v-if="selectedInternshipComments.length > 0">
-                <v-col v-for="comment in selectedInternshipComments" :key="comment.id" cols="12">
+                <v-col
+                  v-for="comment in selectedInternshipComments"
+                  :key="comment.id"
+                  cols="12"
+                >
                   <v-row>
                     <v-col cols="4" class="comment-details">
                       Nuo: {{ comment.date_from }}
@@ -113,6 +195,7 @@ export default {
       selectedFilter: null,
       filterBy: ["Pagal grupę", "Pagal Vardą Pavardę"],
       openedPanel: null,
+      isModalVisible: false,
     };
   },
   components: {
@@ -139,13 +222,47 @@ export default {
   },
 
   methods: {
+    handleEditInternship(internshipId) {
+      console.log("edit", internshipId);
+      this.$router.push({ name: "InternshipEdit", query: { internshipId } });
+    },
+
+    openDeleteModal(internshipId) {
+      this.internshipToDelete = internshipId;
+      this.isModalVisible = true;
+    },
+
+    confirmDelete() {
+      console.log("confirmation", this.internshipToDelete);
+      if (this.internshipToDelete) {
+        apiClient
+          .post(
+            `/internship-delete`,
+            { internshipId: this.internshipToDelete },
+            { withCredentials: true }
+          )
+          .then((response) => {
+            console.log("Internship deleted successfully");
+            this.isModalVisible = false;
+            this.internships = this.internships.filter(
+              (internship) =>
+                internship.internshipId !== this.internshipToDelete
+            );
+            this.internshipToDelete = null;
+          })
+          .catch((error) => {
+            console.error("Error deleting internship:", error);
+          });
+      }
+    },
+
     checkStudentId(studentId) {
       console.log("Student ID:", studentId);
     },
     handleUpload() {
-      localStorage.setItem('uploadInternshipId', this.selectedInternshipId)
-      this.$router.push('/document-upload')
-    },  
+      localStorage.setItem("uploadInternshipId", this.selectedInternshipId);
+      this.$router.push("/document-upload");
+    },
     handleSelectedGroupId(groupId) {
       apiClient
         .post("/internships/student-group-active", { studentGroupId: groupId })
@@ -165,9 +282,11 @@ export default {
                 date_from: internship.date_from,
                 date_to: internship.date_to,
                 student_name: studentName,
-                student_id: internship.user_profiles && internship.user_profiles.length > 0
-                  ? internship.user_profiles[0].user_id
-                  : null,
+                student_id:
+                  internship.user_profiles &&
+                  internship.user_profiles.length > 0
+                    ? internship.user_profiles[0].user_id
+                    : null,
               };
             });
 
@@ -204,19 +323,20 @@ export default {
         .then((response) => {
           if (response.data.internships && response.data.userProfile) {
             const studentId = response.data.userProfile.id;
-            const formattedInternships = response.data.internships.map((internship) => {
-              return {
-                internshipId: internship.id,
-                loggedHours: internship.logged_hours,
-                totalHours: internship.duration_in_hours,
-                company_name: internship.company.company_name,
-                date_from: internship.date_from,
-                date_to: internship.date_to,
-                student_name: response.data.userProfile.fullname,
-                student_id: studentId,
-              };
-            });
-
+            const formattedInternships = response.data.internships.map(
+              (internship) => {
+                return {
+                  internshipId: internship.id,
+                  loggedHours: internship.logged_hours,
+                  totalHours: internship.duration_in_hours,
+                  company_name: internship.company.company_name,
+                  date_from: internship.date_from,
+                  date_to: internship.date_to,
+                  student_name: response.data.userProfile.fullname,
+                  student_id: studentId,
+                };
+              }
+            );
 
             this.internships = formattedInternships;
             formattedInternships.forEach((internship) => {
@@ -323,6 +443,43 @@ export default {
 </script>
 
 <style>
+.modalBtn {
+  display: flex;
+  width: 100%;
+  justify-content: space-evenly;
+}
+
+.modal {
+  display: block;
+  position: fixed;
+  z-index: 1000;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgba(0, 0, 0, 0.4);
+}
+
+.modal-content {
+  display: flex;
+  background-color: #fefefe;
+  margin: 15% auto;
+  padding: 20px;
+  border: 1px solid #888;
+  width: 50%;
+  height: 250px;
+  text-align: center;
+  border: 1px solid rgb(121, 119, 119);
+  justify-content: space-evenly;
+  align-items: center;
+  flex-direction: column;
+}
+
+.iconButtons button {
+  margin: 0 10px;
+}
+
 .student-name {
   position: relative;
   z-index: 2000;

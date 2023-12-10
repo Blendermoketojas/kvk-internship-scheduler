@@ -58,6 +58,11 @@ const routes = [
     name: 'StudentProfile',
     component: () => import("@/views/ProfileInfoPage.vue"),
   },
+  {
+  path: "/internship-edit/:userId",
+  name: 'InternshipEdit',
+  component: () => import("@/views/InternshipManagementPage.vue"),
+},
 
 ];
 

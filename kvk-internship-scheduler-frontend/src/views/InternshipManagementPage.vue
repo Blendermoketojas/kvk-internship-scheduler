@@ -92,6 +92,21 @@
         </div>
 
         <div class="fieldDiv">
+          <div class="text-subtitle-1 text-bold-emphasis">Likerto forma</div>
+          <v-combobox
+            v-model="selectedForms"
+            :items="forms"
+            @input="onFormInput"
+            multiple
+            item-value="id"
+            item-title="name"
+            return-object
+            label="Pasirinkite vertinimo formą"
+          ></v-combobox>
+        </div>
+
+
+        <div class="fieldDiv">
           <div class="text-subtitle-1 text-bold-emphasis">Praktikos vieta</div>
           <v-autocomplete
             v-model="selectedCompany"
@@ -139,6 +154,8 @@ export default {
   name: "ProfileInfo",
   data() {
     return {
+      selectedForms:[],
+      forms:[],
       userIcon,
       selectedStudents: [],
       selectedGroup: "",
@@ -185,6 +202,10 @@ export default {
       this.searchMentors(mentorName);
     }, 500);
 
+    this.debouncedSearchForms = debounce((formName) => {
+      this.searchForms(formName);
+    }, 500);
+
   },
   methods: {
     onStudentInput(event) {
@@ -221,6 +242,14 @@ export default {
         this.debouncedSearchMentors(mentorName);
       }
     },
+
+    onFormInput(event) {
+      const formName = event.target.value;
+      if (typeof formName === "string" && formName.trim() !== "") {
+        this.debouncedSearchForms(formName);
+      }
+    },
+
 
     searchCompanies(companyName) {
       if (typeof companyName !== "string") {
@@ -265,6 +294,29 @@ export default {
           })
           .catch((error) => {
             console.error("Error searching for students:", error);
+          });
+      }
+    },
+
+    searchForms(formName) {
+      if (typeof formName !== "string") {
+        console.error(
+          "formName called with non-string argument:",
+          formName
+        );
+        return;
+      }
+      if (formName && formName.trim() !== "") {
+        apiClient
+          .post("/result/search/template", { name: formName })
+          .then((response) => {
+            this.forms = response.data.map((form) => ({
+              id: form.id,
+              name: form.name,
+            }));
+          })
+          .catch((error) => {
+            console.error("Error searching for forms:", error);
           });
       }
     },
@@ -348,6 +400,9 @@ export default {
     triggerSearchMentors() {
       this.debouncedSearchGroups(this.selectedMentor);
     },
+    triggerSearchForms() {
+      this.debouncedSearchForms(this.selectedForms);
+    },
 
     submitInternship() {
      
@@ -417,7 +472,7 @@ export default {
 }
 .inputDiv {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   flex-wrap: wrap;
   align-items: center;
   justify-content: space-between;

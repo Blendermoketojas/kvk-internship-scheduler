@@ -7,7 +7,9 @@ use App\Services\ManageResults\Forms\Results\CreateTemplateResultService;
 use App\Services\ManageResults\Forms\Results\GetTemplateResultService;
 use App\Services\ManageResults\Forms\Templates\AttachTemplateToInternshipService;
 use App\Services\ManageResults\Forms\Templates\DetachTemplateFromInternshipService;
+use App\Services\ManageResults\Forms\Templates\GetFilledFormDataService;
 use App\Services\ManageResults\Forms\Templates\GetTemplateByNameService;
+use App\Services\ManageResults\Forms\Templates\GetTemplatesByDatesAndGroupsService;
 use App\Services\ManageResults\Forms\Templates\GetTemplateService;
 use App\Services\ManageResults\Forms\Templates\ModifyTemplateService;
 use App\Services\ManageResults\Forms\Templates\SearchLikertItemsService;
@@ -65,5 +67,17 @@ class ResultFormController extends Controller
      */
     public function getResult(Request $request): JsonResponse {
         return (new GetTemplateResultService($request))->execute();
+    }
+    /**
+     * @throws ValidationException
+     */
+    public function getTemplatesFromDateAndStudentGroup(Request $request): JsonResponse {
+        return (new GetTemplatesByDatesAndGroupsService($request))->execute();
+    }
+    /**
+     * @throws ValidationException
+     */
+    public function getDataFromTemplate(Request $request): JsonResponse {
+        return (new GetFilledFormDataService($request))->execute();
     }
 }

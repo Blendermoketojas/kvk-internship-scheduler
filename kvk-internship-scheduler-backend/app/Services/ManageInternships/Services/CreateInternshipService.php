@@ -19,7 +19,8 @@ class CreateInternshipService extends BaseService
             'users' => 'required|array',
             'date_from' => 'required|date',
             'date_to' => 'required|date',
-            'is_active' => 'required|integer'];
+            'is_active' => 'required|integer',
+            'forms' => 'required|array'];
     }
 
     public function data(): array

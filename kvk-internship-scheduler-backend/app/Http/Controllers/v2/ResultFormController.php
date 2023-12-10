@@ -54,15 +54,21 @@ class ResultFormController extends Controller
     public function detachTemplate(Request $request): JsonResponse {
         return (new DetachTemplateFromInternshipService($request))->execute();
     }
-
+    /**
+     * @throws ValidationException
+     */
     public function searchTemplate(Request $request): JsonResponse {
         return (new GetTemplateByNameService($request))->execute();
     }
-
+    /**
+     * @throws ValidationException
+     */
     public function createResult(Request $request): JsonResponse {
         return (new CreateTemplateResultService($request))->execute();
     }
-
+    /**
+     * @throws ValidationException
+     */
     public function getResult(Request $request): JsonResponse {
         return (new GetTemplateResultService($request))->execute();
     }

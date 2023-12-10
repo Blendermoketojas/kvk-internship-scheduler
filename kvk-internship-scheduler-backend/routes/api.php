@@ -79,6 +79,8 @@ Route::middleware('api')->prefix('v2')->group(function () {
         Route::post('/search-students', [StudentController::class, 'searchStudents']);
 
         Route::get('/linked-students', [StudentController::class, 'getLinkedStudents']);
+        Route::get('/linked-students-internships-active', [StudentController::class,
+            'getLinkedStudentsActiveInternships']);
 
         // Internships
 

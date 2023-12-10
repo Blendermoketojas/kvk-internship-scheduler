@@ -42,9 +42,11 @@
           style="border: dashed rgb(153, 150, 150) 2px;" width="80%" />
       </div>
       <div class="bottomButtons">
-        <v-btn color="#0D47A1" rounded="xl" variant="elevated" @click="uploadFiles">Išsaugoti</v-btn>
+        <v-btn color="#0D47A1" rounded="xl" variant="elevated" @click="uploadFiles">Išsaugoti<v-progress-circular
+            v-if="isSaveLoading" indeterminate color="white" size="small"></v-progress-circular></v-btn>
         <v-btn @click="abortAction" rounded="xl" variant="outlined">Atšaukti</v-btn>
       </div>
+      <span v-if="isError" class="text-danger fs-5 fw-bolder">Klaida: {{ errorMessage }}*</span>
     </div>
   </div>
 </template>
@@ -80,7 +82,10 @@ export default {
       catalogs: [],
       selectedCatalog: null,
       activityName: '',
-      isLoading: false
+      isLoading: false,
+      isSaveLoading: false,
+      isError: false,
+      errorMessage: ''
     };
   },
   watch: {
@@ -102,7 +107,24 @@ export default {
       this.$refs.uploadDialog.openDialog();
     },
     uploadFiles() {
-      IDS.uploadFiles({ files: this.newFiles, activityName: this.activityName, activityId: this.selectedCatalog }).then(response => console.log(response.status));
+      this.isSaveLoading = true;
+      IDS.uploadFiles({ files: this.newFiles, activityName: this.activityName, activityId: this.selectedCatalog })
+        .then(response => {
+          if (response.error) {
+            this.isError = true;
+            this.errorMessage = response.error
+          }
+          this.isSaveLoading = false;
+        })
+        .catch(error => {
+          this.isSaveLoading = false;
+          this.isError = true;
+          if (error.response && error.response.data) {
+            this.errorMessage = error.response.data.error || 'An unknown error occurred';
+          } else {
+            this.errorMessage = error.message || 'An unknown error occurred';
+          }
+        });
     },
     onUploaderInitialized(e) {
       this.uploaderInstance = e.component;
@@ -115,8 +137,8 @@ export default {
     deleteDocument() {
       IDS.deleteDocumentWithFilesService(this.selectedCatalog)
         .then(response => {
-            const indexToDelete = this.catalogs.findIndex(c => c.id === this.selectedCatalog);
-            this.catalogs.splice(indexToDelete, 1);
+          const indexToDelete = this.catalogs.findIndex(c => c.id === this.selectedCatalog);
+          this.catalogs.splice(indexToDelete, 1);
         });
     },
     addCatalog(e) {
@@ -137,6 +159,9 @@ export default {
           this.retrievedFiles.splice(indexToRemove, 1)
           this.isModalVisible = false;
         }).catch(error => console.log('failed to delete file'));
+      } else if (this.newFiles.find(f => f.id === file.id)) {
+          const indexToRemove = this.newFiles.findIndex(f => f.id === file.id)
+          this.newFiles.splice(indexToRemove, 1)
       } else {
         this.files.splice(this.indexToRemove, 1);
         this.isModalVisible = false;
@@ -148,7 +173,9 @@ export default {
     },
     abortAction() {
       this.files = [];
-      this.selectedFiles = []
+      this.selectedFiles = [];
+      this.newFiles = [];
+      this.retrievedFiles = [];
     },
     getFileIconClass(fileName) {
       const ext = fileName

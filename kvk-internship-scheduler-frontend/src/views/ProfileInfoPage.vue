@@ -289,17 +289,17 @@ export default {
         });
     },
 
-    fetchInternshipsForRoleFive() {
-      apiClient
-        .get("/internships")
-        .then((response) => {
-          this.internships = response.data;
-          this.internshipsLoaded = true;
-        })
-        .catch((error) => {
-          console.error("Error fetching internships:", error);
-        });
-    },
+    // fetchInternshipsForRoleFive() {
+    //   apiClient
+    //     .get("/internships")
+    //     .then((response) => {
+    //       this.internships = response.data;
+    //       this.internshipsLoaded = true;
+    //     })
+    //     .catch((error) => {
+    //       console.error("Error fetching internships:", error);
+    //     });
+    // },
 
     fetchUserData() {
       apiClient.get("/profile", { withCredentials: true }).then((response) => {

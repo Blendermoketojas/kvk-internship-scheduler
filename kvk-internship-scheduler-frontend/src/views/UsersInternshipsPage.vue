@@ -164,7 +164,7 @@ export default {
   methods: {
     handleEditInternship(internshipId) {
       console.log("edit", internshipId);
-      this.$router.push({ name: "InternshipEdit", params: { internshipId: internshipId } });
+      this.$router.push({ name: "InternshipEdit", query: { internshipId } });
     },
 
     openDeleteModal(internshipId) {
@@ -224,7 +224,12 @@ export default {
             });
 
             this.internships = formattedInternships;
-           
+
+            formattedInternships.forEach((internship) => {
+              console.log(
+                `Internship for ${internship.student_name}: Company - ${internship.company_name}, from ${internship.date_from} to ${internship.date_to}`
+              );
+            });
           } else {
             console.log("No internships found in response.");
           }
@@ -342,7 +347,6 @@ export default {
   },
 
   mounted() {
-    
     console.log(this.getUser.role_id);
     this.debouncedSearchStudents = debounce((studentName) => {
       this.searchStudents(studentName);

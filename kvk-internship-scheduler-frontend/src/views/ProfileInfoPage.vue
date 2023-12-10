@@ -101,8 +101,7 @@
                   disabled
                   v-if="userData && userData.country !== undefined"
                   v-model="userData.country"
-                  density="compact"
-      
+                  label="Lietuva"
                 ></v-select>
               </div>
               <div class="fieldDiv" v-if="isRoleFour">
@@ -123,7 +122,6 @@
               label="Aprašymas"
               v-model="userData.description"
               v-if="userData && userData.description !== undefined"
-              :disabled="isStudentProfilePage"
             ></v-textarea>
           </div>
           <div class="bottomButtons">
@@ -208,7 +206,6 @@ export default {
   name: "ProfileInfo",
   data() {
     return {
-      userIdFromUrl: null,
       userIcon,
       userData: null,
       company_id: 0,
@@ -229,17 +226,6 @@ export default {
     groupSearch,
   },
   mounted() {
-    this.handleDataFetching();
-
-    if (this.$route.path.includes('/student-profile-info')) {
-      const userId = this.$route.params.userId;
-      this.fetchInternshipData(userId);
-    } else {
-      this.fetchUserData();
- 
-    }
-
-
     apiClient.get("/companies", { withCredentials: true }).then((response) => {
       this.companies = response.data;
       this.registrationData.company_id = response.data.id;
@@ -255,40 +241,20 @@ export default {
     }
   },
   methods: {
-    handleDataFetching() {
-
-      if (this.$route.path.includes('/student-profile-info')) {
-
-        const userId = this.$route.params.userId; 
-        this.fetchProfileData(userId);
-      } else {
-        this.fetchUserData();
-      }
-    },
-    fetchProfileData(userId) {
-      apiClient.post(`/profile/id`, {userId : userId})
-        .then(response => {
-  this.userData=response.data;
+    handleStudentSelection(studentId) {
+      apiClient
+        .post(`/user/internships`, { userId: studentId })
+        .then((response) => {
+          console.log("Internships for student:", response.data);
+          this.internships = response.data;
         })
-        .catch(error => {
-        console.log('neveikia profilio partraukimas XDDDDDDDDDDDDDDDD')
+        .catch((error) => {
+          console.error(
+            "Error fetching internships for selected student:",
+            error
+          );
         });
     },
-
-    // handleStudentSelection(studentId) {
-    //   apiClient
-    //     .post(`/user/internships`, { userId: studentId })
-    //     .then((response) => {
-    //       console.log("Internships for student:", response.data);
-    //       this.internships = response.data;
-    //     })
-    //     .catch((error) => {
-    //       console.error(
-    //         "Error fetching internships for selected student:",
-    //         error
-    //       );
-    //     });
-    // },
 
     handleInternshipClick(internshipId) {
       if (this.selectedInternshipId === internshipId) {
@@ -311,14 +277,15 @@ export default {
         });
     },
 
-    fetchInternshipData(userId) {
-      apiClient.post(`/user/internships`,   {userId: userId })
-        .then(response => {
-          this.internships = response.data.internships;
+    fetchInternshipsForRoleFive() {
+      apiClient
+        .get("/internships")
+        .then((response) => {
+          this.internships = response.data;
           this.internshipsLoaded = true;
         })
-        .catch(error => {
-          console.error("Error fetching internships: ", error);
+        .catch((error) => {
+          console.error("Error fetching internships:", error);
         });
     },
 

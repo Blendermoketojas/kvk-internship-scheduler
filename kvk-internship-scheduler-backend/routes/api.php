@@ -55,6 +55,7 @@ Route::middleware('api')->prefix('v2')->group(function () {
     Route::middleware(['jwt.from.cookie', 'jwt.auth'])->group(function () {
 
         // Register external
+
         Route::post('/register-external', [AuthController::class, 'registerExternalUser']);
 
         // Logout
@@ -94,7 +95,7 @@ Route::middleware('api')->prefix('v2')->group(function () {
 
         Route::put('/internship-update', [InternshipController::class, 'updateInternship']);
 
-        Route::post('/internship-delete', [InternshipController::class, 'deleteInternship']);
+        Route::delete('/internship-delete', [InternshipController::class, 'deleteInternship']);
 
         // Comments
 
@@ -113,9 +114,7 @@ Route::middleware('api')->prefix('v2')->group(function () {
         Route::post('/result/search/likert', [ResultFormController::class, 'searchLikert']);
         Route::post('/result/template/attach', [ResultFormController::class, 'attachTemplate']);
         Route::post('/result/template/detach', [ResultFormController::class, 'detachTemplate']);
-        Route::post('/result/search/template', [ResultFormController::class, 'searchTemplate']);
-        Route::post('/result/answer/create', [ResultFormController::class, 'createResult']);
-        Route::post('/result/answer/get', [ResultFormController::class, 'getResult']);
+
         // Internship File Management
 
         Route::post('/internship/upload-document-with-files',
@@ -138,9 +137,6 @@ Route::middleware('api')->prefix('v2')->group(function () {
 
         Route::post('/internship/documents-files', [InternshipFileManagementController::class,
             'getInternshipDocumentsWithFiles']);
-
-        Route::post('/documents/internship-by-id', [InternshipFileManagementController::class,
-            'getDocumentsByInternshipId']);
 
         // File Management
 

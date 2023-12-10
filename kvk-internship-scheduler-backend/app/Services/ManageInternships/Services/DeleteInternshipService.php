@@ -13,7 +13,7 @@ class DeleteInternshipService extends BaseService
     public function rules(): array
     {
         return [
-            'internship_id' => 'required|integer|exists:internships,id'
+            'internship_id' => 'required|integer'
         ];
     }
 

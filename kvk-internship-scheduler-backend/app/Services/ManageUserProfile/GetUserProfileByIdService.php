@@ -40,7 +40,7 @@ class GetUserProfileByIdService extends BaseService
 
         // logic execution
 
-        $userProfile = UserProfile::with('user')->find($this->data()['userId']);
+        $userProfile = UserProfile::find($this->data()['userId']);
 
         // response
         return response()->json($userProfile);

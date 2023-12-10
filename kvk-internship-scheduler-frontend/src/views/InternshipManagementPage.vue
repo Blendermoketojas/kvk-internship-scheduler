@@ -443,9 +443,6 @@ export default {
     triggerSearchMentors() {
       this.debouncedSearchGroups(this.selectedMentor);
     },
-    triggerSearchForms() {
-      this.debouncedSearchForms(this.selectedForms);
-    },
 
     submitInternship() {
       let internshipName =
@@ -524,7 +521,7 @@ export default {
 }
 .inputDiv {
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
   flex-wrap: wrap;
   align-items: center;
   justify-content: space-between;

@@ -15,6 +15,7 @@ use App\Http\Controllers\v2\FileController;
 use App\Http\Controllers\v2\InternshipController;
 use App\Http\Controllers\v2\ResultFormController;
 use App\Http\Controllers\v2\InternshipFileManagementController;
+use App\Http\Controllers\v2\ResultGradeController;
 use App\Http\Controllers\v2\StudentController;
 use App\Http\Controllers\v2\UserProfileController;
 use Illuminate\Http\Request;
@@ -114,6 +115,14 @@ Route::middleware('api')->prefix('v2')->group(function () {
         Route::post('/result/search/likert', [ResultFormController::class, 'searchLikert']);
         Route::post('/result/template/attach', [ResultFormController::class, 'attachTemplate']);
         Route::post('/result/template/detach', [ResultFormController::class, 'detachTemplate']);
+
+
+        // ResultGrades
+
+        Route::post('/result/grade/create', [ResultGradeController::class, 'createGrade']);
+        Route::post('/result/grade/modify', [ResultGradeController::class, 'modifyGrade']);
+        Route::post('/result/grade/delete', [ResultGradeController::class, 'deleteGrade']);
+        Route::post('/result/grade/get', [ResultGradeController::class, 'getStudentGrades']);
 
         // Internship File Management
 

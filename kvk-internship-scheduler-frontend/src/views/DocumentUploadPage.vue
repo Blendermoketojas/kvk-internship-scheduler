@@ -1,15 +1,22 @@
 <template>
   <custom-header></custom-header>
   <Teleport to="body">
-    <upload-dialog ref="uploadDialog"></upload-dialog>
+    <upload-dialog @documentAdded="addCatalog" ref="uploadDialog"></upload-dialog>
   </Teleport>
   <div class="mainDiv">
     <div class="pageDescription">
-      <h1>Dokumentų įkėlimas</h1>
+      <div class="d-flex justify-content-between">
+        <h1>Dokumentų įkėlimas</h1>
+        <v-select label="Katalogas" v-model="selectedCatalog" item-title="title" item-value="id"
+          :items="catalogs"></v-select>
+        <v-btn @click="openDialog" color="#0D47A1" height="57px" variant="elevated">Naujas</v-btn>
+        <v-btn v-if="selectedCatalog" @click="openDialog" color="red" height="57px" variant="elevated">Pašalinti</v-btn>
+      </div>
       <h2>Čia galite įkelti reikalingus dokumentus</h2>
-      <h1>Įkelti dokumentai {{ catalogName }} <span v-show="catalogName">aplanke</span>:</h1>
+      <h1>Įkelti dokumentai</h1>
       <h2>Paspauskite ant dokumento, norėdami pašalinti</h2>
       <div class="uploadedFiles">
+        <v-skeleton-loader v-if="isLoading" width="250px" type="paragraph"></v-skeleton-loader>
         <div class="uploadedFile" v-for="(file, index) in files" :key="index" @click="showModal(file, index)">
           <i :class="getFileIconClass(file.name)" style="font-size: 5rem"></i>
           <p>{{ file.name }}</p>
@@ -25,18 +32,14 @@
         </div>
       </div>
       <div class="documentUploadDiv">
-
-
-        <DxFileUploader id="file-uploader" :multiple="true" :activeStateEnabled="false"
-          :select-button-text="'Pasirinkite failą'" :label-text="'Arba nutempkite jį čia'"
+        <DxFileUploader id="file-uploader" :onInitialized="onUploaderInitialized" :multiple="true"
+          :activeStateEnabled="false" :select-button-text="'Pasirinkite failą'" :label-text="'Arba nutempkite jį čia'"
           accept=".pdf, .doc, .docx, .rtf, .pptx, image/*" :upload-mode="'useButtons'"
           :upload-url="'your-upload-endpoint-url'" @valueChanged="onFilesSelected" height="250px"
           style="border: dashed rgb(153, 150, 150) 2px;" width="80%" />
-
       </div>
       <div class="bottomButtons">
         <v-btn color="#0D47A1" rounded="xl" variant="elevated" @click="uploadFiles">Išsaugoti</v-btn>
-        <v-btn @click="openDialog" color="#0D47A1" rounded="xl" variant="elevated">Pridėti į...</v-btn>
         <v-btn @click="abortAction" rounded="xl" variant="outlined">Atšaukti</v-btn>
       </div>
     </div>
@@ -45,16 +48,14 @@
 
 <script>
 import customHeader from "@/components/DesktopHeader.vue";
-import apiClient from "@/utils/api-client";
 import IDS from "@/services/internship_documents/InternshipDocumentsService";
 import { DxFileUploader } from "devextreme-vue/file-uploader";
 import { DxLoadPanel } from "devextreme-vue/load-panel";
+import textUtils from "@/utils/text-utils";
 import UploadDialog from '@/components/dialogs/UploadDialog.vue';
-import { mapGetters } from "vuex";
 
 export default {
   name: "FileUploader",
-
   components: {
     customHeader,
     DxFileUploader,
@@ -64,36 +65,53 @@ export default {
   data() {
     return {
       files: [],
+      newFiles: [],
+      retrievedFiles: [],
       selectedFiles: [],
+      uploaderInstance: null,
       wrapperClassName: "",
       requests: [],
       isModalVisible: false,
       fileToRemove: null,
       indexToRemove: null,
-      catalogName: null,
+      catalogs: [],
+      selectedCatalog: null,
+      activityName: '',
+      isLoading: false
     };
   },
-  computed: {
-    ...mapGetters([
-      'getInternshipDialogData'
-    ])
-  },
   watch: {
-    getInternshipDialogData: {
+    selectedCatalog: {
       handler(newVal, oldVal) {
-        if (newVal?.activityId) {
-          IDS.getInternshipDocumentsWithFiles(newVal?.activityId).then(response => { this.files = response.data.files.map(f => { return { ...f, name: f.file_name } }); this.catalogName = response.data.title });
-        }
+        this.isLoading = true;
+        IDS.getInternshipDocumentWithFiles(newVal).then(response => {
+          this.isLoading = false;
+          this.resetUploader();
+          const formattedFiles = response.data.files.map(f => { return { id: f.id, name: f.file_name } })
+          this.retrievedFiles = formattedFiles;
+          this.files = formattedFiles;
+        })
       }
     },
-    deep: true
   },
   methods: {
     openDialog() {
       this.$refs.uploadDialog.openDialog();
     },
     uploadFiles() {
-      IDS.uploadFiles({ ...this.getInternshipDialogData, files: this.files }).then(response => console.log(response.status));
+      IDS.uploadFiles({ files: this.newFiles, activityName: this.activityName, activityId: this.selectedCatalog }).then(response => console.log(response.status));
+    },
+    onUploaderInitialized(e) {
+      this.uploaderInstance = e.component;
+    },
+    resetUploader() {
+      if (this.uploaderInstance) {
+        this.uploaderInstance.reset();
+      }
+    },
+    addCatalog(e) {
+      this.catalogs.push(e);
+      this.selectedCatalog = this.catalogs.find(c => c.id === e.id).id;
     },
     showModal(file, index) {
       this.fileToRemove = file;
@@ -101,18 +119,26 @@ export default {
       this.isModalVisible = true;
     },
     removeFile() {
-      IDS.deleteFile(this.files[this.indexToRemove].id).then(response => {
+      const file = this.files[this.indexToRemove];
+      if (this.retrievedFiles.find(f => f.id === file.id)) {
+        IDS.deleteFile(this.files[this.indexToRemove].id).then(response => {
+          this.files.splice(this.indexToRemove, 1);
+          const indexToRemove = this.retrievedFiles.findIndex(f => f.id === file.id)
+          this.retrievedFiles.splice(indexToRemove, 1)
+          this.isModalVisible = false;
+        }).catch(error => console.log('failed to delete file'));
+      } else {
         this.files.splice(this.indexToRemove, 1);
         this.isModalVisible = false;
-      }).catch(error => console.log('failed to delete file'));
+      }
     },
     onFilesSelected(event) {
-      this.files = event.value;
+      this.newFiles = event.value;
+      this.files = [...this.retrievedFiles, ...this.newFiles];
     },
     abortAction() {
       this.files = [];
-      this.selectedFiles = [],
-      this.catalogName = null
+      this.selectedFiles = []
     },
     getFileIconClass(fileName) {
       const ext = fileName
@@ -133,6 +159,15 @@ export default {
       }
     },
   },
+  mounted() {
+    const fullString = localStorage.getItem('uploadInternshipId');
+    const parts = textUtils.resolvePipeString(fullString);
+    this.activityName = parts[0];
+    const internshipId = parseInt(parts[1]);
+    console.log(internshipId)
+    IDS.getDocumentsByInternshipId(internshipId)
+      .then(response => this.catalogs = response.data);
+  }
 };
 
 </script>
@@ -204,10 +239,6 @@ h2 {
   padding: 0 250px;
   display: flex;
   justify-content: center;
-}
-
-.pageDescription h1:last-of-type {
-  margin-top: 40px;
 }
 
 .uploadedFiles {

@@ -18,7 +18,7 @@ class HandleInternshipDocumentUploadService extends BaseService
     {
         return [
             'internshipId' => 'required|integer|exists:internships,id',
-            'files.*' => 'required|file|max:' . env('FILE_MAX_SIZE', 25600),
+            'files.*' => 'nullable|file|max:' . env('FILE_MAX_SIZE', 25600),
             'title' => 'required|string|max:100',
             'description' => 'string|max:2560',
             'visible' => 'boolean'
@@ -66,44 +66,54 @@ class HandleInternshipDocumentUploadService extends BaseService
 
         // creating document record
 
+        $internshipDocumentExists = $internship->documents()
+            ->where('title', $this->data()['title'])->exists();
+
+        if ($internshipDocumentExists) {
+            return response()->json(['success' => false, 'error' => 'Folder name already exists'], 405);
+        }
+
         $documentData = array_diff_key($this->data(), ['files' => '', 'internshipId' => '']);
         $document = $internship->documents()->create($documentData);
 
-        $uploadedFiles = $this->request->file('files');
-        $fileRecords = [];
-        $createdFiles = [];
+        if ($this->data()['files'] != null) {
 
-        foreach ($uploadedFiles as $uploadedFile) {
-            $fileName = $uploadedFile->getClientOriginalName();
-            $filePathToBeStored = $this->getPath($internship->id) . '/' . $fileName;
+            $uploadedFiles = $this->request->file('files');
+            $fileRecords = [];
+            $createdFiles = [];
 
-            if (Storage::exists($filePathToBeStored)) {
-                return response()->json(['files_created_before_error' => $createdFiles,
-                    'error' => "File '$fileName' already exists",
-                    'success' => false], 400);
+            foreach ($uploadedFiles as $uploadedFile) {
+                $fileName = $uploadedFile->getClientOriginalName();
+                $filePathToBeStored = $this->getPath($internship->id, $document->id) . '/' . $fileName;
+
+                if (Storage::exists($filePathToBeStored)) {
+                    return response()->json(['files_created_before_error' => $createdFiles,
+                        'error' => "File '$fileName' already exists",
+                        'success' => false], 400);
+                }
+
+                $filePath = $uploadedFile->storeAs($this->getPath($internship->id, $document->id), $fileName);
+
+                $createdFiles[] = $fileName;
+
+                $fileRecords[] = [
+                    'file_name' => $fileName,
+                    'file_path' => $filePath,
+                    'fileable_id' => $document->id,
+                    'fileable_type' => get_class($document),
+                ];
             }
 
-            $filePath = $uploadedFile->storeAs($this->getPath($internship->id), $fileName);
-
-            $createdFiles[] = $fileName;
-
-            $fileRecords[] = [
-                'file_name' => $fileName,
-                'file_path' => $filePath,
-                'fileable_id' => $document->id,
-                'fileable_type' => get_class($document),
-            ];
+            // bulk insert the file records
+            $document->files()->createMany($fileRecords);
         }
-
-        // bulk insert the file records
-        $document->files()->createMany($fileRecords);
 
         // response
         return response()->json(['document' => $document, 'files' => $document->files]);
     }
 
-    private function getPath($internshipId)
+    private function getPath($internshipId, $documentId)
     {
-        return "internships/$internshipId";
+        return "internships/$internshipId/$documentId";
     }
 }

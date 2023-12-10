@@ -1,27 +1,26 @@
 <?php
 
-namespace App\Services\ManageFiles\InternshipDocumentServices;
+namespace App\Services\ManageResults\Grades;
 
 use App\Contracts\Roles\RolePermissions;
-use App\Models\Document;
-use App\Models\Internship;
+use App\Models\GradeItem;
 use App\Services\BaseService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Validation\ValidationException;
 
-class GetInternshipDocumentsWithFilesService extends BaseService
+class DeleteGradeService extends BaseService
 {
     public function rules(): array
     {
         return [
-            'documentId' => 'required|integer|exists:documents,id'
+            'id' => 'required|integer'
         ];
     }
 
     public function data(): array
     {
         return [
-            'documentId' => $this->request['documentId']
+            'id' => $this->request['id']
         ];
     }
 
@@ -39,12 +38,14 @@ class GetInternshipDocumentsWithFilesService extends BaseService
         if (!$this->validateRules()) return response()->json("Action not allowed", 401);
 
         // logic execution
+        $grade = GradeItem::find($this->data())[0];
 
-        // TODO: IMPLEMENT POLICY VERIFICATION FOR DOCUMENT RETRIEVAL
-
-        $document = Document::with('files')->find($this->data()['documentId']);
-
+        if ($grade['created_by'] == $this->user->id) {
+            $grade->delete();
+        } else {
+            return response()->json('Cant delete grade that was created by another person');
+        }
         // response
-        return response()->json($document);
+        return response()->json('Grade deleted succesfully!');
     }
 }

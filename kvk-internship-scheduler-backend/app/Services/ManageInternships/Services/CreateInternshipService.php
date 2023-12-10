@@ -51,6 +51,7 @@ class CreateInternshipService extends BaseService
         // create the record
         $internship = Internship::create(array_diff_key($this->data(), ['users' => '']));
 
+
         // save entries to pivot table
         $internship->userProfiles()->attach($this->data()['users']);
 

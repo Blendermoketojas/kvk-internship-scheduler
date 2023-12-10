@@ -3,26 +3,16 @@
         <v-dialog v-model="dialog" width="1024">
             <v-card>
                 <v-card-title>
-                    <span class="text-h5">Dokumentų sukūrimas aplinkoje...</span>
+                    <span class="text-h5">Naujas katalogas</span>
                 </v-card-title>
                 <v-card-text>
                     <v-container>
                         <v-row class="mt-1">
                             <v-col cols="12" sm="12">
-                                <v-select :items="userInternships" v-model="selectedInternshipId" item-title="title"
-                                    item-value="id" label="Pasirinkti praktiką" required></v-select>
+                                <v-text-field v-model="formData.title" label="Pavadinimas*"></v-text-field>
                             </v-col>
-                            <span>Įkelti failus į egzistuojantį aplanką</span>
-                            <v-col cols="12" sm="12">
-                                <v-select v-model="selectedDocument" :items="internshipDocuments" item-title="title" item-value="id"
-                                    label="Pasirinkti aplanką" required></v-select>
-                            </v-col>
-                            <span v-show="!selectedDocument">Kurti naują</span>
-                            <v-col v-show="!selectedDocument" cols="12" sm="12">
-                                <v-text-field label="Pavadinimas"></v-text-field>
-                            </v-col>
-                            <v-col v-show="!selectedDocument" cols="12">
-                                <v-textarea label="Aprašymas"></v-textarea>
+                            <v-col cols="12">
+                                <v-textarea v-model="formData.description" label="Aprašymas*"></v-textarea>
                             </v-col>
                         </v-row>
                     </v-container>
@@ -43,30 +33,23 @@
 </template>
 
 <script>
-import IS from '@/services/internships/InternshipService.js'
-import { mapGetters } from 'vuex';
+import IDS from '@/services/internship_documents/InternshipDocumentsService';
+import textUtils from '@/utils/text-utils';
 
 export default {
+    emits: ['documentAdded'],
     data() {
         return {
             dialog: false,
             userInternships: [],
             internshipDocuments: [],
+            selectedDocument: null,
             selectedInternshipId: null,
-            selectedDocument: null
-        }
-    },
-    watch: {
-        selectedInternshipId(newVal, oldVal) {
-            if (newVal !== oldVal) {
-                this.getInternshipDocuments(newVal);
+            formData: {
+                title: '',
+                description: ''
             }
         }
-    },
-    computed: {
-        ...mapGetters([
-            'getUploadAction'
-        ])
     },
     methods: {
         openDialog() {
@@ -74,21 +57,24 @@ export default {
         },
         closeDialog() {
             this.dialog = false;
-            this.selectedInternshipId = null;
             this.selectedDocument = null;
         },
-        getInternshipDocuments(selectedInternshipId) {
-            IS.getInternshipDocuments(selectedInternshipId).then(response => { this.internshipDocuments = response.data });
-        },
         saveData() {
-            this.$store.commit('setInternshipDialogData', { activityName: this.getUploadAction, activityId: this.selectedDocument });
-            this.dialog = false;
+            console.log('hasdasd')
+            IDS.handleInternshipDocumentUploadService(this.formData.title, this.formData.description, this.selectedInternshipId).then(response => {
+                this.$emit('documentAdded', {
+                    id: response.data.document.id,
+                    title: response.data.document.title,
+                    description: response.data.document.description,
+                }); 
+                this.dialog = false;
+            })
         }
     },
     mounted() {
-        IS.getCurrentUserInternships()
-            .then(response => this.userInternships = response.data)
-            .catch(error => console.log('user internships request failed'))
+        const fullString = localStorage.getItem('uploadInternshipId');
+        const parts = textUtils.resolvePipeString(fullString);
+        this.selectedInternshipId = parseInt(parts[1]);
     }
 }
 </script>

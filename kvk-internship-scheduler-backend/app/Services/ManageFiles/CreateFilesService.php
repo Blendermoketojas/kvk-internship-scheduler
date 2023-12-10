@@ -24,11 +24,11 @@ class CreateFilesService extends BaseService
             'files.*' => 'required|file|max:' . env('FILE_MAX_SIZE', 25600),
         ];
     }
-
     public function data(): array
     {
         return [
             'activityName' => $this->request['activityName'],
+            // activityId = documentId or learningMaterialId
             'activityId' => $this->request['activityId'],
             'files' => $this->request['files'],
         ];

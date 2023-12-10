@@ -36,11 +36,11 @@ class GetLinkedStudentsActiveInternshipsService extends BaseService
 
         // logic execution
 
-        $teacherInternships = $this->user->internships;
+        $userInternships = $this->user->internships;
 
         $sharedInternships = Internship::where('is_active', true)
-            ->whereHas('userProfiles', function($query) use ($teacherInternships) {
-                $query->whereIn('internship_id', $teacherInternships->pluck('id'))
+            ->whereHas('userProfiles', function($query) use ($userInternships) {
+                $query->whereIn('internship_id', $userInternships->pluck('id'))
                     ->where('role_id', 5);
             })
             ->with(['userProfiles' => function($query) {

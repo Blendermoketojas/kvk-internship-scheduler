@@ -12,7 +12,7 @@
             <div v-show="!collapsed" class="document-container-body">
                 <div class="document-vertical-line"></div>
                 <div class="d-flex flex-column">
-                    <document-section v-for="document in documents" :key="document.id" :section-name="document?.title"
+                    <document-section v-for="document in documents" :key="document.id" :description="document.description" :section-name="document?.title"
                         :files="document.files"></document-section>
                     <span class="ms-1" v-if="documents.length === 0">Nėra įkeltų dokumentų.</span>
                 </div>

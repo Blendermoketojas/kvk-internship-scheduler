@@ -44,6 +44,6 @@ class GetCurrentUserInternshipsService extends BaseService
         $internships->load('company');
 
         // response
-        return response()->json($internships);
+        return response()->json(['internships' => $internships, 'user' => $this->user]);
     }
 }

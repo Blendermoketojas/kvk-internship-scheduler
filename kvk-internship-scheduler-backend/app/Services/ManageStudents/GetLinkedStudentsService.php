@@ -42,7 +42,7 @@ class GetLinkedStudentsService extends BaseService
                 $query->whereHas('userProfiles', function ($subQuery) use ($requestorId) {
                     $subQuery->where('internship_user.user_id', $requestorId);
                 });
-            })
+            })->with('studentGroup')
             ->get();
 
         // response

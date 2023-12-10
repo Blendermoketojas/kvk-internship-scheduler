@@ -17,6 +17,28 @@
             label="Pasirinkite filtrą"
           ></v-select>
         </div>
+        <div v-if="isModalVisible" class="modal">
+          <div class="modal-content">
+            <h1>Ar norite pašalinti šią praktiką?</h1>
+            <div class="modalBtn">
+              <v-btn
+                variant="tonal"
+                width="150px"
+                color="red"
+                rounded="lg"
+                @click="confirmDelete"
+                >Taip</v-btn
+              >
+              <v-btn
+                variant="tonal"
+                width="150px"
+                rounded="lg"
+                @click="isModalVisible = false"
+                >Ne</v-btn
+              >
+            </div>
+          </div>
+        </div>
 
         <div class="fieldDiv" v-if="showStudentInput">
           <div class="text-subtitle-1 text-bold-emphasis">Vardas Pavardė</div>
@@ -28,6 +50,7 @@
             @input="onStudentInput"
             return-object
             label="Įrašykite vardą"
+            no-data-text="Nėra ieškomo studento"
           ></v-autocomplete>
         </div>
 
@@ -39,7 +62,7 @@
       <v-expansion-panels v-model="openedPanel">
         <v-expansion-panel
           v-for="internship in internships"
-          :key="internship.id"
+          :key="internship.internshipId"
         >
           <v-expansion-panel-title
             class="panelHeader"
@@ -47,32 +70,68 @@
           >
             <v-container>
               <v-row no-gutters>
-                <v-col cols="3">
+                <v-col cols="2">
                   <div>
-                    <b>Studentas:</b>
+                    <div><b>Studentas:</b></div>
+                    <br/>
                     <router-link
-                    :to="{ name: 'StudentProfile', params: { userId: internship.student_id } }"
-                      @click="checkStudentId(internship.student_id)"
+                    :to="{
+                      name: 'StudentProfile',
+                      params: { userId: internship.student_id },
+                    }"                      @click="checkStudentId(internship.student_id)"
                       class="student-name"
                       >{{ internship.student_name }}</router-link
                     >
                   </div>
                 </v-col>
-                <v-col cols="3">
-                  <b>Įmonė:</b> {{ internship.company_name }}
+                <v-col cols="2">
+                  <div><b>Įmonė: </b></div>
+                  <br />{{ internship.company_name }}
                 </v-col>
-                <v-col cols="3">
-                  <div><b>Nuo:</b> {{ internship.date_from }}</div>
+                <v-col cols="2">
+                  <div>
+                    <div><b>Nuo: </b></div>
+                    <br />{{ internship.date_from }}
+                  </div>
                 </v-col>
-                <v-col cols="3">
-                  <div><b>Iki:</b> {{ internship.date_to }}</div>
+                  <v-col cols="2">
+                  <div>
+                    <div><b>Iki: </b></div>
+                    <br />{{ internship.date_to }}
+                  </div>
                 </v-col>
-                <v-col class="d-flex justify-end" cols="3"> </v-col>
+                <v-col cols="2"
+                  ><div><b>Valandos: </b></div>
+                  <br />{{ internship.loggedHours }}/{{
+                    internship.totalHours
+                  }}</v-col
+                >
+                <v-col cols="2">
+                  <div class="iconButtons">
+                    <button class="styleless-button" @click="handleUpload">
+                      <v-icon icon="mdi-upload"></v-icon>
+                    </button>
+
+                    <button
+                      class="styleless-button"
+                      @click="handleEditInternship(internship.internshipId)"
+                    >
+                      <v-icon icon="mdi-pencil"></v-icon>
+                    </button>
+
+                    <button
+                      class="styleless-button"
+                      @click="openDeleteModal(internship.internshipId)"
+                    >
+                      <v-icon icon="mdi-delete"></v-icon>
+                    </button>
+                  </div>
+                </v-col>
               </v-row>
             </v-container>
           </v-expansion-panel-title>
           <v-expansion-panel-text>
-            <v-container v-if="selectedInternshipComments === null">
+            <v-container v-if="isLoading">
               Kraunama informacija...
             </v-container>
 
@@ -97,7 +156,7 @@
                 </v-col>
               </v-row>
               <v-row v-else>
-                <v-col cols="12">Kraunama informacija...</v-col>
+                <v-col cols="12">Nėra įvestų komentarų.</v-col>
               </v-row>
             </v-container>
           </v-expansion-panel-text>
@@ -113,6 +172,7 @@ import apiClient from "@/utils/api-client";
 import searchStudent from "@/components/StudentSearch.vue";
 import { mapGetters } from "vuex";
 import groupSearch from "@/components/GroupSearch.vue";
+
 
 const debounce = (func, delay) => {
   let timeoutId;
@@ -136,6 +196,8 @@ export default {
       selectedFilter: null,
       filterBy: ["Pagal grupę", "Pagal Vardą Pavardę"],
       openedPanel: null,
+      isModalVisible: false,
+      isLoading: false,
     };
   },
   components: {
@@ -149,7 +211,6 @@ export default {
         this.handleStudentSelection(newVal.id);
       }
     },
-
     selectedFilter(newVal, oldVal) {
       if (newVal !== oldVal) {
         this.internships = [];
@@ -162,9 +223,46 @@ export default {
   },
 
   methods: {
+    handleEditInternship(internshipId) {
+      console.log("edit", internshipId);
+      this.$router.push({ name: "InternshipEdit", params: { internshipId } });
+    },
+
+    openDeleteModal(internshipId) {
+      this.internshipToDelete = internshipId;
+      this.isModalVisible = true;
+    },
+
+    confirmDelete() {
+      console.log("confirmation", this.internshipToDelete);
+      if (this.internshipToDelete) {
+        apiClient
+          .post(
+            `/internship-delete`,
+            { internshipId: this.internshipToDelete },
+            { withCredentials: true }
+          )
+          .then((response) => {
+            console.log("Internship deleted successfully");
+            this.isModalVisible = false;
+            this.internships = this.internships.filter(
+              (internship) =>
+                internship.internshipId !== this.internshipToDelete
+            );
+            this.internshipToDelete = null;
+          })
+          .catch((error) => {
+            console.error("Error deleting internship:", error);
+          });
+      }
+    },
+
     checkStudentId(studentId) {
-    console.log("Student ID:", studentId);
-  },
+      console.log("Student ID:", studentId);
+    },
+    handleUpload() {
+      this.$router.push("/document-upload");
+    },
 
     handleSelectedGroupId(groupId) {
       apiClient
@@ -179,13 +277,17 @@ export default {
 
               return {
                 internshipId: internship.id,
+                loggedHours: internship.logged_hours,
+                totalHours: internship.duration_in_hours,
                 company_name: internship.company.company_name,
                 date_from: internship.date_from,
                 date_to: internship.date_to,
                 student_name: studentName,
-                student_id: internship.user_profiles && internship.user_profiles.length > 0
-              ? internship.user_profiles[0].user_id
-              : null,
+                student_id:
+                  internship.user_profiles &&
+                  internship.user_profiles.length > 0
+                    ? internship.user_profiles[0].user_id
+                    : null,
               };
             });
 
@@ -221,17 +323,18 @@ export default {
         .post(`/user/internships`, { userId: studentId })
         .then((response) => {
           if (response.data.internships && response.data.userProfile) {
+            const studentId = response.data.userProfile.id;
             const formattedInternships = response.data.internships.map(
               (internship) => {
                 return {
                   internshipId: internship.id,
+                  loggedHours: internship.logged_hours,
+                  totalHours: internship.duration_in_hours,
                   company_name: internship.company.company_name,
                   date_from: internship.date_from,
                   date_to: internship.date_to,
                   student_name: response.data.userProfile.fullname,
-                  student_id: internship.user_profiles && internship.user_profiles.length > 0
-              ? internship.user_profiles[0].user_id
-              : null,
+                  student_id: studentId,
                 };
               }
             );
@@ -255,9 +358,12 @@ export default {
     },
 
     handleInternshipClick(internshipId) {
+      this.isLoading = true;
       console.log("Clicked internship ID:", internshipId);
+      localStorage.setItem("uploadInternshipId", `Internships|${internshipId}`);
       if (this.selectedInternshipId === internshipId) {
         this.selectedInternshipId = null;
+        this.isLoading = false;
         return;
       }
       this.selectedInternshipId = internshipId;
@@ -270,14 +376,16 @@ export default {
         .then((response) => {
           this.selectedInternshipComments = response.data;
           console.log(this.selectedInternshipComments.date_from);
+          this.isLoading = false;
         })
         .catch((error) => {
           console.error("Error fetching internship details:", error);
           this.selectedInternshipComments = [];
+          this.isLoading = false;
         });
     },
 
-    onStudentInput(value) {
+    onStudentInput(event) {
       const studentName = event.target.value;
       if (typeof studentName === "string" && studentName.trim() !== "") {
         this.debouncedSearchStudents(studentName);
@@ -314,13 +422,26 @@ export default {
 
   mounted() {
     console.log(this.getUser.role_id);
+    
     this.debouncedSearchStudents = debounce((studentName) => {
       this.searchStudents(studentName);
     }, 50);
 
-    if (this.getUser.role_id === 5) {
+    if (this.getUser.role_id !=1) {
       this.fetchInternshipsForRoleFive();
     }
+
+    // apiClient
+    //       .get("/linked-students")
+    //       .then((response) => {
+    //         this.students = response.data;
+    //         console.log(this.students);
+    //       })
+    //       .catch((error) => {
+    //         console.error("Error searching for students:", error);
+    //       });
+
+
   },
   computed: {
     ...mapGetters(["getUser"]),
@@ -341,6 +462,41 @@ export default {
 </script>
 
 <style>
+.modalBtn {
+  display: flex;
+  width: 100%;
+  justify-content: space-evenly;
+}
+.modal {
+  display: block;
+  position: fixed;
+  z-index: 1000;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgba(0, 0, 0, 0.4);
+}
+.modal-content {
+  display: flex;
+  background-color: #fefefe;
+  margin: 15% auto;
+  padding: 20px;
+  border: 1px solid #888;
+  width: 50%;
+  height: 250px;
+  text-align: center;
+  border: 1px solid rgb(121, 119, 119);
+  justify-content: space-evenly;
+  align-items: center;
+  flex-direction: column;
+}
+.iconButtons button {
+  margin: 0 10px;
+}
+
+
 .student-name {
   position: relative;
   z-index: 2000;

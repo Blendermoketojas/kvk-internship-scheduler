@@ -40,8 +40,9 @@ class GetInternshipService extends BaseService
         // logic execution
 
         if($internship = Internship::find($this->data())) {
+            $internship->load('templates');
             $internship->load('company');
-            $internship->load('userprofiles');
+            $internship->load('userProfiles');
         }
 
         // response

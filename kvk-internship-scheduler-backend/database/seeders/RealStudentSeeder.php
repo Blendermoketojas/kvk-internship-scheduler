@@ -30,13 +30,13 @@ class RealStudentSeeder extends Seeder
         $this->createUserProfile("1","Monika", "Pocienė", $rolesNames[0], 0, 1);
 
         $this->createUserCredentials("Nomeda", "Rimšelienė");
-        $this->createUserProfile("3","Nomeda", "Rimšelienė", $rolesNames[1], 0, 2);
+        $this->createUserProfile("2","Nomeda", "Rimšelienė", $rolesNames[1], 0, 2);
 
         $this->createUserCredentials("Jūra", "Volodzkaitė");
-        $this->createUserProfile("4","Jūra", "Volodzkaitė", $rolesNames[2], 0, 3);
+        $this->createUserProfile("3","Jūra", "Volodzkaitė", $rolesNames[2], 0, 3);
 
         $this->createUserCredentials("Evaldas", "Vasiliauskas");
-        $this->createUserProfile("2","Evaldas", "Vasiliauskas", $rolesNames[3], 0, 4);
+        $this->createUserProfile("4","Evaldas", "Vasiliauskas", $rolesNames[3], 0, 4);
 
         $index = 5;
         $groupIndex = 1;
@@ -79,7 +79,7 @@ class RealStudentSeeder extends Seeder
             'student_group_id' => $groupIndex,
             'country' => 'Lietuva',
             'description' => "$roleName Klaipėdos valstybinėje kolegijoje",
-            'image_path' => '\storage\app\public\profile_pictures\placeholder\profile_pic_placeholder.png',
+            'image_path' => '/storage/profile_pictures/placeholder/profile_pic_placeholder.png',
             'created_at' => Carbon::today(),
             'updated_at' => Carbon::today()
         ]);

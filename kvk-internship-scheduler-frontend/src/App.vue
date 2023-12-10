@@ -1,6 +1,5 @@
 <template>
   <router-view />
-
 </template>
 
 <script>
@@ -14,10 +13,11 @@ export default {
     ])
   },
   mounted() {
-// if (!this.getUser){
-apiClient.get('/profile').then(response=>this.$store.commit('setUser', response.data));
-
-// }
+    apiClient.get('/profile').then(response => {
+      this.$store.commit('setUser', response.data); 
+      const userHeaderInfo = { fullname: response.data.fullname, image_path: response.data.image_path };
+      localStorage.setItem('user', JSON.stringify(userHeaderInfo))
+    });
   }
 }
 </script>

@@ -5,6 +5,7 @@ namespace App\Http\Controllers\v2;
 use App\Http\Controllers\Controller;
 use App\Models\StudentGroup;
 use App\Models\UserProfile;
+use App\Services\ManageStudents\GetLinkedStudentsActiveInternshipsService;
 use App\Services\ManageStudents\GetLinkedStudentsService;
 use App\Services\ManageStudents\SearchStudentGroupsService;
 use App\Services\ManageStudents\SearchStudentsService;
@@ -36,5 +37,13 @@ class StudentController extends Controller
     public function getLinkedStudents(Request $request): JsonResponse
     {
         return (new GetLinkedStudentsService($request))->execute();
+    }
+
+    /**
+     * @throws ValidationException
+     */
+    public function getLinkedStudentsActiveInternships(Request $request): JsonResponse
+    {
+        return (new GetLinkedStudentsActiveInternshipsService($request))->execute();
     }
 }

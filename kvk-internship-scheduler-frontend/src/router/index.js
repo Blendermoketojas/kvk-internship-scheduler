@@ -54,10 +54,14 @@ const routes = [
     component: () => import("@/views/UserCreationPage.vue"),
   },
   {
+    path: "/student-profile-info/:userId",
+    name: 'StudentProfile',
+    component: () => import("@/views/ProfileInfoPage.vue"),
+  },
+  {
     path: "/evaluation",
     component: () => import("@/views/EvaluationPage.vue"),
-  }
-];
+  }];
 
 const router = createRouter({
   history: createWebHistory(process.env.BASE_URL),

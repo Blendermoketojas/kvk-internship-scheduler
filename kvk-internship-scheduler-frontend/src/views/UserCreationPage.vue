@@ -27,7 +27,20 @@
     item-value="value"
     label="Pasirinkite naudotojo tipą"
     ></v-select>
-
+    <div v-if="selectedRole === 5">
+      <group-search ></group-search>
+    </div>
+    <div v-if="selectedRole === 4">
+      <div class="text-subtitle-1 text-bold-emphasis">Įmonė</div>
+      <v-autocomplete
+                  v-model="company_name"
+                  item-value="id"
+                  item-title="company_name"
+                  :items="companies"
+                  label="Pasirinkite kompanija"
+                ></v-autocomplete>
+    </div>
+    
     <div class="bottomButtons">
         <v-btn color="#0D47A1" rounded="xl" variant="elevated" type="submit"
           >Išsaugoti</v-btn
@@ -54,6 +67,9 @@
 
 <script>
 import customHeader from "@/components/DesktopHeader.vue";
+import groupSearch from "@/components/GroupSearch.vue";
+import apiClient from "@/utils/api-client";
+import { mapGetters } from "vuex";
 
 export default {
   name: "UserCreation",
@@ -87,8 +103,21 @@ export default {
   },
   components: {
     customHeader,
+    groupSearch,
   },
-};
+
+  methods:{
+  
+
+  },
+  mounted(){
+    apiClient.get("/companies", { withCredentials: true }).then((response) => {
+      this.companies = response.data;
+      this.registrationData.company_id = response.data.id;
+      this.company_id = response.data.id;
+    });
+  }
+}
 </script>
 
 <style scoped>

@@ -96,7 +96,7 @@ class GetStudentGradesService extends BaseService
     }
 
     private function getOther() {
-
-        return null;
+        $grades = Internship::find($this->data())[0]->grades()->where('created_by', $this->user->user_id)->get();
+        return $grades;
     }
 }

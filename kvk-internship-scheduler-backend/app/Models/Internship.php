@@ -63,4 +63,8 @@ class Internship extends Model
         return $this->belongsToMany(FormTemplate::class, 'internship_form',
         'internship_id', 'template_id');
     }
+
+    public function grades(): HasMany {
+        return $this->hasMany(GradeItem::class);
+    }
 }

@@ -56,7 +56,7 @@ class GetFilledFormDataService extends BaseService
 
         $internshipIds = Internship::whereHas('userProfiles', function($query) use ($studentIds) {
             $query->whereIn('userprofiles.id', $studentIds);
-        })->with('userProfiles')->where('is_active', true)
+        })->with('userProfiles')->where('is_active', false)
             ->whereBetween('date_to', [$this->data()['date_from'], $this->data()['date_to']])
             ->get()->pluck('id');
 

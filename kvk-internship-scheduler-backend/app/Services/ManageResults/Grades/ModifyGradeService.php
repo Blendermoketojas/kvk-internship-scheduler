@@ -5,6 +5,7 @@ namespace App\Services\ManageResults\Grades;
 use App\Contracts\Roles\Role;
 use App\Contracts\Roles\RolePermissions;
 use App\Models\GradeItem;
+use App\Models\Internship;
 use App\Services\BaseService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Validation\ValidationException;
@@ -43,6 +44,10 @@ class ModifyGradeService extends BaseService
     {
         // input validation
         if (!$this->validateRules()) return response()->json("Action not allowed", 401);
+
+        if (sizeof((Internship::find($this->data()['internship_id'])->get()->where('is_active', true))) < 1) {
+            return response()->json('Not allowed to modify grades of inactive internship!');
+        }
 
         // logic execution
         $grade = GradeItem::find($this->data()['id'])[0];

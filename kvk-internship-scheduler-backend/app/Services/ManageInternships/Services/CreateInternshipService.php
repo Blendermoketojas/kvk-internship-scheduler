@@ -5,10 +5,8 @@ namespace App\Services\ManageInternships\Services;
 use App\Contracts\Roles\Role;
 use App\Models\Internship;
 use App\Services\BaseService;
-use http\Env\Response;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\ValidationException;
 
 class CreateInternshipService extends BaseService
@@ -32,8 +30,7 @@ class CreateInternshipService extends BaseService
             'users' => $this->request['users'],
             'date_from' => $this->request['dateFrom'],
             'date_to' => $this->request['dateTo'],
-            'is_active' => 1,
-            'forms' => $this->request['forms'],
+            'is_active' => 1
         ];
     }
 
@@ -50,40 +47,13 @@ class CreateInternshipService extends BaseService
         // input validation
         if (!$this->validateRules()) return response()->json("Action not allowed", 401);
 
-        $userIds = $this->data()['users'];
-
-        $activeInternshipExists = Internship::where('is_active', true)
-            ->whereHas('userProfiles', function ($query) use ($userIds) {
-                $query->whereIn('userProfiles.id', $userIds)
-                    ->where('userProfiles.role_id', Role::STUDENTAS->value);
-            })
-            ->with(['userProfiles' => function ($query) use ($userIds) {
-                $query->whereIn('userProfiles.id', $userIds)
-                    ->where('userProfiles.role_id', Role::STUDENTAS->value);
-            }])
-            ->get();
-
-        if (sizeof($activeInternshipExists) > 0)
-        {
-            $activeInternshipToArray = $activeInternshipExists->toArray();
-
-            $userProfiles = array_map(function ($item) {
-                return $item['user_profiles'];
-            }, $activeInternshipToArray);
-
-            return response()->json(['error' => 'Internship could not be created because the following '.
-            'students are already in an active internship', 'students' => $userProfiles], 405);
-        }
 
         // create the record
         $internship = Internship::create(array_diff_key($this->data(), ['users' => '']));
 
+
         // save entries to pivot table
         $internship->userProfiles()->attach($this->data()['users']);
-
-        if ($this->data()['forms'] != null) {
-            $internship->templates()->attach($this->data()['forms']);
-        }
 
         // respond
         return response()->json($internship);

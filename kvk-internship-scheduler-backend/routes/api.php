@@ -15,6 +15,7 @@ use App\Http\Controllers\v2\FileController;
 use App\Http\Controllers\v2\InternshipController;
 use App\Http\Controllers\v2\ResultFormController;
 use App\Http\Controllers\v2\InternshipFileManagementController;
+use App\Http\Controllers\v2\ResultGradeController;
 use App\Http\Controllers\v2\StudentController;
 use App\Http\Controllers\v2\UserProfileController;
 use Illuminate\Http\Request;
@@ -55,6 +56,7 @@ Route::middleware('api')->prefix('v2')->group(function () {
     Route::middleware(['jwt.from.cookie', 'jwt.auth'])->group(function () {
 
         // Register external
+
         Route::post('/register-external', [AuthController::class, 'registerExternalUser']);
 
         // Logout
@@ -94,7 +96,7 @@ Route::middleware('api')->prefix('v2')->group(function () {
 
         Route::put('/internship-update', [InternshipController::class, 'updateInternship']);
 
-        Route::post('/internship-delete', [InternshipController::class, 'deleteInternship']);
+        Route::delete('/internship-delete', [InternshipController::class, 'deleteInternship']);
 
         // Comments
 
@@ -113,9 +115,15 @@ Route::middleware('api')->prefix('v2')->group(function () {
         Route::post('/result/search/likert', [ResultFormController::class, 'searchLikert']);
         Route::post('/result/template/attach', [ResultFormController::class, 'attachTemplate']);
         Route::post('/result/template/detach', [ResultFormController::class, 'detachTemplate']);
-        Route::post('/result/search/template', [ResultFormController::class, 'searchTemplate']);
-        Route::post('/result/answer/create', [ResultFormController::class, 'createResult']);
-        Route::post('/result/answer/get', [ResultFormController::class, 'getResult']);
+
+
+        // ResultGrades
+
+        Route::post('/result/grade/create', [ResultGradeController::class, 'createGrade']);
+        Route::post('/result/grade/modify', [ResultGradeController::class, 'modifyGrade']);
+        Route::post('/result/grade/delete', [ResultGradeController::class, 'deleteGrade']);
+        Route::post('/result/grade/get', [ResultGradeController::class, 'getStudentGrades']);
+
         // Internship File Management
 
         Route::post('/internship/upload-document-with-files',
@@ -138,9 +146,6 @@ Route::middleware('api')->prefix('v2')->group(function () {
 
         Route::post('/internship/documents-files', [InternshipFileManagementController::class,
             'getInternshipDocumentsWithFiles']);
-
-        Route::post('/documents/internship-by-id', [InternshipFileManagementController::class,
-            'getDocumentsByInternshipId']);
 
         // File Management
 

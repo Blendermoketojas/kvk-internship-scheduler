@@ -50,7 +50,6 @@ class GetTemplateService extends BaseService
 
     private function fixObjects($array) {
         return collect($array)->transform(function ($item) {
-            $item['sequence'] = $item->pivot->sequence;
             unset($item['created_by']);
             unset($item['updated_at']);
             unset($item['created_at']);

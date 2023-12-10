@@ -1,33 +1,32 @@
 <?php
 
-namespace App\Services\ManageUserProfile;
+namespace App\Services\ManageResults\Grades;
 
-use App\Contracts\Roles\Role;
 use App\Contracts\Roles\RolePermissions;
-use App\Models\UserProfile;
+use App\Models\GradeItem;
 use App\Services\BaseService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Validation\ValidationException;
 
-class GetUserProfileByIdService extends BaseService
+class DeleteGradeService extends BaseService
 {
     public function rules(): array
     {
         return [
-            'userId' => 'required|integer|exists:userprofiles,id'
+            'id' => 'required|integer'
         ];
     }
 
     public function data(): array
     {
         return [
-            'userId' => $this->request['userId']
+            'id' => $this->request['id']
         ];
     }
 
     public function permissions(): array
     {
-        return [Role::PRODEKANAS, Role::PRAKTIKOS_VADOVAS, Role::MENTORIUS, Role::KATEDROS_VEDEJAS];
+        return [];
     }
 
     /**
@@ -39,10 +38,14 @@ class GetUserProfileByIdService extends BaseService
         if (!$this->validateRules()) return response()->json("Action not allowed", 401);
 
         // logic execution
+        $grade = GradeItem::find($this->data())[0];
 
-        $userProfile = UserProfile::find($this->data()['userId']);
-
+        if ($grade['created_by'] == $this->user->id) {
+            $grade->delete();
+        } else {
+            return response()->json('Cant delete grade that was created by another person');
+        }
         // response
-        return response()->json($userProfile);
+        return response()->json('Grade deleted succesfully!');
     }
 }

@@ -59,12 +59,9 @@ const routes = [
     component: () => import("@/views/ProfileInfoPage.vue"),
   },
   {
-  path: "/internship-edit/:userId",
-  name: 'InternshipEdit',
-  component: () => import("@/views/InternshipManagementPage.vue"),
-},
-
-];
+    path: "/evaluation",
+    component: () => import("@/views/EvaluationPage.vue"),
+  }];
 
 const router = createRouter({
   history: createWebHistory(process.env.BASE_URL),

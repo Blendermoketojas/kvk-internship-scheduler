@@ -19,7 +19,7 @@ class UpdateInternshipService extends BaseService
             'company_id' => 'required|integer',
             'date_from' => 'required|date',
             'date_to' => 'required|date',
-        ];
+            'is_active' => 'required|boolean'];
     }
 
     public function data(): array
@@ -31,7 +31,7 @@ class UpdateInternshipService extends BaseService
             'company_id' => $this->request['companyId'],
             'date_from' => $this->request['dateFrom'],
             'date_to' => $this->request['dateTo'],
-            'forms' => $this->request['forms']];
+            'is_active' => $this->request['isActive']];
     }
 
     public function permissions(): array
@@ -52,15 +52,9 @@ class UpdateInternshipService extends BaseService
         $internship = Internship::find($this->data()['internship_id']);
 
         $internship->update(array_diff_key($this->data(),
-            ['users' => '', 'internship_id' => '', 'forms' => '']));
+            ['users' => '', 'internship_id' => '']));
 
         $internship->userProfiles()->sync($this->data()['users']);
-
-        if ($this->data()['forms'] != null) {
-            $internship->templates()->sync($this->data()['forms']);
-        } else {
-            $internship->templates()->detach();
-        }
 
         // response
         return response()->json($internship);

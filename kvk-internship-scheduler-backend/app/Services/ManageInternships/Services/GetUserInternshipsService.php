@@ -14,16 +14,14 @@ class GetUserInternshipsService extends BaseService
     public function rules(): array
     {
         return [
-            'userId' => 'required|integer|exists:users,id',
-            'page' => 'nullable|integer'
+            'userId' => 'required|integer|exists:users,id'
         ];
     }
 
     public function data(): array
     {
         return [
-            'userId' => $this->request['userId'],
-            'page' => $this->request['page']
+            'userId' => $this->request['userId']
         ];
     }
 
@@ -35,37 +33,22 @@ class GetUserInternshipsService extends BaseService
     /**
      * @throws ValidationException
      */
-    function execute(): JsonResponse
+    function execute() : JsonResponse
     {
         // input validation
         if (!$this->validateRules()) return response()->json("Action not allowed", 401);
 
         // logic execution
         $user = UserProfile::find($this->data()['userId']);
+        $internships = $user->internships()->with('company')->get();
 
-        $response = [['error' =>'Unknown error occurred'], 500];
-
-        if ($this->data()['page'] == null)
-        {
-            $internships = $user->internships()->with('company')->get();
-            $response = [
-                'internships' => $internships,
-                'userProfile' => [
-                    'id' => $user->id,
-                    'fullname' => $user->fullname
-                ]
-            ];
-        }
-        else {
-            $internships = $user->internships()->with('company')->paginate(5, ['*'], 'page', $this->data()['page']);
-            $response = [
-                'internships' => $internships->items(),
-                'userProfile' => [
-                    'id' => $user->id,
-                    'fullname' => $user->fullname
-                ]
-            ];
-        }
+        $response = [
+            'internships' => $internships,
+            'userProfile' => [
+                'id' => $user->id,
+                'fullname' => $user->fullname
+            ]
+        ];
 
         return response()->json($response);
     }

@@ -1,6 +1,7 @@
 <template>
     <div class="document-section-container">
         <span class="m-2 fs-5 font-bold">{{ sectionName }}</span>
+        <span class="text-break">{{ description }}</span>
         <document-row v-for="file in files" :file-path="file.file_path" :file-name="resolveFileName(file)" :file-type="resolveFileType(file)"
             :key="file.id" :id="file.id"></document-row>
     </div>
@@ -18,6 +19,10 @@ export default {
             required: true,
             type: String,
             default: 'Svarbus dokumentai'
+        },
+        description: {
+            required: false,
+            type: String
         },
         files: {
             required: false,

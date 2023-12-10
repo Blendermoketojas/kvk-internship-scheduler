@@ -260,7 +260,6 @@ export default {
       console.log("Student ID:", studentId);
     },
     handleUpload() {
-      localStorage.setItem("uploadInternshipId", this.selectedInternshipId);
       this.$router.push("/document-upload");
     },
     handleSelectedGroupId(groupId) {
@@ -358,6 +357,7 @@ export default {
 
     handleInternshipClick(internshipId) {
       console.log("Clicked internship ID:", internshipId);
+      localStorage.setItem("uploadInternshipId", internshipId);
       if (this.selectedInternshipId === internshipId) {
         this.selectedInternshipId = null;
         return;

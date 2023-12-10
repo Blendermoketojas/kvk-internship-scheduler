@@ -14,6 +14,7 @@ use App\Services\ManageInternships\Services\GetCurrentUserInternshipsService;
 use App\Services\ManageInternships\Services\GetUserInternshipsService;
 use App\Services\ManageInternships\Services\SearchInternshipTitlesService;
 use App\Services\ManageInternships\Services\UpdateInternshipService;
+use App\Services\ManageStudents\GetLinkedStudentsService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
@@ -100,8 +101,8 @@ class InternshipController extends Controller
     /**
      * @throws ValidationException
      */
-    public function getLinkedStudentsInternships(Request $request): JsonResponse
+    public function getLinkedStudents(Request $request): JsonResponse
     {
-        return (new GetLinkedStudentsInternshipsService($request))->execute();
+        return (new GetLinkedStudentsService($request))->execute();
     }
 }

@@ -79,7 +79,7 @@ class RealStudentSeeder extends Seeder
             'student_group_id' => $groupIndex,
             'country' => 'Lietuva',
             'description' => "$roleName Klaipėdos valstybinėje kolegijoje",
-            'image_path' => '/storage/profile_pictures/placeholder/profile_pic_placeholder.png',
+            'image_path' => '/storage/app/public/profile_pictures/placeholder/profile_pic_placeholder.png',
             'created_at' => Carbon::today(),
             'updated_at' => Carbon::today()
         ]);

@@ -61,7 +61,7 @@ class Internship extends Model
 
     public function templates() : BelongsToMany {
         return $this->belongsToMany(FormTemplate::class, 'internship_form',
-        'internship_id', 'template_id');
+        'internship_id', 'template_id')->withPivot('id');
     }
 
     public function grades(): HasMany {

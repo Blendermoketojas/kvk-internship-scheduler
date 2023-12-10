@@ -116,6 +116,13 @@ Route::middleware('api')->prefix('v2')->group(function () {
         Route::post('/result/template/attach', [ResultFormController::class, 'attachTemplate']);
         Route::post('/result/template/detach', [ResultFormController::class, 'detachTemplate']);
         Route::post('/result/search/template', [ResultFormController::class, 'searchTemplate']);
+        Route::post('/result/answer/create', [ResultFormController::class, 'createResult']);
+        Route::post('/result/answer/get', [ResultFormController::class, 'getResult']);
+
+        // FormsCharts
+
+        Route::post('/charts/templates', [ResultFormController::class, 'getTemplatesFromDateAndStudentGroup']);
+        Route::post('/charts/get', [ResultFormController::class, 'getDataFromTemplate']);
 
         // ResultGrades
 

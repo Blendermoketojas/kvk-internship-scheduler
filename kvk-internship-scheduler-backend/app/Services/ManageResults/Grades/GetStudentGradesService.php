@@ -45,10 +45,10 @@ class GetStudentGradesService extends BaseService
                 $response = $this->getStudent();
                 break;
             case Role::MENTORIUS->value:
-                $response = $this->getMentor();
+                $response = $this->getOther();
                 break;
             case Role::PRAKTIKOS_VADOVAS->value:
-                $response = $this->getVadovas();
+                $response = $this->getOther();
                 break;
         }
 
@@ -95,11 +95,8 @@ class GetStudentGradesService extends BaseService
         return $response;
     }
 
-    private function getMentor() {
-        return null;
-    }
+    private function getOther() {
 
-    private function getVadov() {
         return null;
     }
 }

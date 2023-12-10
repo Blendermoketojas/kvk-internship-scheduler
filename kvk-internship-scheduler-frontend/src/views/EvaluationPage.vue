@@ -100,7 +100,7 @@ export default {
     ];
     } catch (error) {
       console.error("Error while fetching data:", error);
-    }finally {
+    } finally {
       this.loadingGrades = false;
     }
   },

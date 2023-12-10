@@ -2,34 +2,31 @@
 
 namespace App\Services\ManageResults\Forms\Templates;
 
-use App\Contracts\Roles\Role;
 use App\Contracts\Roles\RolePermissions;
-use App\Models\Internship;
+use App\Models\FormTemplate;
 use App\Services\BaseService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Validation\ValidationException;
 
-class DetachTemplateFromInternshipService extends BaseService
+class GetTemplateByNameService extends BaseService
 {
     public function rules(): array
     {
         return [
-            'internship_id' => 'required|integer',
-            'templates' => 'required|array'
+            'name' => 'required|string'
         ];
     }
 
     public function data(): array
     {
         return [
-            'internship_id' => $this->request['internship_id'],
-            'templates' => $this->request['templates']
+            'name' => $this->request['name']
         ];
     }
 
     public function permissions(): array
     {
-        return [Role::PRODEKANAS];
+        return [];
     }
 
     /**
@@ -41,11 +38,9 @@ class DetachTemplateFromInternshipService extends BaseService
         if (!$this->validateRules()) return response()->json("Action not allowed", 401);
 
         // logic execution
-
-        $internship = Internship::find($this->data()['internship_id']);
-        $internship->templates()->detach($this->data()['templates']);
-
+        $query = FormTemplate::whereRaw('LOWER(name) LIKE ?', ['%' . strtolower($this->data()['name']) . '%'])
+            ->get();
         // response
-        return response()->json('OK?');
+        return response()->json($query);
     }
 }

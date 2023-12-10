@@ -21,29 +21,29 @@
             Praktikos pavadinimas
           </div>
           <v-combobox
-          v-model="selectedInternship"
-          :items="internships"
-          @input="onInternshipInput"
-          item-value="id"
-          item-title="internshipName"
-          return-object
-          label="Pasirinkite praktikos pavadinimą"
-        ></v-combobox>
+            v-model="selectedInternship"
+            :items="internships"
+            @input="onInternshipInput"
+            item-value="id"
+            item-title="internshipName"
+            return-object
+            label="Pasirinkite praktikos pavadinimą"
+          ></v-combobox>
         </div>
         <div class="fieldDiv">
           <div class="text-subtitle-1 text-bold-emphasis">Mentorius</div>
           <v-combobox
-          v-model="selectedMentor"
-          :items="mentors"
-          item-title="fullName"
-          item-value="id"
-          multiple
-          clearable
-          chips
-          @input="onMentorInput"
-          return-object
-          label="Vardas Pavardė"
-        ></v-combobox>
+            v-model="selectedMentor"
+            :items="mentors"
+            item-title="fullName"
+            item-value="id"
+            multiple
+            clearable
+            chips
+            @input="onMentorInput"
+            return-object
+            label="Vardas Pavardė"
+          ></v-combobox>
         </div>
 
         <div class="fieldDiv">
@@ -105,7 +105,6 @@
           ></v-combobox>
         </div>
 
-
         <div class="fieldDiv">
           <div class="text-subtitle-1 text-bold-emphasis">Praktikos vieta</div>
           <v-autocomplete
@@ -154,8 +153,8 @@ export default {
   name: "ProfileInfo",
   data() {
     return {
-      selectedForms:[],
-      forms:[],
+      selectedForms: [],
+      forms: [],
       userIcon,
       selectedStudents: [],
       selectedGroup: "",
@@ -164,17 +163,17 @@ export default {
       counselors: [],
       groups: [],
       companies: [],
-      internships:[],
+      internships: [],
       selectedCompany: null,
       dateFrom: null,
       dateTo: null,
       showSuccessAlert: false,
       companyName: null,
       internshipName: null,
-      selectedInternship:null,
-      mentors:[],
-      mentorName:null,
-      selectedMentor:[],
+      selectedInternship: null,
+      mentors: [],
+      mentorName: null,
+      selectedMentor: [],
     };
   },
   components: {
@@ -182,6 +181,11 @@ export default {
   },
 
   mounted() {
+    if (this.$route.path.includes("/internship-edit")) {
+      const internshipId = this.$route.params.internshipId;
+      this.fetchInternshipData(internshipId);
+    }
+
     this.debouncedSearchStudents = debounce((studentName) => {
       this.searchStudents(studentName);
     }, 500);
@@ -205,9 +209,57 @@ export default {
     this.debouncedSearchForms = debounce((formName) => {
       this.searchForms(formName);
     }, 500);
-
   },
   methods: {
+    fetchInternshipData(internshipId) {
+      console.log("Suveike");
+      apiClient
+        .post(`/internship`, { internshipId: internshipId })
+        .then((response) => {
+          let fetchedInternships = response.data;
+          this.internshipsLoaded = true;
+          this.populateInternshipFields(fetchedInternships);
+        })
+        .catch((error) => {
+          console.error("Error fetching internships: ", error);
+        });
+    },
+    populateInternshipFields(data) {
+      console.log("Internship data received:", data);
+
+      this.selectedInternship = {
+        internshipName: data[0].title,
+        id: data[0].id,
+      };
+      console.log(this.selectedInternship);
+      this.selectedMentor = data[0].user_profiles
+        .filter((user) => user.role_id === 4)
+        .map((user) => ({ fullName: user.fullname, id: user.id }));
+      console.log(this.selectedMentor);
+      this.selectedCounselors = data[0].user_profiles
+        .filter((user) => user.role_id === 3)
+        .map((user) => ({ fullName: user.fullname, id: user.id }));
+      console.log(this.selectedCounselors);
+      this.selectedStudents = data[0].user_profiles
+        .filter((user) => user.role_id === 5)
+        .map((user) => ({ fullName: user.fullname, id: user.id }));
+
+        this.selectedCompany = {
+        company_name: data[0].company.company_name,
+        id: data[0].company.id,
+      };
+      this.dateFrom = data[0].date_from;
+      console.log(this.dateFrom);
+      this.dateTo = data[0].date_to;
+      this.selectedForms = data[0].templates.map((template) => ({
+        name: template.name,
+        id: template.id,
+      }));
+      this.selectedCompany = {
+        company_name: data[0].company.company_name,
+        id: data[0].company.id,
+      };
+    },
     onStudentInput(event) {
       const studentName = event.target.value;
       if (typeof studentName === "string" && studentName.trim() !== "") {
@@ -249,7 +301,6 @@ export default {
         this.debouncedSearchForms(formName);
       }
     },
-
 
     searchCompanies(companyName) {
       if (typeof companyName !== "string") {
@@ -300,10 +351,7 @@ export default {
 
     searchForms(formName) {
       if (typeof formName !== "string") {
-        console.error(
-          "formName called with non-string argument:",
-          formName
-        );
+        console.error("formName called with non-string argument:", formName);
         return;
       }
       if (formName && formName.trim() !== "") {
@@ -377,10 +425,9 @@ export default {
       }
       if (internshipName && internshipName.trim() !== "") {
         apiClient
-          .post("/search/internship/titles", { searchString: internshipName, })
+          .post("/search/internship/titles", { searchString: internshipName })
           .then((response) => {
-            this.internships = response.data
-
+            this.internships = response.data;
           })
           .catch((error) => {
             console.error("Error searching for counselors:", error);
@@ -400,14 +447,18 @@ export default {
     triggerSearchMentors() {
       this.debouncedSearchGroups(this.selectedMentor);
     },
+    triggerSearchForms() {
+      this.debouncedSearchForms(this.selectedForms);
+    },
 
     submitInternship() {
-     
-      let internshipName = this.selectedInternship?.internshipName || this.selectedInternship;
+      let internshipName =
+        this.selectedInternship?.internshipName || this.selectedInternship;
       if (
         this.selectedCompany &&
         (this.selectedStudents.length > 0 ||
-          this.selectedCounselors.length > 0 || this.selectedMentor.length > 0) &&
+          this.selectedCounselors.length > 0 ||
+          this.selectedMentor.length > 0) &&
         this.dateFrom &&
         this.dateTo &&
         internshipName
@@ -416,11 +467,8 @@ export default {
         const counselorIds = this.selectedCounselors.map(
           (counselor) => counselor.id
         );
-        const mentorsId = this.selectedMentor.map(
-          (mentor) => mentor.id
-        );
-
-        const userIds = [...studentIds, ...counselorIds, ...mentorsId];
+        const mentorIds = this.selectedMentor.map((mentor) => mentor.id);
+        const userIds = [...studentIds, ...counselorIds, ...mentorIds];
 
         const payload = {
           companyId: this.selectedCompany.id,
@@ -428,10 +476,20 @@ export default {
           dateFrom: this.dateFrom,
           dateTo: this.dateTo,
           title: internshipName,
+
+          ...(this.$route.path.includes("/internship-edit") && {
+            internshipId: this.$route.params.internshipId,
+          }),
         };
 
-        apiClient
-          .post("/internships", payload)
+        const apiEndpoint = this.$route.path.includes("/internship-edit")
+          ? "/internship-update"
+          : "/internships";
+        const method = this.$route.path.includes("/internship-edit")
+          ? "put"
+          : "post";
+
+        apiClient[method](apiEndpoint, payload)
           .then((response) => {
             console.log("Internship saved:", response.data);
             this.showSuccessAlert = true;
@@ -449,7 +507,6 @@ export default {
 </script>
 
 <style scoped>
-
 .multiple-divs {
   min-width: 220px;
 }
@@ -469,7 +526,7 @@ export default {
 }
 .inputDiv {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   flex-wrap: wrap;
   align-items: center;
   justify-content: space-between;

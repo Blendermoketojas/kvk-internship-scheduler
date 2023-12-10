@@ -8,11 +8,7 @@
       </div>
 
       <v-list>
-        <v-list-item
-          v-for="internship in paginatedInternships"
-          :key="internship.id"
-          @click="selectInternship(internship.id)"
-        >
+        <v-list-item v-for="internship in paginatedInternships" :key="internship.id" @click="selectInternship(internship.id)">
           <v-list-item-content>
             <v-list-item-title>{{ internship.title }}</v-list-item-title>
           </v-list-item-content>
@@ -27,7 +23,7 @@
 
       <v-expand-transition>
         <div v-if="showGrades" class="animated-grades">
-          <v-data-table :items="selectedGrades" class="grades-table">
+          <v-data-table :items="selectedGrades" :loading="loadingGrades" :no-data-text="noDataText" :loading-text="loadingText" class="grades-table">
             <template v-slot:items="props">
               <td>{{ props.item.internshipName }}</td>
               <td>{{ props.item.grade }}</td>
@@ -48,8 +44,10 @@ export default {
 
   data() {
     return {
+      noDataText: "Nėra informacijos",
+      loadingText: "Kraunama, prašome palaukti",
       currentPage: 1,
-      pageSize: 3,
+      pageSize: 5,
       totalInternshipPages: 1,
       paginatedInternships: [],
       selectedGrades: [],
@@ -58,41 +56,55 @@ export default {
   },
 
   methods: {
-    async fetchInternships() {
-      try {
-        // Fetch internships from the service
-        const response = await internshipService.getCurrentUserInternships();
+  async fetchInternships() {
+    try {
+      const response = await internshipService.getCurrentUserInternships();
 
-        // Update paginatedInternships based on the response, currentPage, and pageSize
-        const startIndex = (this.currentPage - 1) * this.pageSize;
-        const endIndex = startIndex + this.pageSize;
+      const userIds = Object.keys(response.data);
+      const internshipsData = userIds.reduce((result, userId) => { return result.concat(response.data[userId]);}, []);
+      const startIndex = (this.currentPage - 1) * this.pageSize;
+      const endIndex = startIndex + this.pageSize;
 
-        this.paginatedInternships = response.data.slice(startIndex, endIndex);
+      this.paginatedInternships = internshipsData.slice(startIndex, endIndex);
 
-        this.totalInternshipPages = Math.ceil(response.data.length / this.pageSize);
-      } catch (error) {
-        console.error("Error fetching internships:", error);
-      }
-    },
-
-    async selectInternship(internshipId) {
-      // Simulate fetching documents for the selected internship
-      this.showGrades = true;
-
-      // Fetch grades for the selected internship
-      try {
-        const response = await internshipService.getCurrentUserInternshipGrades(internshipId);
-        const internshipManager = 3;
-        const mentor = 4;
-        const gradesArray = response.data[internshipManager];
-        // Replace the following with actual logic to handle the fetched grades
-        this.selectedGrades = gradesArray && gradesArray.length > 0 ? [{ "Pažymio tipas": 'Example Internship', "Pažymys": gradesArray[0].grade }] : [];
-      } catch (error) {
-        console.error("Error fetching grades:", error);
-      }
-    },
+      this.totalInternshipPages = Math.ceil(internshipsData.length / this.pageSize);
+    } catch (error) {
+      console.error("Error fetching internships:", error);
+    }
   },
 
+  async selectInternship(internshipId) {
+    this.showGrades = true;
+    this.loadingGrades = true;
+
+    try {
+      const response = await internshipService.getCurrentUserInternshipGrades(internshipId);
+      const internshipManager = 3;
+      const mentor = 4;
+      const userIds = Object.keys(response.data);
+      
+      const mentorGradesArray = response.data[userIds.find(userId => userId === mentor.toString())] || [];
+      const managerGradesArray = response.data[userIds.find(userId => userId === internshipManager.toString())] || [];
+
+      this.selectedGrades = [
+      ...mentorGradesArray.map(grade => ({
+        "Pažymio autorius": 'Mentorius',
+        "Pažymys": grade.grade,
+        galutinis: grade.is_final === 1 ? 'Taip' : 'Ne'
+      })),
+      ...managerGradesArray.map(grade => ({
+        "Pažymio autorius": 'Praktikos vadovas',
+        "Pažymys": grade.grade,
+        galutinis: grade.is_final === 1 ? 'Taip' : 'Ne'
+      }))
+    ];
+    } catch (error) {
+      console.error("Error while fetching data:", error);
+    }finally {
+      this.loadingGrades = false;
+    }
+  },
+},
   watch: {
     currentPage: 'fetchInternships',
   },

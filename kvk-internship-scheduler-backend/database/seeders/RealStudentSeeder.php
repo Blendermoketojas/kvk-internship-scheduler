@@ -26,7 +26,19 @@ class RealStudentSeeder extends Seeder
 
         // create students from real data
 
-        $index = 1;
+        $this->createUserCredentials("Monika", "Pocienė");
+        $this->createUserProfile("1","Monika", "Pocienė", $rolesNames[0], 0, 1);
+
+        $this->createUserCredentials("Nomeda", "Rimšelienė");
+        $this->createUserProfile("3","Nomeda", "Rimšelienė", $rolesNames[1], 0, 2);
+
+        $this->createUserCredentials("Jūra", "Volodzkaitė");
+        $this->createUserProfile("4","Jūra", "Volodzkaitė", $rolesNames[2], 0, 3);
+
+        $this->createUserCredentials("Evaldas", "Vasiliauskas");
+        $this->createUserProfile("2","Evaldas", "Vasiliauskas", $rolesNames[3], 0, 4);
+
+        $index = 5;
         $groupIndex = 1;
         foreach (getGroups() as $group) {
             Log::info($group);
@@ -42,16 +54,16 @@ class RealStudentSeeder extends Seeder
             $groupIndex++;
         }
 
-        // TODO: TEMPORARY SOLUTION: BEFORE THE REAL PRESENTATION POPULATE WITH REAL PEOPLE (IF NEEDED)
-
-        for ($i = $index; $i < $index + 30; $i++) {
-            $firstName = fake()->firstName;
-            $lastName = fake()->lastName;
-            $roleId = rand(1, 4);
-
-            $this->createUserCredentials($firstName, $lastName);
-            $this->createUserProfile($i, $firstName, $lastName, $rolesNames[$roleId], 0, $roleId);
-        }
+//        // TODO: TEMPORARY SOLUTION: BEFORE THE REAL PRESENTATION POPULATE WITH REAL PEOPLE (IF NEEDED)
+//
+//        for ($i = $index; $i < $index + 30; $i++) {
+//            $firstName = fake()->firstName;
+//            $lastName = fake()->lastName;
+//            $roleId = rand(1, 4);
+//
+//            $this->createUserCredentials($firstName, $lastName);
+//            $this->createUserProfile($i, $firstName, $lastName, $rolesNames[$roleId], 0, $roleId);
+//        }
     }
 
     public function createUserProfile($index, $firstName, $lastName, $roleName, $groupIndex = 0, $roleId = 5)

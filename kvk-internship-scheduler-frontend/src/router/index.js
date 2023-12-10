@@ -55,13 +55,19 @@ const routes = [
   },
   {
     path: "/student-profile-info/:userId",
-    name: 'StudentProfile',
+    name: "StudentProfile",
     component: () => import("@/views/ProfileInfoPage.vue"),
+  },
+  {
+    path: "/internship-edit/:internshipId",
+    name: "InternshipEdit",
+    component: () => import("@/views/InternshipManagementPage.vue"),
   },
   {
     path: "/evaluation",
     component: () => import("@/views/EvaluationPage.vue"),
-  }];
+  },
+];
 
 const router = createRouter({
   history: createWebHistory(process.env.BASE_URL),

@@ -17,7 +17,7 @@ class CreateCommentService extends BaseService
     {
         return [
             'internship_id' => 'required|integer|exists:internships,id',
-            'comment' => 'required|string|min:1|max:512',
+            'comment' => 'required|string|min:1|max:1028',
             'date_from' => 'required|date',
             'date_to' => 'required|date'
         ];

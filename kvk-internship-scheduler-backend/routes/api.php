@@ -56,7 +56,6 @@ Route::middleware('api')->prefix('v2')->group(function () {
     Route::middleware(['jwt.from.cookie', 'jwt.auth'])->group(function () {
 
         // Register external
-
         Route::post('/register-external', [AuthController::class, 'registerExternalUser']);
 
         // Logout
@@ -147,6 +146,9 @@ Route::middleware('api')->prefix('v2')->group(function () {
 
         Route::post('/internship/documents-files', [InternshipFileManagementController::class,
             'getInternshipDocumentsWithFiles']);
+
+        Route::post('/documents/internship-by-id', [InternshipFileManagementController::class,
+            'getDocumentsByInternshipId']);
 
         // File Management
 

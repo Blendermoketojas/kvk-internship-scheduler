@@ -33,12 +33,13 @@ class GetCurrentUserInternshipsService extends BaseService
         // input validation
         if (!$this->validateRules()) return response()->json("Action not allowed", 401);
 
-        // logic execution
-
-        if ($this->user->role_id === Role::PRODEKANAS->value)
-        {
-            return response()->json(Internship::all()->load('company'));
-        }
+//        // logic execution
+//
+//        if ($this->user->role_id === Role::PRODEKANAS->value)
+//        {
+//            // TODO: CHECK IF THIS IS USED ANYWHERE
+//            return response()->json(Internship::all()->load('company'));
+//        }
 
         $internships = $this->user->internships;
         $internships->load('company');

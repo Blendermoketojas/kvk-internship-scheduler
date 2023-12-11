@@ -45,7 +45,7 @@ class GetLinkedStudentsActiveInternshipsService extends BaseService
             })
             ->with(['userProfiles' => function($query) {
                 $query->where('role_id', 5);
-            }])
+            }])->with('company')
             ->get();
 
 

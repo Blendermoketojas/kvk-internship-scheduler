@@ -185,7 +185,6 @@ export default {
 
     filteredResultItems() {
       let items = [
-        { title: "Įsivertinimas", route: "/evaluation-demo" },
         { title: "Įvertinimai", route: "/evaluation" },
       ];
 

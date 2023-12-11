@@ -9,6 +9,9 @@
         title="Pavyko!"
         text="Profilio informacija buvo atnaujinta!"
       ></v-alert>
+
+      <v-alert v-if="showErrorAlert" color="error" icon="$error" title="Kaida!" text="Vartotojas nebuvo sukurtas!"></v-alert>
+
       <div class="pageDescription">
         <h1>Profilis</h1>
         <h2>Čia galite koreguoti asmeninę informaciją, mokslo duomenis</h2>
@@ -127,10 +130,10 @@
             ></v-textarea>
           </div>
           <div class="bottomButtons">
-            <v-btn color="#0D47A1" rounded="xl" variant="elevated" type="submit"
+            <v-btn v-if="!isStudentProfilePage" color="#0D47A1" rounded="xl" variant="elevated" type="submit"
               >Išsaugoti</v-btn
             >
-            <v-btn rounded="xl" variant="outlined">Atšaukti</v-btn>
+            <v-btn v-if="!isStudentProfilePage" rounded="xl" variant="outlined">Atšaukti</v-btn>
           </div>
         </v-window-item>
         <v-window-item value="2">
@@ -145,16 +148,21 @@
               >
                 <v-container>
                   <v-row no-gutters>
-                    <v-col cols="3">
+                    <v-col cols="2">
+                      <div><b>Pavadinimas:</b></div><br>
+                      {{ internship.title }}
+                    </v-col>
+                    <v-col cols="2">
+                      <div><b>Įmonė:</b></div><br>
                       {{ internship.company.company_name }}
                     </v-col>
-                    <v-col cols="3">
-                      <div>Nuo: {{ internship.date_from }}</div>
+                    <v-col cols="2">
+                      <div><b>Nuo:</b></div><br> {{ internship.date_from }}
                     </v-col>
-                    <v-col cols="3">
-                      <div>Iki: {{ internship.date_to }}</div>
+                    <v-col cols="2">
+                      <div><b>Iki:</b></div><br> {{ internship.date_to }}
                     </v-col>
-                    <v-col class="d-flex justify-end" cols="3"> </v-col>
+                    <v-col cols="2"><div><b>Valandos:</b></div><br> {{ internship.logged_hours }}/{{ internship.duration_in_hours }} </v-col>
                   </v-row>
                 </v-container>
               </v-expansion-panel-title>
@@ -208,6 +216,7 @@ export default {
   name: "ProfileInfo",
   data() {
     return {
+      showErrorAlert:false,
       userIcon,
       userIdFromUrl: null,
       userData: null,
@@ -239,7 +248,7 @@ export default {
 
     apiClient.get("/companies", { withCredentials: true }).then((response) => {
       this.companies = response.data;
-      this.registrationData.company_id = response.data.id;
+      // this.registrationData.company_id = response.data.id;
       this.company_id = response.data.id;
     });
 
@@ -321,10 +330,13 @@ export default {
     },
 
     fetchInternshipsForRoleFive() {
+     
       apiClient
         .get("/internships")
         .then((response) => {
-          this.internships = response.data;
+          console.log("Internships response:", response.data.internships);
+          this.internships = response.data.internships;
+          console.log(this.internships);
           this.internshipsLoaded = true;
         })
         .catch((error) => {
@@ -332,17 +344,7 @@ export default {
         });
     },
 
-    // fetchInternshipsForRoleFive() {
-    //   apiClient
-    //     .get("/internships")
-    //     .then((response) => {
-    //       this.internships = response.data;
-    //       this.internshipsLoaded = true;
-    //     })
-    //     .catch((error) => {
-    //       console.error("Error fetching internships:", error);
-    //     });
-    // },
+
 
     fetchUserData() {
       apiClient.get("/profile", { withCredentials: true }).then((response) => {
@@ -366,6 +368,8 @@ export default {
         })
         .catch((error) => {
           console.error("Error saving changes:", error);
+          this.showErrorAlert = true;
+          setTimeout(() => (this.showErrorAlert = false), 6000);
         });
 
       if (this.selectedImage) {
@@ -408,9 +412,6 @@ export default {
   computed: {
     isStudentProfilePage() {
       return this.$route.path.includes("/student-profile-info");
-    },
-    metodas() {
-      console.log("URL Tinka", isStudentProfilePage);
     },
     imagePreview() {
       return this.selectedImage

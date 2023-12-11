@@ -2,6 +2,8 @@
   <custom-header></custom-header>
   <div class="mainManagement">
     <v-alert v-if="showSuccessAlert" color="success" icon="$success" title="Pavyko!" text="Praktika išsaugota!"></v-alert>
+    <v-alert v-if="showErrorAlert" color="error" icon="$error" title="Kaida!" text="Praktika nebuvo priskirta!"></v-alert>
+
     <div class="pageDescription">
       <h1>Praktikos priskyrimas</h1>
       <h2>Čia galite priskirti studento praktiką</h2>
@@ -91,6 +93,7 @@ export default {
   name: "ProfileInfo",
   data() {
     return {
+      showErrorAlert:false,
       selectedForms: [],
       forms: [],
       userIcon,
@@ -153,7 +156,6 @@ export default {
   },
   methods: {
     fetchInternshipData(internshipId) {
-      console.log("Suveike");
       apiClient
         .post(`/internship`, { internshipId: internshipId })
         .then((response) => {
@@ -445,12 +447,16 @@ export default {
             this.errorMessage = error;
             this.isError = true;
             console.error("Error saving internship:", error);
+            this.showErrorAlert = true;
+            setTimeout(() => (this.showErrorAlert = false), 6000);
           });
       } else {
         this.isLoading = false;
         this.errorMessage = "Yra neužpildytų laukų";
         this.isError = true;
         console.error("All fields are required");
+        this.showErrorAlert = true;
+            setTimeout(() => (this.showErrorAlert = false), 6000);
       }
     },
   },

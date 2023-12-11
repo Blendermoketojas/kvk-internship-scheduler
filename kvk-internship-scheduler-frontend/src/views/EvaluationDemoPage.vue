@@ -2,8 +2,8 @@
   <custom-header></custom-header>
   <div class="mainDiv">
     <div class="pageDescription">
-      <h1 class="heading">Klausimyno kūrimas</h1>
-      <h2>Čia galite sukurti savo klausimyną</h2>
+      <h1 class="heading">Įsivertinimas</h1>
+      <h2>Čia galite atsakyti į užduotus klausimus</h2>
     </div>
     <div class="CreationDiv">
       <div>
@@ -56,7 +56,19 @@
   </table>
 
       </div>
+
     </div>
+    <div class="confirmButton">
+    <v-btn
+@click="saveAnswers"
+    width="200px"
+    class="custom-gradient"
+    rounded="xl"
+    variant="elevated"
+    type="submit"
+    >Išsaugoti</v-btn
+  >
+</div>
   </div>
 </div>
 </template>
@@ -69,11 +81,12 @@ export default {
   name: "EvaluationCreation",
   data() {
     return {
-      name: "Testavimas",
+      internshipId: null,
       answerOptions: [],
       questionOptions: [],
       templateId: "",
       isFocused: false,
+      selectedAnswers: [],
     };
   },
   components: {
@@ -81,6 +94,41 @@ export default {
   },
 
   methods: {
+    getSelectedAnswerIdForQuestion(questionIndex) {
+    return this.selectedAnswers[questionIndex];
+  },
+
+  saveAnswers() {
+    const answers = this.questionOptions.map((question, index) => {
+      const selectedAnswerId = this.getSelectedAnswerIdForQuestion(index);
+      return {
+        question_id: question.id,
+        answer_id: selectedAnswerId
+      };
+    });
+
+    const dataToSend = {
+      template_id: this.templateId, 
+      internship_id: this.internshipId,
+      answers: answers
+    };
+
+    apiClient.post("/result/answer/create", dataToSend)
+      .then(response => {
+        console.log('Answers saved successfully', response);
+
+      })
+      .catch(error => {
+        console.error('Error saving answers', error);
+   
+      });
+  },
+
+  getSelectedAnswerIdForQuestion(questionIndex) {
+
+  },
+
+
     search() {
       if (this.templateId.trim() !== "") {
         var idToSend = Number(this.templateId);
@@ -109,10 +157,20 @@ export default {
         }
     },
   },
+
+mounted(){
+  this.internshipId = this.$route.params.internshipId;
+}
 };
 </script>
 
 <style scoped>
+.confirmButton{
+  display: flex;
+  justify-content: center;
+  margin: 30px 0;
+}
+
 .removeQuestion{
     display: flex;
 }

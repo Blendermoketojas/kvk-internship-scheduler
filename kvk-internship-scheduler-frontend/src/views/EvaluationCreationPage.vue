@@ -9,6 +9,16 @@
       <div>
         <div class="fullInput">
           <div class="inputField">
+            <div class="label">Šablono pavadinimas</div>
+            <v-text-field
+            v-model="formName"
+              density="compact"
+              placeholder="Pavadinimas"
+            ></v-text-field>
+          </div>
+        </div>
+        <div class="fullInput">
+          <div class="inputField">
             <div class="label">Klausimas</div>
             <v-text-field
             v-model="newQuestionText"
@@ -106,7 +116,7 @@ export default {
   name: "EvaluationCreation",
   data() {
     return {
-      name: "Testavimas",
+      formName: "",
       answerOptions: [],
       questionOptions: [],
       newQuestionText: "",
@@ -160,7 +170,7 @@ export default {
         questions.push(item);
       }
       const dataToSend = {
-        template_name: this.name,
+        template_name: this.formName,
         questions: questions,
         answers: answers
       }

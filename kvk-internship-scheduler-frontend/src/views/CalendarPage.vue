@@ -1,5 +1,7 @@
 <template>
   <header-nav />
+  <v-alert v-if="showErrorAlert" color="error" icon="$error" title="Kaida!" text="Komentaras nebuvo sukurtas!"></v-alert>
+
   <DxScheduler
     id="scheduler"
     :adaptivity-enabled="true"
@@ -9,8 +11,13 @@
     @appointmentAdded="addedComment"
     @appointmentDeleted="deleteComment"
     @appointmentUpdated="updatedComment"
+    @appointmentAdding="onAppointmentAdding"
+    @appointmentUpdating="onAppointmentUpdating"
+    @cellClick="onCellClick"
     allowDragging="false"
     allowResizing="false"
+    :min="minDate"
+    :max="maxDate"
   >
   </DxScheduler>
 </template>
@@ -34,9 +41,40 @@ export default {
       views: ["month", "week"],
       dataSource: [],
       internship_id: null,
+      showErrorAlert:false,
     };
   },
   methods: {
+
+    onAppointmentAdding(e) {
+    const { startDate } = e.appointmentData;
+    if (startDate < this.minDate || startDate > this.maxDate) {
+      e.cancel = true;
+  
+      console.log("Appointment outside of date range is not allowed.");
+    }
+  },
+
+
+
+  onAppointmentUpdating(e) {
+    const { startDate } = e.newData;
+    if (startDate && (startDate < this.minDate || startDate > this.maxDate)) {
+      e.cancel = true;
+
+      console.log("Updating to a date outside of range is not allowed.");
+    }
+  },
+
+  onCellClick(e) {
+    if (e.cellData.startDate < this.minDate || e.cellData.startDate > this.maxDate) {
+      e.cancel = true;
+
+      console.log("Selecting a date outside of range is not allowed.");
+    }
+  },
+
+
     addedComment(e) {
       const appointmentData = e.appointmentData;
 
@@ -50,7 +88,24 @@ export default {
         dateTo: formattedEndDate,
       };
 
-      apiClient.post("/comments", dataToSend);
+      apiClient.post("/comments", dataToSend)
+    .then(response => {
+
+      this.dataSource.push({
+        id: response.data.id, 
+        text: "Praktika",
+        startDate: new Date(formattedStartDate),
+        endDate: new Date(formattedEndDate),
+        description: appointmentData.description,
+      });
+
+      this.dataSource = [...this.dataSource];
+    })
+    .catch(error => {
+      console.error("Error adding comment:", error);
+      this.showErrorAlert = true;
+          setTimeout(() => (this.showErrorAlert = false), 6000);
+    });
     },
 
     deleteComment(e) {
@@ -59,14 +114,13 @@ export default {
 
       const payload = { commentId: commentId };
 
-      apiClient
-        .delete(`/comments`, { data: payload })
-        .then(() => {
-          console.log(`Comment with ID ${commentId} deleted successfully.`);
-        })
-        .catch((error) => {
-          console.error("Error deleting comment:", error);
-        });
+      apiClient.delete(`/comments`, { data: { commentId: commentId } })
+    .then(() => {
+      this.dataSource = this.dataSource.filter(comment => comment.id !== commentId);
+    })
+    .catch(error => {
+      console.error("Error deleting comment:", error);
+    });
     },
 
     updatedComment(e) {
@@ -80,7 +134,24 @@ export default {
         dateFrom: formattedStartDate,
         dateTo: formattedEndDate,
       };
-      apiClient.put("/comments", dataToSend);
+      apiClient.put("/comments", dataToSend)
+    .then(() => {
+
+      const commentIndex = this.dataSource.findIndex(comment => comment.id === appointmentData.id);
+      if (commentIndex !== -1) {
+        this.dataSource[commentIndex] = {
+          ...this.dataSource[commentIndex],
+          startDate: new Date(formattedStartDate),
+          endDate: new Date(formattedEndDate),
+          description: appointmentData.description,
+        };
+ 
+        this.dataSource = [...this.dataSource];
+      }
+    })
+    .catch(error => {
+      console.error("Error updating comment:", error);
+    });
     },
 
     formatDate(date) {
@@ -114,9 +185,13 @@ export default {
         .then((response) => {
           if (response.data && response.data.id) {
             this.internship_id = response.data.id;
+            this.minDate = new Date(response.data.date_from);
+            this.maxDate = new Date(response.data.date_to);
             console.log("Active internship ID:", this.internship_id);
           } else {
             this.internship_id = null;
+            this.minDate = null;
+        this.maxDate = null;
           }
         });
     },
@@ -155,13 +230,11 @@ export default {
       .catch((error) => {
         console.error("Error during the active internship retrieval:", error);
       });
-
-
   },
   created() {
-  loadMessages(ltMessages);
-  locale("lt");
-},
+    loadMessages(ltMessages);
+    locale("lt");
+  },
 };
 </script>
 <style scoped>

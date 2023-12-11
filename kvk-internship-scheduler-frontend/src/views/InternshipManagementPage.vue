@@ -125,7 +125,7 @@ export default {
   },
 
   mounted() {
-    if (this.$route.path.includes("/internship-edit")) {
+    if (this.$route.path.includes("/students-internship")) {
       const internshipId = this.$route.params.internshipId;
       this.fetchInternshipData(internshipId);
     }

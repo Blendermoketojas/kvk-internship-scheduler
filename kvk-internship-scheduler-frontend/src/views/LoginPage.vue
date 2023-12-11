@@ -3,6 +3,8 @@
     <div class="header">
       <img :src="kvkLogo" alt="KVK Logo" />
     </div>
+    <v-alert v-if="showErrorAlert" color="error" icon="$error" title="Kaida!" text="Vartotojas nebuvo sukurtas!"></v-alert>
+
     <div class="middleDiv">
       <v-card
         class="mx-auto pa-12 pb-8"
@@ -98,6 +100,7 @@ export default {
   data() {
     return {
       kvkLogo,
+      showErrorAlert:false,
       loginData: {
         email: "",
         password: "",
@@ -121,6 +124,7 @@ export default {
             if (response.data.success) {
               this.$store.commit('setUser', response.data.user);
               const { fullname, image_path} = response.data.user;
+
               localStorage.setItem(
                 "user",
                 JSON.stringify({
@@ -128,16 +132,32 @@ export default {
                   image_path,
                 })
               );
-              this.$router.push("/calendar");
+
+            this.redirectUserBasedOnRole();
               this.isLoading = false;
             }
           }).catch(error => this.isLoading = false);
       } catch (error) {
         this.isLoading = false;
+     
         if (error.response && error.response.status === 401) {
+      
         }
       }
     },
+    redirectUserBasedOnRole() {
+    const role_id = this.$store.getters.getRoleId;
+
+    if (role_id === 3 || role_id === 4) {
+      this.$router.push('/student-list');
+    } else if (role_id === 1) {
+      this.$router.push('/internship-management');
+    } else if (role_id === 5) {
+      this.$router.push('/calendar');
+    } else {
+      this.$router.push('/');
+    }
+  },
   },
 };
 </script>

@@ -13,6 +13,9 @@
     :loading="loading"
     item-value="name"
     @update:options="loadItems"
+   loading-text="Kraunama informacija"
+   items-per-page-text="Rodomas studentu skaičius"
+ 
   ></v-data-table-server>
 
 </div>
@@ -22,28 +25,52 @@
 
 <script>
 import customHeader from "@/components/DesktopHeader.vue";
-const desserts = [
-    {
-      name: 'Frozen Yogurt',
-      calories: 159,
-      fat: 6.0,
-      carbs: 24,
-      protein: 4.0,
-      iron: '1',
+import apiClient from "@/utils/api-client";
+
+
+  const FakeAPI = {
+    async fetch ({ page, itemsPerPage, sortBy }) {
+      return new Promise(resolve => {
+        setTimeout(() => {
+          const start = (page - 1) * itemsPerPage
+          const end = start + itemsPerPage
+          const items = desserts.slice()
+
+          if (sortBy.length) {
+            const sortKey = sortBy[0].key
+            const sortOrder = sortBy[0].order
+            items.sort((a, b) => {
+              const aValue = a[sortKey]
+              const bValue = b[sortKey]
+              return sortOrder === 'desc' ? bValue - aValue : aValue - bValue
+            })
+          }
+
+          const paginated = items.slice(start, end)
+
+          resolve({ items: paginated, total: items.length })
+        }, 500)
+      })
     },
-    {
-      name: 'Jelly bean',
-      calories: 375,
-      fat: 0.0,
-      carbs: 94,
-      protein: 0.0,
-      iron: '0',
-    },
-  ]
+  }
+
 
 export default {
   data() {
-    return {};
+    return {
+        itemsPerPage: 5,
+      headers: [
+        { title: 'Vardas Pavardė', key: 'fullname', align: 'start' },
+        { title: 'Grupė', key: 'group_identifier', align: 'end' },
+        { title: 'Mokslo rūšis', key: 'field_of_study', align: 'end' },
+     
+      ],
+      serverItems: [],
+      loading: true,
+      totalItems: 0,
+
+
+    };
   },
   components: {
     customHeader,
@@ -51,10 +78,31 @@ export default {
   },
   methods: {
 
+    loadItems ({ page, itemsPerPage, sortBy }) {
+        this.loading = true
 
+      apiClient.get(`/linked-students?`)
+        .then(response => {
+  
+          this.serverItems = response.data.map(item => ({
+            ...item,
+            group_identifier: item.student_group.group_identifier,
+            field_of_study: item.student_group.field_of_study,
+        }));
+          this.totalItems = response.data.length;
+        })
+        .catch(error => {
+          console.error("Error fetching data:", error);
+   
+        })
+        .finally(() => {
+          this.loading = false;
+        });
+    },
 
-
-
+  },
+  mounted() {
+    this.loadItems({ page: 1, itemsPerPage: this.itemsPerPage, sortBy: [] });
   },
 };
 </script>
@@ -72,6 +120,6 @@ export default {
   }
 
   .contentDiv{
-padding: 0 150px;
+padding: 0 200px;
   }
 </style>

@@ -1,5 +1,20 @@
 <template>
   <custom-header></custom-header>
+  <v-alert
+        v-if="showSuccessAlert"
+        color="success"
+        icon="$success"
+        title="Pavyko!"
+        text="Failai buvo įkelti!"
+      ></v-alert> 
+       <v-alert
+      v-if="showErrorAlert"
+      color="error"
+      icon="$error"
+      title="Klaida!"
+      text="Failų nepavyko įkelti!"
+    ></v-alert>
+
   <Teleport to="body">
     <upload-dialog @documentAdded="addCatalog" ref="uploadDialog"></upload-dialog>
   </Teleport>
@@ -70,6 +85,8 @@ export default {
   data() {
     return {
       files: [],
+      showSuccessAlert:false,
+      showErrorAlert:false,
       newFiles: [],
       retrievedFiles: [],
       selectedFiles: [],
@@ -110,6 +127,8 @@ export default {
       this.isSaveLoading = true;
       IDS.uploadFiles({ files: this.newFiles, activityName: this.activityName, activityId: this.selectedCatalog })
         .then(response => {
+          this.showSuccessAlert = true;
+          setTimeout(() => (this.showSuccessAlert = false), 6000);
           if (response.error) {
             this.isError = true;
             this.errorMessage = response.error
@@ -121,8 +140,12 @@ export default {
           this.isError = true;
           if (error.response && error.response.data) {
             this.errorMessage = error.response.data.error || 'An unknown error occurred';
+            this.showErrorAlert = true;
+          setTimeout(() => (this.showErrorAlert = false), 6000);
           } else {
             this.errorMessage = error.message || 'An unknown error occurred';
+            this.showErrorAlert = true;
+          setTimeout(() => (this.showErrorAlert = false), 6000);
           }
         });
     },

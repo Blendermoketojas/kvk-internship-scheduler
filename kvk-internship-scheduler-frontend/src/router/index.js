@@ -41,9 +41,11 @@ const routes = [
     component: () => import("@/views/EvaluationCreationPage.vue"),
   },
   {
-    path: "/evaluation-demo",
-    component: () => import("@/views/EvaluationDemoPage.vue"),
-  },
+  path: '/evaluation-demo/:internshipId',
+  name: 'EvaluationDemo',
+ component: () => import("@/views/EvaluationDemoPage.vue"),
+  props: true 
+},
 
   {
     path: "/user-internships",
@@ -66,6 +68,19 @@ const routes = [
   {
     path: "/evaluation",
     component: () => import("@/views/EvaluationPage.vue"),
+  },
+  {
+    path: "/student-list",
+    component: () => import("@/views/OwnedInternshipsPage.vue"),
+  },
+  {
+    path: "/students-internship/:internshipId",
+    name: "InternshipEdit",
+    component: () => import("@/views/InternshipManagementPage.vue"),
+  },
+  {
+    path: "/user-creation",
+    component: () => import("@/views/UserCreationPage.vue"),
   },
 ];
 

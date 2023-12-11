@@ -5,6 +5,7 @@ namespace App\Http\Controllers\v2;
 use App\Http\Controllers\Controller;
 use App\Services\ManageInternships\Services\CreateInternshipService;
 use App\Services\ManageInternships\Services\DeleteInternshipService;
+use App\Services\ManageInternships\Services\FilterNotEvaluatedInternshipsService;
 use App\Services\ManageInternships\Services\GetActiveInternshipService;
 use App\Services\ManageInternships\Services\GetInternshipService;
 use App\Services\ManageInternships\Services\GetLinkedStudentsInternshipsService;
@@ -104,5 +105,13 @@ class InternshipController extends Controller
     public function getLinkedStudents(Request $request): JsonResponse
     {
         return (new GetLinkedStudentsService($request))->execute();
+    }
+
+    /**
+     * @throws ValidationException
+     */
+    public function filterNotEvaluatedInternships(Request $request): JsonResponse
+    {
+        return (new FilterNotEvaluatedInternshipsService($request))->execute();
     }
 }

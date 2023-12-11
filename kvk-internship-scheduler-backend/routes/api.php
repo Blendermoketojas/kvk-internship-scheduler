@@ -93,6 +93,8 @@ Route::middleware('api')->prefix('v2')->group(function () {
         Route::post('/internships/student-group-active', [InternshipController::class,
             'getStudentGroupActiveInternships']);
         Route::post('/search/internship/titles', [InternshipController::class, 'searchInternshipTitles']);
+        Route::get('/filter/not-evaluated-internships', [InternshipController::class,
+            'filterNotEvaluatedInternships']);
 
         Route::put('/internship-update', [InternshipController::class, 'updateInternship']);
 

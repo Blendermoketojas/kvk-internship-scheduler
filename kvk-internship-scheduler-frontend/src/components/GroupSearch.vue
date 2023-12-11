@@ -32,7 +32,7 @@ export default {
   name: "ProfileInfo",
   data() {
     return {
-      selectedGroup: "",
+      selectedGroup: null,
       groups: [],
     };
   },

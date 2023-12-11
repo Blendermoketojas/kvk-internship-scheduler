@@ -34,14 +34,15 @@
                 {{ question.question }}
               </td>
               <td v-for="(option, oIndex) in answerOptions" :key="oIndex">
-                <input type="radio" :name="'question' + qIndex" :value="option" />
+                <input type="radio" :name="'question' + question.id" :value="option.id"
+                  v-model="selectedAnswers[question.id]" />
               </td>
             </tr>
           </table>
         </div>
         <div class="confirmButton">
-          <v-btn @click="saveAnswers" v-if="selectedTemplate" width="200px" class="custom-gradient" rounded="xl" variant="elevated"
-            type="submit">Išsaugoti</v-btn>
+          <v-btn @click="saveResults" v-if="selectedTemplate" width="200px" class="custom-gradient" rounded="xl"
+            variant="elevated">Išsaugoti</v-btn>
         </div>
       </div>
     </div>
@@ -57,11 +58,11 @@ export default {
   data() {
     return {
       internshipId: null,
+      templateId: null,
       answerOptions: [],
       questionOptions: [],
-      templateId: "",
-      isFocused: false,
-      selectedAnswers: [],
+      selectedAnswers: {},
+      selectedQuestions: {},
       selectedTemplate: null,
       templates: [],
     };
@@ -69,16 +70,29 @@ export default {
   components: {
     customHeader,
   },
-
   methods: {
     selectTemplate(templateId) {
       // TODO: kviesti tik kai skirtingas ID dabar nedariau nes pristatyms tuoj lol - as esu Tadas Andrijauskas
       TS.getTemplate(templateId).then(response => {
-        this.selectedTemplate = response.data
+        this.selectedTemplate = response.data;
+        this.templateId = response.data.id;
         this.questionOptions = response.data.questions;
         this.answerOptions = response.data.answers;
       });
     },
+    getSelectedAnswersArray() {
+    return Object.entries(this.selectedAnswers).map(([questionId, answerId]) => ({
+      question_id: Number(questionId),
+      answer_id: Number(answerId),
+    }));
+  },
+  saveResults() {
+    TS.createTemplateResultService(
+      this.templateId,
+      this.internshipId,
+      this.getSelectedAnswersArray()
+    ).then(response => console.log("išsaugoti!"))
+  },
   },
   mounted() {
     this.internshipId = this.$route.params.internshipId;

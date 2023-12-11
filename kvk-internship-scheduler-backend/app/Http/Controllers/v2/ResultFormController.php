@@ -10,6 +10,7 @@ use App\Services\ManageResults\Forms\Templates\DetachTemplateFromInternshipServi
 use App\Services\ManageResults\Forms\Templates\GetFilledFormDataService;
 use App\Services\ManageResults\Forms\Templates\GetTemplateByNameService;
 use App\Services\ManageResults\Forms\Templates\GetTemplatesByDatesAndGroupsService;
+use App\Services\ManageResults\Forms\Templates\GetTemplatesByInternshipIdService;
 use App\Services\ManageResults\Forms\Templates\GetTemplateService;
 use App\Services\ManageResults\Forms\Templates\ModifyTemplateService;
 use App\Services\ManageResults\Forms\Templates\SearchLikertItemsService;
@@ -79,5 +80,12 @@ class ResultFormController extends Controller
      */
     public function getDataFromTemplate(Request $request): JsonResponse {
         return (new GetFilledFormDataService($request))->execute();
+    }
+
+    /**
+     * @throws ValidationException
+     */
+    public function getTemplateByInternshipId(Request $request): JsonResponse {
+        return (new GetTemplatesByInternshipIdService($request))->execute();
     }
 }

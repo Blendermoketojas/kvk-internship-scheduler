@@ -120,6 +120,7 @@ Route::middleware('api')->prefix('v2')->group(function () {
         Route::post('/result/search/template', [ResultFormController::class, 'searchTemplate']);
         Route::post('/result/answer/create', [ResultFormController::class, 'createResult']);
         Route::post('/result/answer/get', [ResultFormController::class, 'getResult']);
+        Route::post('/result/internship/templates', [ResultFormController::class, 'getTemplateByInternshipId']);
 
         // FormsCharts
 

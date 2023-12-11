@@ -6,6 +6,7 @@ use App\Traits\AutoCreatedBy;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Document extends Model
 {
@@ -25,5 +26,10 @@ class Document extends Model
     public function internship(): BelongsTo
     {
         return $this->belongsTo(Internship::class);
+    }
+
+    public function resourceLinks(): HasMany
+    {
+        return $this->hasMany(ResourceLink::class);
     }
 }

@@ -65,7 +65,7 @@ class CreateGradeService extends BaseService
         } else {
             if (sizeof((Internship::where('id', $this->data()['internship_id'])->where('is_active', true))->get()) < 1) {
                 $gradeItem = GradeItem::create($this->data());
-                $internship = Internship::find($this->data()['internship_id'])->get()[0];
+                $internship = Internship::find($this->data()['internship_id']);
                 if ($this->user->role_id == Role::MENTORIUS) {
                     $internship->is_mentor_evaluated = true;
                     $internship->save();

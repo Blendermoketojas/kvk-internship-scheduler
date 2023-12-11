@@ -25,8 +25,7 @@ class GetInternshipService extends BaseService
 
     public function permissions(): array
     {
-        // TODO: TEMPORARY SOLUTION (SECURITY RISK) CHECK IF MENTORIUS IR PRAKTIKOS_VADOVAS BELONGS TO THE INTERNSHIP
-        return [Role::PRODEKANAS, Role::MENTORIUS, Role::PRAKTIKOS_VADOVAS];
+        return [Role::PRODEKANAS];
     }
 
     /**

@@ -82,9 +82,13 @@ class CreateInternshipService extends BaseService
         $internship->userProfiles()->attach($this->data()['users']);
 
         if ($this->data()['forms'] != null) {
-            $internship->templates()->attach($this->data()['forms']);
+            $forms = $this->data()['forms'];
+            $ids = array_map(function ($form) {
+                return $form['id'];
+            }, $forms);
+            $internship->templates()->attach($ids);
         }
-
+        
         // respond
         return response()->json($internship);
     }

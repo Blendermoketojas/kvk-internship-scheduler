@@ -39,7 +39,7 @@ class GetTemplatesByInternshipIdService extends BaseService
 
         // logic execution
 
-        $internship = Internship::where('is_active', false)->find($this->data()['internshipId'])->first();
+        $internship = Internship::where('is_active', false)->find($this->data()['internshipId']);
         $templates = $internship->templates;
 
         // response

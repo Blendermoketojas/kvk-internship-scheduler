@@ -75,6 +75,7 @@
 
 <script>
 import customHeader from "@/components/DesktopHeader.vue";
+import TS from "@/services/templates/templatesService"
 import apiClient from "@/utils/api-client";
 
 export default {
@@ -123,12 +124,9 @@ export default {
    
       });
   },
-
   getSelectedAnswerIdForQuestion(questionIndex) {
 
   },
-
-
     search() {
       if (this.templateId.trim() !== "") {
         var idToSend = Number(this.templateId);
@@ -160,6 +158,9 @@ export default {
 
 mounted(){
   this.internshipId = this.$route.params.internshipId;
+  TS.getInternshipTemplates(this.internshipId).then(response => {
+    console.log(response.data)
+  })
 }
 };
 </script>

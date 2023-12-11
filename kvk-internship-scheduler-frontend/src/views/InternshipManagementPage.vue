@@ -421,7 +421,7 @@ export default {
           dateFrom: this.dateFrom,
           dateTo: this.dateTo,
           title: internshipName,
-
+          forms: this.selectedForms,
           ...(this.$route.path.includes("/internship-edit") && {
             internshipId: this.$route.params.internshipId,
           }),

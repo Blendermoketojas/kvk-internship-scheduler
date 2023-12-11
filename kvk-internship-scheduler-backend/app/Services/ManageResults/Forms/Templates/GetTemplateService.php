@@ -43,9 +43,6 @@ class GetTemplateService extends BaseService
         $response['answers'] = $this->fixObjects($answers);
 
         return response()->json($response);
-
-        // response
-        return response()->json('Not implemented');
     }
 
     private function fixObjects($array) {

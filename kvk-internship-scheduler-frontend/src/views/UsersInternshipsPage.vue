@@ -157,14 +157,14 @@
                     >Įvertinti</v-btn
                   >
                 </v-col>
-                <v-col v-if="!isRoleFive || internship.isActive" cols="2">
+                <v-col  cols="2">
                   <div class="iconButtons">
                     <button class="styleless-button" @click="handleUpload">
                       <v-icon icon="mdi-upload"></v-icon>
                     </button>
 
                     <button
-                      v-if="!isRoleMentor || internship.isActive"
+                      v-if="isRoleOne"
                       class="styleless-button"
                       @click="handleEditInternship(internship.internshipId)"
                     >
@@ -172,7 +172,7 @@
                     </button>
 
                     <button
-                      v-if="!isRoleMentor || internship.isActive"
+                      v-if="isRoleOne"
                       class="styleless-button"
                       @click="openDeleteModal(internship.internshipId)"
                     >

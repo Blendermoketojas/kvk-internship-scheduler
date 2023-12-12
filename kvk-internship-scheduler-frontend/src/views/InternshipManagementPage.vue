@@ -51,7 +51,7 @@
         </div>
 
         <div class="fieldDiv">
-          <div class="text-subtitle-1 text-bold-emphasis">Likerto forma</div>
+          <div class="text-subtitle-1 text-bold-emphasis">Kompetencijų vertinimas</div>
           <v-combobox v-model="selectedForms" :items="forms" @input="onFormInput" multiple item-value="id"
             item-title="name" return-object label="Pasirinkite vertinimo formą"></v-combobox>
         </div>

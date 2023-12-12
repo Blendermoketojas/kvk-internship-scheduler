@@ -1,5 +1,6 @@
 <template>
   <custom-header></custom-header>
+  <div class="bodyDiv">
   <form @submit.prevent="saveChanges">
     <div class="mainProfile">
       <v-alert
@@ -203,6 +204,7 @@
       </v-window>
     </div>
   </form>
+</div>
 </template>
 
 <script>
@@ -430,6 +432,7 @@ export default {
 </script>
 
 <style scoped>
+@import '@/styles/ProfileStyle/Profile.css';
 .no-internships {
   text-align: center;
   padding: 20px;
@@ -462,9 +465,7 @@ export default {
   justify-content: space-between;
 }
 
-.mainProfile {
-  padding: 0 200px;
-}
+
 
 .bottomButtons {
   display: flex;
@@ -476,9 +477,7 @@ export default {
   margin: 0 10px;
 }
 
-.profileInformation {
-  padding: 0 250px;
-}
+
 
 .photo {
   height: 120px;

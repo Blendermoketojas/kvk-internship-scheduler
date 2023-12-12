@@ -1,0 +1,15 @@
+.mainManagement {
+  max-width: 1500px;
+
+  
+}
+
+.bodyDiv{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.managementInformation{
+    max-width: 1000px;
+}

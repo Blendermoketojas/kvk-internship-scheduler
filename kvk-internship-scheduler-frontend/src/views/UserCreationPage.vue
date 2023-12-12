@@ -2,11 +2,12 @@
   <custom-header></custom-header>
   <v-alert v-if="showSuccessAlert" color="success" icon="$success" title="Pavyko!" text="Vartotojas sukurtas!"></v-alert>
   <v-alert v-if="showErrorAlert" color="error" icon="$error" title="Kaida!" text="Vartotojas nebuvo sukurtas!"></v-alert>
-
+<div class="bodyDiv">
   <div class="mainDiv">
+    <div class="pageDescription">
     <h1>Naudotojų pridėjimas</h1>
     <h2>Čia galite sukurti naują naudotoją</h2>
-
+  </div>
     <div class="mainContent">
       <div class="selections">
         <v-tabs v-model="tab" color="black" align-tabs="center">
@@ -54,17 +55,19 @@
         </v-window-item>
         <v-window-item value="2">
           <div class="text-subtitle-1 text-bold-emphasis">Įmonė</div>
-          <v-text-field label="UAB 'Įmonė'"></v-text-field>
+          <v-text-field
+          v-model="companyName"
+          label="UAB 'Įmonė'"></v-text-field>
 
           <div class="bottomButtons">
-            <v-btn  color="#0D47A1" rounded="xl" variant="elevated" type="submit">Išsaugoti</v-btn>
-            >
+            <v-btn @click="createCompany" color="#0D47A1" rounded="xl" variant="elevated" type="submit">Išsaugoti</v-btn>
             <v-btn rounded="xl" variant="outlined">Atšaukti</v-btn>
           </div>
         </v-window-item>
       </v-window>
     </div>
   </div>
+</div>
 </template>
 
 <script>
@@ -77,6 +80,7 @@ export default {
   name: "UserCreation",
   data() {
     return {
+      companyName: '',
       selectedCompanyId:null,
       tab: "1",
       showSuccessAlert: false,
@@ -117,6 +121,16 @@ export default {
   },
 
   methods: {
+
+    createCompany() {
+    try {
+      const response = apiClient.post('/create-company', { companyName: this.companyName });
+      console.log('Company created:', response.data);
+    } catch (error) {
+      console.error('Error creating company:', error);
+    }
+  },
+
     handleSelectedGroupId(groupId) {
       this.selectedGroupId = groupId;
       console.log("Selected Group ID:", this.selectedGroupId);
@@ -177,9 +191,10 @@ export default {
 </script>
 
 <style scoped>
-.mainDiv {
-  padding: 0 200px;
-}
+@import '@/styles/InternshipStyle/userCreation.css';
+
+
+
 
 h2 {
   display: inline-block;
@@ -197,7 +212,5 @@ h2 {
   width: 200px;
   margin: 0 10px;
 }
-.mainContent {
-  padding: 0 250px;
-}
+
 </style>

@@ -82,6 +82,11 @@ const routes = [
     path: "/user-creation",
     component: () => import("@/views/UserCreationPage.vue"),
   },
+  {
+    path: "/testing",
+    component: () => import("@/views/Testing.vue"),
+  },
+
 ];
 
 const router = createRouter({

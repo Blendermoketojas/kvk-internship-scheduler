@@ -5,8 +5,13 @@
 </template>
 
 <script>
+import customHeader from "../DesktopHeader.vue";
 export default {
-    
+    components: {
+    customHeader,
+
+  },
+
 }
 </script>
 

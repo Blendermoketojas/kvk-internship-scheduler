@@ -48,10 +48,6 @@ Route::middleware('api')->prefix('v2')->group(function () {
     Route::post('/register', [AuthController::class, 'register']);
     Route::post('/login', [AuthController::class, 'login']);
 
-    // resources
-    Route::resource('/companies', CompanyController::class);
-    Route::post('/search-companies', [CompanyController::class, 'searchCompanies']);
-
     // routes that are reachable only by authenticated users
     Route::middleware(['jwt.from.cookie', 'jwt.auth'])->group(function () {
 
@@ -60,6 +56,14 @@ Route::middleware('api')->prefix('v2')->group(function () {
 
         // Logout
         Route::post('/logout', [AuthController::class, 'logout']);
+
+        // companies
+        Route::get('/companies', [CompanyController::class, 'getAllCompanies']);
+        Route::post('/search-companies', [CompanyController::class, 'searchCompanies']);
+        Route::post('/company', [CompanyController::class, 'getCompany']);
+        Route::post('/create-company', [CompanyController::class, 'createCompany']);
+        Route::post('/edit-company', [CompanyController::class, 'editCompany']);
+        Route::post('/delete-company', [CompanyController::class, 'deleteCompany']);
 
         // User profiles
 

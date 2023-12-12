@@ -36,7 +36,7 @@ class UpdateInternshipService extends BaseService
 
     public function permissions(): array
     {
-        return [Role::PRODEKANAS];
+        return [];
     }
 
     /**

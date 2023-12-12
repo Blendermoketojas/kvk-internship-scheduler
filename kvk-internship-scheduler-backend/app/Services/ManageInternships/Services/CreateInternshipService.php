@@ -4,6 +4,7 @@ namespace App\Services\ManageInternships\Services;
 
 use App\Contracts\Roles\Role;
 use App\Models\Internship;
+use App\Models\UserProfile;
 use App\Services\BaseService;
 use http\Env\Response;
 use Illuminate\Database\Eloquent\Model;
@@ -39,7 +40,7 @@ class CreateInternshipService extends BaseService
 
     public function permissions(): array
     {
-        return [Role::PRODEKANAS];
+        return [];
     }
 
     /**
@@ -52,6 +53,17 @@ class CreateInternshipService extends BaseService
 
         $userIds = $this->data()['users'];
 
+        // Check if student tries to create internship for itself
+        if ($this->user->role_id == Role::STUDENTAS->value)
+        {
+            $students = UserProfile::where('role_id', Role::STUDENTAS->value)->findMany($this->data()['users']);
+            if (sizeof($students) > 1 || !in_array($this->user->id, $this->data()['users'])) {
+                return response()->json(["error" => "Student can't create internships for other students",
+                    "success" => false]);
+            }
+        }
+
+        // Check if student is in an active internship
         $activeInternshipExists = Internship::where('is_active', true)
             ->whereHas('userProfiles', function ($query) use ($userIds) {
                 $query->whereIn('userProfiles.id', $userIds)
@@ -88,7 +100,7 @@ class CreateInternshipService extends BaseService
             }, $forms);
             $internship->templates()->attach($ids);
         }
-        
+
         // respond
         return response()->json($internship);
     }

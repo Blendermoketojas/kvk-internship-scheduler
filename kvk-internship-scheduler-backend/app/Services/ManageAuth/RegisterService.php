@@ -23,7 +23,7 @@ class RegisterService extends BaseService
             'last_name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users',
             'password' => 'required|string|min:6',
-            'company_id' => 'required|integer|exists:company,id'];
+            'company_id' => 'required|integer|exists:companies,id'];
     }
 
     public function data(): array

@@ -48,12 +48,12 @@ export default {
         this.debouncedSearchGroups(groupName);
       }
     },
-    onGroupChange(event) {
-      const groupName = event.target.value;
-      if (typeof groupName === "string" && groupName.trim() !== "") {
-        this.$emit("update:selectedGroupId", this.selectedGroup.id);
-      }
-    },
+    // onGroupChange(value) {
+    //   if (value && value.id) {
+    //     this.$emit("update:selectedGroupId", value.id);
+    //   }
+    // },
+
     searchGroups(groupName) {
       if (typeof groupName !== "string") {
         console.error(
@@ -74,14 +74,22 @@ export default {
           .catch((error) => {
             console.error("Error searching for groups:", error);
           });
-          
       }
     },
 
     triggerSearchGroups() {
-      this.debouncedSearchGroups(this.selectedGroup);
+      if (this.selectedGroup && this.selectedGroup.group_identifier) {
+        this.debouncedSearchGroups(this.selectedGroup.group_identifier);
+      }
     },
   },
+  watch:{
+    selectedGroup:{
+      handler(newVal,oldVal){
+        this.$emit('update:selectedGroupId', newVal.id)
+      }
+    }
+  }
 };
 </script>
 

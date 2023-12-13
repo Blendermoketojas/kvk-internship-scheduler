@@ -13,6 +13,7 @@
         <v-tabs v-model="tab" color="black" align-tabs="center">
           <v-tab value="1">Pridėti naudotoją</v-tab>
           <v-tab value="2">Pridėti įmonę</v-tab>
+          <v-tab value="3">Pridėti grupę</v-tab>
         </v-tabs>
       </div>
 
@@ -64,6 +65,23 @@
             <v-btn rounded="xl" variant="outlined">Atšaukti</v-btn>
           </div>
         </v-window-item>
+
+        <v-window-item value="3">
+          <div class="text-subtitle-1 text-bold-emphasis">Grupė</div>
+          <v-text-field
+          v-model="groupName"
+          ></v-text-field>
+
+          <div class="text-subtitle-1 text-bold-emphasis">Mokslo sritis</div>
+          <v-text-field
+          v-model="fieldOfStudy"
+          ></v-text-field>
+
+          <div class="bottomButtons">
+            <v-btn @click="createGroup" color="#0D47A1" rounded="xl" variant="elevated" type="submit">Išsaugoti</v-btn>
+            <v-btn rounded="xl" variant="outlined">Atšaukti</v-btn>
+          </div>
+        </v-window-item>
       </v-window>
     </div>
   </div>
@@ -80,6 +98,8 @@ export default {
   name: "UserCreation",
   data() {
     return {
+      groupName:'',
+      fieldOfStudy:'',
       companyName: '',
       selectedCompanyId:null,
       tab: "1",
@@ -123,6 +143,29 @@ export default {
   methods: {
 
     createCompany() {
+    try {
+      const response = apiClient.post('/create-company', { companyName: this.companyName });
+      console.log('Company created:', response.data);
+    } catch (error) {
+      console.error('Error creating company:', error);
+    }
+  },
+
+  createGroup() {
+    const sentData={
+      studentGroupIdentifier: this.groupName,
+       fieldOfStudy:this.fieldOfStudy
+    }
+
+    try {
+      const response = apiClient.post('/create-student-group',  sentData, {withCredentials:true});
+      console.log('Group created:', response.data);
+    } catch (error) {
+      console.error('Error creating group:', error);
+    }
+  },
+
+  createCompany() {
     try {
       const response = apiClient.post('/create-company', { companyName: this.companyName });
       console.log('Company created:', response.data);

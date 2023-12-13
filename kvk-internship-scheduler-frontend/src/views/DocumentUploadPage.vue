@@ -18,6 +18,7 @@
   <Teleport to="body">
     <upload-dialog @documentAdded="addCatalog" ref="uploadDialog"></upload-dialog>
   </Teleport>
+  <div class="bodyDiv">
   <div class="mainDiv">
     <div class="pageDescription">
       <div class="d-flex justify-content-between">
@@ -33,6 +34,7 @@
       <h2>Čia galite įkelti reikalingus dokumentus</h2>
       <h1>Įkelti dokumentai</h1>
       <h2>Paspauskite ant dokumento, norėdami pašalinti</h2>
+    </div>
       <div class="uploadedFiles">
         <v-skeleton-loader v-if="isLoading" width="250px" type="paragraph"></v-skeleton-loader>
         <div class="uploadedFile" v-for="(file, index) in files" :key="index" @click="showModal(file, index)">
@@ -54,7 +56,7 @@
           :activeStateEnabled="false" :select-button-text="'Pasirinkite failą'" :label-text="'Arba nutempkite jį čia'"
           accept=".pdf, .doc, .docx, .rtf, .pptx, image/*" :upload-mode="'useButtons'"
           :upload-url="'your-upload-endpoint-url'" @valueChanged="onFilesSelected" height="250px"
-          style="border: dashed rgb(153, 150, 150) 2px;" width="80%" />
+          style="border: dashed rgb(153, 150, 150) 2px; max-height:150px;" width="80%" />
       </div>
       <div class="bottomButtons">
         <v-btn color="#0D47A1" rounded="xl" variant="elevated" @click="uploadFiles">Išsaugoti<v-progress-circular
@@ -62,8 +64,9 @@
         <v-btn @click="abortAction" rounded="xl" variant="outlined">Atšaukti</v-btn>
       </div>
       <span v-if="isError" class="text-danger fs-5 fw-bolder">Klaida: {{ errorMessage }}*</span>
-    </div>
+
   </div>
+</div>
 </template>
 
 <script>
@@ -234,6 +237,9 @@ export default {
 
 
 <style scoped>
+
+@import '@/styles/DocumentsStyle/DocumentUpload.css';
+
 .modalBtn {
   display: flex;
   width: 100%;
@@ -284,9 +290,7 @@ p {
   padding-top: 5px;
 }
 
-.mainDiv {
-  padding: 0 200px;
-}
+
 
 h2 {
   display: inline-block;
@@ -295,11 +299,7 @@ h2 {
   font-weight: 400;
 }
 
-.documentUploadDiv {
-  padding: 0 250px;
-  display: flex;
-  justify-content: center;
-}
+
 
 .uploadedFiles {
   height: 150px;

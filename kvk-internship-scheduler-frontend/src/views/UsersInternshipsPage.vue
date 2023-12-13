@@ -1,6 +1,6 @@
 <template>
   <header-nav></header-nav>
-
+<div class="bodyDiv">
   <div class="mainPageDiv">
     <div class="pageDescription">
       <h1>Praktikų sąrašas</h1>
@@ -34,6 +34,7 @@
         <group-search
           v-if="showGroupInput"
           @update:selectedGroupId="handleSelectedGroupId"
+          @group-selected="handleGroupSelection"
         ></group-search>
         <!-- @update:selectedGroupId="handleSelectedGroupId" -->
       </div>
@@ -217,6 +218,7 @@
       </v-expansion-panels>
     </div>
   </div>
+</div>
 </template>
 
 <script>
@@ -297,6 +299,10 @@ export default {
   },
 
   methods: {
+    handleGroupSelection(selectedGroup){
+      console.log('Group selected:', selectedGroup);
+    },
+
     submitEvaluation() {
       const payload = {
         grade: this.evaluationGrade,
@@ -676,6 +682,8 @@ export default {
 </script>
 
 <style>
+@import '@/styles/InternshipStyle/userInternship';
+
 .evaluation-modal-content {
   height: 450px;
 
@@ -728,7 +736,7 @@ export default {
 }
 
 .fieldDiv {
-  width: 500px;
+  width: 400px;
 }
 
 .studentSearchInput {
@@ -744,12 +752,7 @@ h2 {
   color: rgb(170, 167, 167);
   font-weight: 400;
 }
-.mainPageDiv {
-  padding: 0 200px;
-}
-.mainInternshipDiv {
-  padding: 50px 100px;
-}
+
 .comment-details {
   display: flex;
   border-bottom: 1px rgb(234, 225, 225) solid;

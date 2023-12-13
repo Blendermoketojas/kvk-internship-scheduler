@@ -4,7 +4,7 @@
       <img class="logo" :src="layoutLogo" alt="KVK Logo" />
     </div>
     <div class="btn" id="menu-activator-learning-material">
-      <router-link class="redirectText" to="/calendar">Praktika</router-link>
+      <router-link class="redirectText" to="/user-internships">Praktika</router-link>
       <v-menu open-on-hover activator="#menu-activator-learning-material">
         <v-list>
           <v-list-item
@@ -37,7 +37,7 @@
       </v-menu>
     </div>
     <div class="btn" id="menu-activator-results">
-      <router-link class="redirectText" to="/my-results"
+      <router-link class="redirectText" to="/evaluation"
         >Mano rezultatai</router-link
       >
       <v-menu open-on-hover activator="#menu-activator-results">
@@ -236,7 +236,7 @@ img {
 }
 
 .btn:last-of-type {
-  margin-left: 40%;
+  margin-left: 28%;
 }
 
 .btn:last-of-type img {

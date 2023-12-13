@@ -1,5 +1,6 @@
 <template>
   <custom-header></custom-header>
+  <div class="bodyDiv">
   <div class="mainManagement">
     <v-alert v-if="showSuccessAlert" color="success" icon="$success" title="Pavyko!" text="Praktika išsaugota!"></v-alert>
     <v-alert v-if="showErrorAlert" color="error" icon="$error" title="Kaida!" text="Praktika nebuvo priskirta!"></v-alert>
@@ -72,6 +73,8 @@
       <span v-if="isError" class="text-danger fs-5 fw-bolder">Klaida: {{ errorMessage }}*</span>
     </div>
   </div>
+</div>
+
 </template>
 
 <script>
@@ -464,6 +467,9 @@ export default {
 </script>
 
 <style scoped>
+@import '@/styles/InternshipStyle/internshipCreation.css';
+
+
 .multiple-divs {
   min-width: 220px;
 }
@@ -492,9 +498,6 @@ export default {
   justify-content: space-between;
 }
 
-.mainManagement {
-  padding: 0 200px;
-}
 
 .bottomButtons {
   display: flex;
@@ -506,9 +509,7 @@ export default {
   margin: 0 10px;
 }
 
-.managementInformation {
-  padding: 0 250px;
-}
+
 
 h2 {
   display: inline-block;

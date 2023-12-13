@@ -1,0 +1,16 @@
+.bodyDiv{
+    display: flex;
+     min-width: 1000px;
+     justify-content: center;
+}
+.mainPageDiv{
+    max-width: 1500px;
+}
+.pageDescription{
+max-width: 1200px;
+min-width: 1000px;
+}
+.mainInternshipDiv{
+    padding-top: 50px;
+    max-width: 1200px;
+}

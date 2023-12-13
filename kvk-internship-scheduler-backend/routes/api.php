@@ -17,6 +17,7 @@ use App\Http\Controllers\v2\ResultFormController;
 use App\Http\Controllers\v2\InternshipFileManagementController;
 use App\Http\Controllers\v2\ResultGradeController;
 use App\Http\Controllers\v2\StudentController;
+use App\Http\Controllers\v2\StudentGroupController;
 use App\Http\Controllers\v2\UserProfileController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -84,6 +85,11 @@ Route::middleware('api')->prefix('v2')->group(function () {
         Route::get('/linked-students', [StudentController::class, 'getLinkedStudents']);
         Route::get('/linked-students-internships-active', [StudentController::class,
             'getLinkedStudentsActiveInternships']);
+
+        Route::post('/get-student-group', [StudentGroupController::class, 'getStudentGroup']);
+        Route::post('/update-student-group', [StudentGroupController::class, 'updateStudentGroup']);
+        Route::post('/delete-student-group', [StudentGroupController::class, 'deleteStudentGroup']);
+        Route::post('/create-student-group', [StudentGroupController::class, 'createStudentGroup']);
 
         // Internships
 

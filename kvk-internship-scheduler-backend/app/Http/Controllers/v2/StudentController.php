@@ -3,8 +3,6 @@
 namespace App\Http\Controllers\v2;
 
 use App\Http\Controllers\Controller;
-use App\Models\StudentGroup;
-use App\Models\UserProfile;
 use App\Services\ManageStudents\GetLinkedStudentsActiveInternshipsService;
 use App\Services\ManageStudents\GetLinkedStudentsService;
 use App\Services\ManageStudents\SearchStudentGroupsService;

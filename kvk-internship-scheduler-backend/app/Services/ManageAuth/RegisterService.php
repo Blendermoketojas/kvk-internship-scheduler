@@ -75,6 +75,7 @@ class RegisterService extends BaseService
             'last_name' => $this->data()['last_name'],
             'fullname' => $this->data()['first_name'] . ' ' . $this->data()['last_name'],
             'email' => $this->data()['email'],
+            'image_path' => '/storage/profile_pictures/placeholder/profile_pic_placeholder.png'
         ]);
 
         $userProfile->company()->associate($company);

@@ -62,6 +62,7 @@ class RegisterExternalUserService extends BaseService
             'last_name' => $this->data()['lastName'],
             'fullname' => $this->data()['firstName'] . ' ' . $this->data()['lastName'],
             'email' => $this->data()['email'],
+            'image_path' => '/storage/profile_pictures/placeholder/profile_pic_placeholder.png'
         ]);
 
         if ($this->data()['companyId'] != null && $this->data()['roleId'] === Role::MENTORIUS->value)

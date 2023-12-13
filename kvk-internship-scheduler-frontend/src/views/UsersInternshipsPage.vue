@@ -275,10 +275,7 @@ export default {
     isCheckboxChecked(newVal) {
       if (newVal) {
         this.fetchNotEvaluatedInternships();
-      } else {
-        // Handle the case when the checkbox is unchecked
-        // Maybe fetch all internships or clear the list
-      }
+      } 
     },
 
     selectedGroupId(newVal, oldVal) {

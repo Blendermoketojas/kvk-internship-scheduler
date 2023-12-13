@@ -11,7 +11,7 @@
         text="Profilio informacija buvo atnaujinta!"
       ></v-alert>
 
-      <v-alert v-if="showErrorAlert" color="error" icon="$error" title="Kaida!" text="Vartotojas nebuvo sukurtas!"></v-alert>
+      <v-alert v-if="showErrorAlert" color="error" icon="$error" title="Kaida!" text="Nepavyko atnaujinti profilio informacijos!"></v-alert>
 
       <div class="pageDescription">
         <h1>Profilis</h1>
@@ -101,13 +101,13 @@
 
               <div class="fieldDiv">
                 <div class="text-subtitle-1 text-bold-emphasis">Šalis</div>
-                <v-select
-                  disabled
+                <v-text-field
+          
                   v-if="userData && userData.country !== undefined"
                   v-model="userData.country"
                   density="compact"
                   label="Šalis"
-                ></v-select>
+                ></v-text-field>
               </div>
               <div class="fieldDiv" v-if="isRoleFour">
                 <div class="text-subtitle-1 text-bold-emphasis">Įmonė</div>
@@ -355,10 +355,14 @@ export default {
       });
     },
     saveChanges() {
+      if(this.userData.company_id===null){
+        this.userData.company_id=32;
+      }
       const userDataWithPassword = {
         ...this.userData,
         email: this.userData.user.email,
         password: "password",
+        company_id:this.userData.company_id,
       };
 
       apiClient

@@ -40,7 +40,7 @@ class CreateInternshipService extends BaseService
 
     public function permissions(): array
     {
-        return [];
+        return [Role::PRODEKANAS, Role::PRAKTIKOS_VADOVAS];
     }
 
     /**
@@ -53,14 +53,40 @@ class CreateInternshipService extends BaseService
 
         $userIds = $this->data()['users'];
 
-        // Check if student tries to create internship for itself
-        if ($this->user->role_id == Role::STUDENTAS->value)
-        {
-            $students = UserProfile::where('role_id', Role::STUDENTAS->value)->findMany($this->data()['users']);
-            if (sizeof($students) > 1 || !in_array($this->user->id, $this->data()['users'])) {
-                return response()->json(["error" => "Student can't create internships for other students",
-                    "success" => false]);
+        if (!$this->user->role_id != Role::PRODEKANAS->value) {
+            if (!in_array($this->user->id, $this->data()['users'])) {
+                return response()->json(['success' => false, 'message' => 'Head of internships user'.
+                 ' does not match or is not present']);
             }
+        }
+
+        $usersInRequest = UserProfile::findMany($this->data()['users']);
+        $students = [];
+        $studentIds = [];
+
+        // Check if necessary roles to create an Internship are present: Student, Mentorius, Praktikos vadovas
+        $mentorExists = $studentExists = $headOfInternshipExists = false;
+
+        // Filter the students, also check if there is a MENTORIUS and a PRAKTIKOS VADOVAS
+        foreach ($usersInRequest as $user) {
+            switch ($user->role_id) {
+                case Role::STUDENTAS->value:
+                    $students[] = $user;
+                    $studentIds[] = $user->id;
+                    $studentExists = true;
+                    break;
+                case Role::MENTORIUS->value:
+                    $mentorExists = true;
+                    break;
+                case Role::PRAKTIKOS_VADOVAS->value:
+                    $headOfInternshipExists = true;
+                    break;
+            }
+        }
+
+        if (!($mentorExists && $studentExists && $headOfInternshipExists)) {
+            return response()->json(['success' => false, 'message' => 'All necessary roles must be present'.
+             ' to create an internship']);
         }
 
         // Check if student is in an active internship
@@ -75,30 +101,33 @@ class CreateInternshipService extends BaseService
             }])
             ->get();
 
-        if (sizeof($activeInternshipExists) > 0)
-        {
+        if (sizeof($activeInternshipExists) > 0) {
             $activeInternshipToArray = $activeInternshipExists->toArray();
 
             $userProfiles = array_map(function ($item) {
                 return $item['user_profiles'];
             }, $activeInternshipToArray);
 
-            return response()->json(['error' => 'Internship could not be created because the following '.
+            return response()->json(['error' => 'Internship could not be created because the following ' .
                 'students are already in an active internship', 'students' => $userProfiles], 405);
         }
 
-        // create the record
-        $internship = Internship::create(array_diff_key($this->data(), ['users' => '']));
+        foreach ($students as $student) {
+            // create the record
+            $internship = Internship::create(array_diff_key($this->data(), ['users' => '']));
 
-        // save entries to pivot table
-        $internship->userProfiles()->attach($this->data()['users']);
+            $otherRemovedStudents = array_diff($studentIds, [$student->id]);
 
-        if ($this->data()['forms'] != null) {
-            $forms = $this->data()['forms'];
-            $ids = array_map(function ($form) {
-                return $form['id'];
-            }, $forms);
-            $internship->templates()->attach($ids);
+            // save entries to pivot table
+            $internship->userProfiles()->attach(array_diff($this->data()['users'], $otherRemovedStudents));
+
+            if ($this->data()['forms'] != null) {
+                $forms = $this->data()['forms'];
+                $ids = array_map(function ($form) {
+                    return $form['id'];
+                }, $forms);
+                $internship->templates()->attach($ids);
+            }
         }
 
         // respond

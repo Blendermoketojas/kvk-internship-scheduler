@@ -30,12 +30,12 @@ class TimeHelper
 
         $isOverlap = Comment::where(function ($query) use ($newStartTime, $newEndTime) {
             $query->where(function ($q) use ($newStartTime, $newEndTime) {
-                $q->where('date_from', '<=', $newStartTime)
-                    ->where('date_to', '>', $newStartTime);
+                $q->where('date_from', '<', $newStartTime)
+                ->where('date_to', '>', $newStartTime);
             })
                 ->orWhere(function ($q) use ($newStartTime, $newEndTime) {
                     $q->where('date_from', '<', $newEndTime)
-                        ->where('date_to', '>=', $newEndTime);
+                        ->where('date_to', '>', $newEndTime);
                 })
                 ->orWhere(function ($q) use ($newStartTime, $newEndTime) {
                     $q->where('date_from', '>=', $newStartTime)

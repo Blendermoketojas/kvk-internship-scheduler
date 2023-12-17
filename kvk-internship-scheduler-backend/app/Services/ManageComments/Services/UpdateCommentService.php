@@ -50,6 +50,9 @@ class UpdateCommentService extends BaseService
 
         // logic execution
 
+        $hours_logged = TimeHelper::getHoursInFractionFromDate($this->data()['date_from'], $this->data()['date_to']);
+
+        $this->modelInstance->logged_duration = $hours_logged;
         $this->modelInstance->update($this->data());
 
         // response

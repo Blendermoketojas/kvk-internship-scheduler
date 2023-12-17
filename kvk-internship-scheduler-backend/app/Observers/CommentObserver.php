@@ -32,7 +32,7 @@ class CommentObserver
         $originalHours = $comment->getOriginal('logged_duration');
         $newHours = $comment->logged_duration;
 
-        $internship->logged_hours = +$newHours - $originalHours;
+        $internship->logged_hours += $newHours - $originalHours;
         $internship->save();
     }
 
@@ -45,7 +45,7 @@ class CommentObserver
     public function deleted(Comment $comment)
     {
         $internship = $comment->internship;
-        $internship->logged_hours = -$comment->logged_duration;
+        $internship->logged_hours -= $comment->logged_duration;
         $internship->save();
     }
 }

@@ -23,26 +23,17 @@ class TimeHelper
         return $hours;
     }
 
-    static function doesTimeOverlap($newStartTime, $newEndTime)
+    static function doesTimeOverlap($internshipId, $newStartTime, $newEndTime)
     {
         $newStartTime = $newStartTime instanceof DateTime ? $newStartTime : new DateTime($newStartTime);
         $newEndTime = $newEndTime instanceof DateTime ? $newEndTime : new DateTime($newEndTime);
 
-        $isOverlap = Comment::where(function ($query) use ($newStartTime, $newEndTime) {
-            $query->where(function ($q) use ($newStartTime, $newEndTime) {
-                $q->where('date_from', '<', $newStartTime)
-                ->where('date_to', '>', $newStartTime);
-            })
-                ->orWhere(function ($q) use ($newStartTime, $newEndTime) {
-                    $q->where('date_from', '<', $newEndTime)
-                        ->where('date_to', '>', $newEndTime);
-                })
-                ->orWhere(function ($q) use ($newStartTime, $newEndTime) {
-                    $q->where('date_from', '>=', $newStartTime)
-                        ->where('date_to', '<=', $newEndTime);
-                });
-        })->exists();
+        $doesOverlap = Comment::where('internship_id', $internshipId)
+            ->where(function ($query) use ($newStartTime, $newEndTime) {
+                $query->where('date_from', '<', $newEndTime)
+                    ->where('date_to', '>', $newStartTime);
+            })->exists();
 
-        return $isOverlap;
+        return $doesOverlap;
     }
 }

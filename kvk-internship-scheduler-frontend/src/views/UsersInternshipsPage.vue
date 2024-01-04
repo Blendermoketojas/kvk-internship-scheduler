@@ -36,7 +36,7 @@
           @update:selectedGroupId="handleSelectedGroupId"
           @group-selected="handleGroupSelection"
         ></group-search>
-        <!-- @update:selectedGroupId="handleSelectedGroupId" -->
+   
       </div>
       <v-checkbox
       v-if="isRoleMentor"
@@ -154,7 +154,9 @@
                 </v-col>
 
                 <v-col v-if="!internship.isActive && isRoleMentor" cols="2">
-                  <v-btn @click="openEvaluationModal(internship.internshipId)"
+                  <v-btn
+                  :disabled="isSubmitButtonDisabled" 
+                  @click="openEvaluationModal(internship.internshipId)"
                     >Įvertinti</v-btn
                   >
                 </v-col>
@@ -275,7 +277,9 @@ export default {
     isCheckboxChecked(newVal) {
       if (newVal) {
         this.fetchNotEvaluatedInternships();
-      } 
+      }else{
+        this.fetchInternshipsForMentors();
+      }
     },
 
     selectedGroupId(newVal, oldVal) {
@@ -314,9 +318,11 @@ export default {
         .then((response) => {
           console.log("Evaluation submitted successfully", response);
           this.isEvaluationModalVisible = false;
+          this.isSubmitButtonDisabled = true;
         })
         .catch((error) => {
           console.error("Error submitting evaluation:", error);
+          this.isSubmitButtonDisabled = false;
         });
     },
 
@@ -385,10 +391,10 @@ export default {
       console.log("confirmation", this.internshipToDelete);
       if (this.internshipToDelete) {
         apiClient
-          .post(
+          .delete(
             `/internship-delete`,
-            { internshipId: this.internshipToDelete },
-            { withCredentials: true }
+           { params: { internshipId: this.internshipToDelete }
+           }, { withCredentials: true }
           )
           .then((response) => {
             console.log("Internship deleted successfully");

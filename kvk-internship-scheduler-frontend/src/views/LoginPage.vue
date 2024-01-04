@@ -3,7 +3,7 @@
     <div class="header">
       <img :src="kvkLogo" alt="KVK Logo" />
     </div>
-    <v-alert v-if="showErrorAlert" color="error" icon="$error" title="Kaida!" text="Vartotojas nebuvo sukurtas!"></v-alert>
+    <v-alert v-if="showErrorAlert" color="error" icon="$error" title="Kaida!" text="Neteisingi prisijungimo duomenys!"></v-alert>
 
     <div class="middleDiv">
       <v-card
@@ -22,6 +22,7 @@
           prepend-inner-icon="mdi-email-outline"
           variant="outlined"
           v-model="loginData.email"
+          :rules="rules"
         ></v-text-field>
 
         <div
@@ -48,6 +49,7 @@
           variant="outlined"
           v-model="loginData.password"
           @click:append-inner="visible = !visible"
+          :rules="rules"
         ></v-text-field>
 
         <v-btn
@@ -99,6 +101,9 @@ export default {
   name: "UserLogin",
   data() {
     return {
+      rules: [
+        value => !!value || '*Reikalingas laukas.',
+      ],
       kvkLogo,
       showErrorAlert:false,
       loginData: {
@@ -136,8 +141,12 @@ export default {
             this.redirectUserBasedOnRole();
               this.isLoading = false;
             }
-          }).catch(error => this.isLoading = false);
-      } catch (error) {
+          }).catch((error) => {
+          this.isLoading = false;
+          this.showErrorAlert = true;
+          setTimeout(() => (this.showErrorAlert = false), 4000);
+        });
+       } catch (error) {
         this.isLoading = false;
      
         if (error.response && error.response.status === 401) {

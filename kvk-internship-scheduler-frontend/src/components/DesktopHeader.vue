@@ -82,6 +82,9 @@
       <router-link class="redirectText" to="/profile-info">{{
         user.fullname
       }}</router-link>
+      <router-link to="/">
+        <v-icon :icon="'mdi mdi-logout'" size="35" color="black"></v-icon>
+      </router-link>
     </div>
   </div>
 </template>
@@ -169,6 +172,10 @@ export default {
           title: "Mano studentai",
           route: "/student-list",
         });
+        items.push({
+          title: "Praktikos priskyrimas",
+          route: "/internship-management",
+        });
       }
       return items;
     },
@@ -236,7 +243,7 @@ img {
 }
 
 .btn:last-of-type {
-  margin-left: 28%;
+  margin-left: 25%;
 }
 
 .btn:last-of-type img {

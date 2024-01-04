@@ -190,7 +190,7 @@ export default {
       roleId: this.selectedRole,
       companyId: this.selectedCompanyId,
     };
-  } else {
+  } else if (this.selectedRole === 4) {
     userData = {
       firstName: this.firstName,
       lastName: this.lastName,
@@ -198,8 +198,18 @@ export default {
       roleId: this.selectedRole,
       studentGroupId: this.selectedGroupId, 
     };
+
+  } else {
+    userData = {
+      firstName: this.firstName,
+      lastName: this.lastName,
+      email: this.email,
+      roleId: this.selectedRole,
+      password: 'password', 
+      companyId: 1,
+    };
   }
-  const apiEndpoint = (this.selectedRole === 4 || this.selectedRole === 5)
+  const apiEndpoint = (this.selectedRole != 5 || this.selectedRole === 5)
     ? '/register-external'
     : '/register';
 

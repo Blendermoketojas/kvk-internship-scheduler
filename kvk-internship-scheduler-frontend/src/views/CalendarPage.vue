@@ -90,16 +90,16 @@ export default {
 
       apiClient.post("/comments", dataToSend)
     .then(response => {
+console.log('lol')
+      // this.dataSource.push({
+      //   id: response.data.id, 
+      //   text: "Praktika",
+      //   startDate: new Date(formattedStartDate),
+      //   endDate: new Date(formattedEndDate),
+      //   description: appointmentData.description,
+      // });
 
-      this.dataSource.push({
-        id: response.data.id, 
-        text: "Praktika",
-        startDate: new Date(formattedStartDate),
-        endDate: new Date(formattedEndDate),
-        description: appointmentData.description,
-      });
-
-      this.dataSource = [...this.dataSource];
+      // this.dataSource = [...this.dataSource];
     })
     .catch(error => {
       console.error("Error adding comment:", error);

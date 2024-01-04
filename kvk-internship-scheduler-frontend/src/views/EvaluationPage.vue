@@ -90,12 +90,14 @@ export default {
       ...mentorGradesArray.map(grade => ({
         "Pažymio autorius": 'Mentorius',
         "Pažymys": grade.grade,
-        galutinis: grade.is_final === 1 ? 'Taip' : 'Ne'
+        galutinis: grade.is_final === 1 ? 'Taip' : 'Ne',
+        "Komentaras":grade.comment,
       })),
       ...managerGradesArray.map(grade => ({
         "Pažymio autorius": 'Praktikos vadovas',
         "Pažymys": grade.grade,
-        galutinis: grade.is_final === 1 ? 'Taip' : 'Ne'
+        galutinis: grade.is_final === 1 ? 'Taip' : 'Ne',
+        "Komentaras":grade.comment,
       }))
     ];
     } catch (error) {

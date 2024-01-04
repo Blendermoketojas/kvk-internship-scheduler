@@ -441,9 +441,15 @@ export default {
           .then((response) => {
             this.isLoading = false;
             this.isError = false;
+if(response.data.success){
             console.log("Internship saved:", response.data);
             this.showSuccessAlert = true;
             setTimeout(() => (this.showSuccessAlert = false), 6000);
+}else{
+  console.log("Internship not saved:", response.data);
+            this.showErrorAlert = true;
+            setTimeout(() => (this.showErrorAlert = false), 6000);
+}
           })
           .catch((error) => {
             this.isLoading = false;

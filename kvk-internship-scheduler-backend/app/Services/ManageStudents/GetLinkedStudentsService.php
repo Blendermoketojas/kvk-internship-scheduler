@@ -37,7 +37,7 @@ class GetLinkedStudentsService extends BaseService
 
         $requestorId = $this->user->id;
 
-        $linkedUserProfiles = UserProfile::where('role_id', 5)
+        $linkedUserProfiles = UserProfile::where('role_id', Role::STUDENTAS->value)
             ->whereHas('internships', function ($query) use ($requestorId) {
                 $query->whereHas('userProfiles', function ($subQuery) use ($requestorId) {
                     $subQuery->where('internship_user.user_id', $requestorId);

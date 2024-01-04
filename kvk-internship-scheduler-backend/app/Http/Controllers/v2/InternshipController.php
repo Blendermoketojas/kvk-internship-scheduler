@@ -8,13 +8,14 @@ use App\Services\ManageInternships\Services\DeleteInternshipService;
 use App\Services\ManageInternships\Services\FilterNotEvaluatedInternshipsService;
 use App\Services\ManageInternships\Services\GetActiveInternshipService;
 use App\Services\ManageInternships\Services\GetInternshipService;
-use App\Services\ManageInternships\Services\GetLinkedStudentsInternshipsService;
+use App\Services\ManageInternships\Services\GetLinkedStudentsInactiveInternshipsService;
 use App\Services\ManageInternships\Services\GetStudentGroupActiveInternshipsService;
 use App\Services\ManageInternships\Services\GetStudentGroupInternshipsService;
 use App\Services\ManageInternships\Services\GetCurrentUserInternshipsService;
 use App\Services\ManageInternships\Services\GetUserInternshipsService;
 use App\Services\ManageInternships\Services\SearchInternshipTitlesService;
 use App\Services\ManageInternships\Services\UpdateInternshipService;
+use App\Services\ManageStudents\GetLinkedStudentsActiveInternshipsService;
 use App\Services\ManageStudents\GetLinkedStudentsService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -105,6 +106,14 @@ class InternshipController extends Controller
     public function getLinkedStudents(Request $request): JsonResponse
     {
         return (new GetLinkedStudentsService($request))->execute();
+    }
+
+    /**
+     * @throws ValidationException
+     */
+    public function getLinkedStudentsInactiveInternshipsService(Request $request): JsonResponse
+    {
+        return (new GetLinkedStudentsinActiveInternshipsService($request))->execute();
     }
 
     /**

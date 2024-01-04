@@ -18,7 +18,7 @@ class UserProfileDisplayResource extends JsonResource
             "first_name" => $this->first_name,
             "last_name" => $this->last_name,
             "fullname" => $this->fullname,
-            "image_path" => $this->image_path,
+            "image_path" => $this->image_path
         ];
     }
 }

@@ -106,6 +106,9 @@ Route::middleware('api')->prefix('v2')->group(function () {
         Route::get('/filter/not-evaluated-internships', [InternshipController::class,
             'filterNotEvaluatedInternships']);
 
+        Route::get('/get-linked-students-inactive-internships', [InternshipController::class,
+            'getLinkedStudentsInactiveInternshipsService']);
+
         Route::put('/internship-update', [InternshipController::class, 'updateInternship']);
 
         Route::delete('/internship-delete', [InternshipController::class, 'deleteInternship']);

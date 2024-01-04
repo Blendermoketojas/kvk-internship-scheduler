@@ -102,7 +102,7 @@ export default {
 
   },
   mounted() {
-    this.loadItems({ page: 1, itemsPerPage: this.itemsPerPage, sortBy: [] });
+  //   this.loadItems({ page: 1, itemsPerPage: this.itemsPerPage, sortBy: [] });
   },
 };
 </script>

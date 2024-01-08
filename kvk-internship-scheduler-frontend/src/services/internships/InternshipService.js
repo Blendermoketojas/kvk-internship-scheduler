@@ -12,8 +12,15 @@ function getInternshipDocuments(internshipId) {
     return apiClient.post('/internship/documents', { internshipId } ,{ withCredentials: true })
 }
 
+function getLinkedStudentsInactiveInternships(){
+    return apiClient.get('/get-linked-students-inactive-internships', { withCredentials: true })
+
+}
+
+
 export default {
     getCurrentUserInternships,
     getInternshipDocuments,
-    getCurrentUserInternshipGrades
+    getCurrentUserInternshipGrades,
+    getLinkedStudentsInactiveInternships,
 }

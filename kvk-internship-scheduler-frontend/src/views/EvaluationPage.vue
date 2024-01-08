@@ -15,6 +15,9 @@
         >
           <v-list-item-content>
             <v-list-item-title>{{ internship.title }}</v-list-item-title>
+            <v-list-item-title v-if="userRoleId === 3 || userRoleId === 4">
+              <b>{{ internship.user_profiles[0]?.fullname }}</b>
+            </v-list-item-title>
           </v-list-item-content>
         </v-list-item>
       </v-list>
@@ -64,6 +67,7 @@ export default {
       selectedGrades: [],
       selectedMentorGrades: [],
       selectedManagerGrades: [],
+      internships: [],
       showGrades: false,
       roleId: null,
     };
@@ -72,49 +76,52 @@ export default {
   methods: {
     async fetchInternships() {
       try {
-        const response = await internshipService.getCurrentUserInternships();
-
-        const userIds = Object.keys(response.data);
-        // const internshipsData = userIds.reduce((result, userId) => {
-        //   return result.concat(response.data[userId]);
-        // }, []);
-        const internshipsArray = response.data.internships;
-
-        // Filter the internships based on whether they have been evaluated, depending on the role
         let filteredInternships = [];
         if (this.userRoleId === 3) {
-          // If the user is the head of the internship
-          filteredInternships = internshipsArray.filter(
+          const response =
+            await internshipService.getLinkedStudentsInactiveInternships();
+          // const userIds = Object.keys(response.data);
+          // const internshipsArray = response.data.internships;
+          this.internships = response.data;
+          // console.log(internshipsArray);
+
+          filteredInternships = this.internships.filter(
             (internship) => internship.is_head_of_internship_evaluated === 1
           );
+          console.log(filteredInternships);
         } else if (this.userRoleId === 4) {
-          // If the user is the mentor
-          filteredInternships = internshipsArray.filter(
+          const response =
+            await internshipService.getLinkedStudentsInactiveInternships();
+
+          // const userIds = Object.keys(response.data);
+          // const internshipsArray = response.data.internships;
+
+          this.internships = response.data;
+          
+          filteredInternships = this.internships.filter(
             (internship) => internship.is_mentor_evaluated === 1
           );
-        } else {
-          // If the user has another role, adjust the logic as needed
+          console.log(filteredInternships);
+
+        } else if (this.userRoleId === 5) {
+          const response = await internshipService.getCurrentUserInternships();
+          const userIds = Object.keys(response.data);
+          const internshipsArray = response.data.internships;
           filteredInternships = internshipsArray;
         }
-      //   const startIndex = (this.currentPage - 1) * this.pageSize;
-      //   const endIndex = startIndex + this.pageSize;
 
-      //   this.paginatedInternships = internshipsData.slice(startIndex, endIndex);
-
-      //   this.totalInternshipPages = Math.ceil(
-      //     internshipsData.length / this.pageSize
-      //   );
-      // } catch (error) {
-      //   console.error("Error fetching internships:", error);
-      // }
-      const startIndex = (this.currentPage - 1) * this.pageSize;
-    const endIndex = startIndex + this.pageSize;
-    this.paginatedInternships = filteredInternships.slice(startIndex, endIndex);
-    this.totalInternshipPages = Math.ceil(filteredInternships.length / this.pageSize);
-  } catch (error) {
-    console.error("Error fetching internships:", error);
-  }
-
+        const startIndex = (this.currentPage - 1) * this.pageSize;
+        const endIndex = startIndex + this.pageSize;
+        this.paginatedInternships = filteredInternships.slice(
+          startIndex,
+          endIndex
+        );
+        this.totalInternshipPages = Math.ceil(
+          filteredInternships.length / this.pageSize
+        );
+      } catch (error) {
+        console.error("Error fetching internships:", error);
+      }
     },
 
     async selectInternship(internshipId) {

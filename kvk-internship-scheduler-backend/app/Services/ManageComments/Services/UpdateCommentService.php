@@ -19,7 +19,8 @@ class UpdateCommentService extends BaseService
     {
         return [
             'comment_id' => 'required|integer|exists:comments,id',
-            'comment' => 'required|string|min:1|max:512',
+            'comment_name' => 'required|string|min:1|max:1028',
+            'comment' => 'required|string|min:1|max:1028',
             'date_from' => 'required|date',
             'date_to' => 'required|date'
         ];
@@ -29,6 +30,7 @@ class UpdateCommentService extends BaseService
     {
         return [
             'comment_id' => $this->request['commentId'],
+            'comment_name' => $this->request['comment_name'],
             'comment' => $this->request['comment'],
             'date_from' => $this->request['dateFrom'],
             'date_to' => $this->request['dateTo'],

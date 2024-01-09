@@ -17,6 +17,7 @@ class CreateCommentService extends BaseService
     {
         return [
             'internship_id' => 'required|integer|exists:internships,id',
+            'comment_name' => 'required|string|min:1|max:1028',
             'comment' => 'required|string|min:1|max:1028',
             'date_from' => 'required|date',
             'date_to' => 'required|date'
@@ -27,6 +28,7 @@ class CreateCommentService extends BaseService
     {
         return [
             'internship_id' => $this->request['internshipId'],
+            'comment_name' => $this->request['comment_name'],
             'comment' => $this->request['comment'],
             'date_from' => $this->request['dateFrom'],
             'date_to' => $this->request['dateTo'],

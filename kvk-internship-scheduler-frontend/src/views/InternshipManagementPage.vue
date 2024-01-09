@@ -70,7 +70,7 @@
 
         <v-btn rounded="xl" variant="outlined">Atšaukti</v-btn>
       </div>
-      <span v-if="isError" class="text-danger fs-5 fw-bolder">Klaida: {{ errorMessage }}*</span>
+
     </div>
   </div>
 </div>
@@ -441,15 +441,15 @@ export default {
           .then((response) => {
             this.isLoading = false;
             this.isError = false;
-if(response.data.success){
+// if(response.data.success){
             console.log("Internship saved:", response.data);
             this.showSuccessAlert = true;
             setTimeout(() => (this.showSuccessAlert = false), 6000);
-}else{
-  console.log("Internship not saved:", response.data);
-            this.showErrorAlert = true;
-            setTimeout(() => (this.showErrorAlert = false), 6000);
-}
+// }else{
+//   console.log("Internship not saved:", response.data);
+//             this.showErrorAlert = true;
+//             setTimeout(() => (this.showErrorAlert = false), 6000);
+// }
           })
           .catch((error) => {
             this.isLoading = false;

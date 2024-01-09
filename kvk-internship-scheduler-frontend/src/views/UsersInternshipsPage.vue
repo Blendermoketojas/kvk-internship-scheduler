@@ -148,14 +148,13 @@
                   }}</v-col
                 >
                 <v-col v-if="!internship.isActive && isRoleFive" cols="2">
-                  <v-btn @click="evaluateInternship(internship.internshipId)"
+                  <v-btn :disabled="internship.isSelfEvaluated === 1"  @click="evaluateInternship(internship.internshipId)"
                     >Įsivertinti</v-btn
                   >
                 </v-col>
 
                 <v-col v-if="!internship.isActive && isRoleMentor" cols="2">
                   <v-btn
-                  :disabled="isSubmitButtonDisabled" 
                   @click="openEvaluationModal(internship.internshipId)"
                     >Įvertinti</v-btn
                   >
@@ -317,12 +316,16 @@ export default {
         .post("/result/grade/create", payload)
         .then((response) => {
           console.log("Evaluation submitted successfully", response);
-          this.isEvaluationModalVisible = false;
-          this.isSubmitButtonDisabled = true;
+          this.internships = this.internships.filter(internship => 
+      internship.internshipId !== this.selectedInternshipIdForEvaluation
+    );
+
+    this.selectedInternshipIdForEvaluation = null; 
+    this.isEvaluationModalVisible = false;
+
         })
         .catch((error) => {
           console.error("Error submitting evaluation:", error);
-          this.isSubmitButtonDisabled = false;
         });
     },
 
@@ -520,6 +523,7 @@ export default {
                 loggedHours: internship.logged_hours,
                 totalHours: internship.duration_in_hours,
                 isActive: internship.is_active,
+                isSelfEvaluated:internship.is_self_evaluated,
                 student_id: studentId,
                 student_name: studentName,
               };

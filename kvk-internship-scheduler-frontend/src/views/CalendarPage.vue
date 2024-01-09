@@ -14,8 +14,8 @@
     @appointmentAdding="onAppointmentAdding"
     @appointmentUpdating="onAppointmentUpdating"
     @cellClick="onCellClick"
-    allowDragging="false"
-    allowResizing="false"
+    :allowDragging="false"
+    :allowResizing="false"
     :min="minDate"
     :max="maxDate"
   >
@@ -83,6 +83,7 @@ export default {
 
       const dataToSend = {
         internshipId: this.internship_id,
+        comment_name:appointmentData.text,
         comment: appointmentData.description,
         dateFrom: formattedStartDate,
         dateTo: formattedEndDate,
@@ -130,6 +131,7 @@ console.log('lol')
 
       const dataToSend = {
         commentId: appointmentData.id,
+        comment_name:appointmentData.text,
         comment: appointmentData.description,
         dateFrom: formattedStartDate,
         dateTo: formattedEndDate,
@@ -204,7 +206,7 @@ console.log('lol')
           .then((response) => {
             this.dataSource = response.data.map((comment) => ({
               id: comment.id,
-              text: "Praktika",
+              text: comment.comment_name,
               startDate: new Date(comment.date_from),
               endDate: new Date(comment.date_to),
               description: comment.comment,

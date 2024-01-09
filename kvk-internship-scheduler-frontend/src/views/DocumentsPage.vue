@@ -38,15 +38,14 @@ export default {
     const grouped = {};
     if (Array.isArray(this.internships)) {
       for (const internship of this.internships) {
-        // Use the internship title as the key.
+
         const title = internship.title;
 
-        // Initialize the array for this title if it doesn't already exist.
+
         if (!grouped[title]) {
           grouped[title] = [];
         }
 
-        // Concatenate the documents into the array.
         grouped[title] = grouped[title].concat(internship.documents || []);
       }
     }
@@ -56,7 +55,7 @@ export default {
   mounted() {
   IDS.getAllUserInternshipDocuments()
     .then(response => {
-      // If the array is wrapped in a 'data' object, make sure to access it like below:
+
       this.internships = response.data;
       this.isLoading = false;
     })
@@ -69,5 +68,5 @@ export default {
 </script>
 
 <style scoped>
-/* Your styles here */
+
 </style>

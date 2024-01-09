@@ -47,6 +47,12 @@ class CreateTemplateResultService extends BaseService
         // logic execution
         $pivot = Internship::find($this->data()['internship_id'])->templates()->wherePivot('template_id', $this->data()['template_id'])->get();
 
+        $internship = Internship::find($this->data()['internship_id']);
+
+        if (!$internship) {
+            return response()->json("Internship not found", 404);
+        }
+
         $pivotId = $pivot->first()->pivot->id;
 
         if (sizeof(AnswerItem::find(['item_id' => $pivotId])) > 0) {
@@ -58,9 +64,10 @@ class CreateTemplateResultService extends BaseService
             $answer = FormAnswerItem::create($answerItem);
             $answer->formAnswers()->sync($pivotId);
         }
-
+        
+        $internship->update(['is_self_evaluated' => 1]);
 
         // response
-        return response()->json("Cool");
+        return response()->json("Answers succesfully saved!");
     }
 }

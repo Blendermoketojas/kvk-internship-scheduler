@@ -28,7 +28,10 @@ class GetDocumentsByInternshipIdService extends BaseService
 
     public function permissions(): array
     {
-        return [Role::PRODEKANAS];
+         return 
+        [
+           // Role::PRODEKANAS
+        ];
     }
 
     /**

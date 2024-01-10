@@ -66,6 +66,7 @@ export default {
     groupSearch,
   },
   methods: {
+    
     handleSelectedGroupId(groupId) {
       apiClient
         .post("/internships/student-group-active", { studentGroupId: groupId })
@@ -83,7 +84,7 @@ export default {
       console.log(groupId);
     },
   },
-  mounted() {},
+
 };
 </script>
 

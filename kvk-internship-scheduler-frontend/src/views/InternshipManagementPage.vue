@@ -424,16 +424,16 @@ export default {
           dateFrom: this.dateFrom,
           dateTo: this.dateTo,
           title: internshipName,
-          forms: this.selectedForms,
-          ...(this.$route.path.includes("/internship-edit") && {
+          forms: this.selectedForms.id,
+          ...(this.$route.path.includes("/students-internship") && {
             internshipId: this.$route.params.internshipId,
           }),
         };
 
-        const apiEndpoint = this.$route.path.includes("/internship-edit")
+        const apiEndpoint = this.$route.path.includes("/students-internship")
           ? "/internship-update"
           : "/internships";
-        const method = this.$route.path.includes("/internship-edit")
+        const method = this.$route.path.includes("/students-internship")
           ? "put"
           : "post";
 

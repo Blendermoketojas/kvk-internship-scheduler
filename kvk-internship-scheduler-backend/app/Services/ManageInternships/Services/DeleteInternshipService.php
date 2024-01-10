@@ -26,7 +26,7 @@ class DeleteInternshipService extends BaseService
 
     public function permissions(): array
     {
-        return [Role::PRODEKANAS];
+        return [Role::PRODEKANAS,Role::PRAKTIKOS_VADOVAS];
     }
 
     /**

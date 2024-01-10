@@ -1,225 +1,229 @@
 <template>
   <header-nav></header-nav>
-<div class="bodyDiv">
-  <div class="mainPageDiv">
-    <div class="pageDescription">
-      <h1>Praktikų sąrašas</h1>
-      <h2>Čia galite peržiūrėti vykstamas ir pasibaigusias praktikas</h2>
-    </div>
-    <div class="mainInternshipDiv">
-      <div class="studentSearchInput" v-if="isRoleOne">
-        <div class="fieldDiv">
-          <div class="text-subtitle-1 text-bold-emphasis">Filtruoti pagal:</div>
-          <v-select
-            v-model="selectedFilter"
-            :items="filterBy"
-            label="Pasirinkite filtrą"
-          ></v-select>
-        </div>
-
-        <div class="fieldDiv" v-if="showStudentInput">
-          <div class="text-subtitle-1 text-bold-emphasis">Vardas Pavardė</div>
-          <v-autocomplete
-            v-model="selectedStudent"
-            :items="students"
-            item-title="fullName"
-            item-value="id"
-            @input="onStudentInput"
-            return-object
-            label="Įrašykite vardą"
-            no-data-text="Nėra ieškomo studento"
-          ></v-autocomplete>
-        </div>
-
-        <group-search
-          v-if="showGroupInput"
-          @update:selectedGroupId="handleSelectedGroupId"
-          @group-selected="handleGroupSelection"
-        ></group-search>
-   
+  <div class="bodyDiv">
+    <div class="mainPageDiv">
+      <div class="pageDescription">
+        <h1>Praktikų sąrašas</h1>
+        <h2>Čia galite peržiūrėti vykstamas ir pasibaigusias praktikas</h2>
       </div>
-      <v-checkbox
-      v-if="isRoleMentor"
-        label="Neįvertitos praktikos"
-        v-model="isCheckboxChecked"
-      ></v-checkbox>
-
-      <div v-if="isModalVisible" class="modal">
-        <div class="modal-content">
-          <h1>Ar norite pašalinti šią praktiką?</h1>
-          <div class="modalBtn">
-            <v-btn
-              variant="tonal"
-              width="150px"
-              color="red"
-              rounded="lg"
-              @click="confirmDelete"
-              >Taip</v-btn
-            >
-            <v-btn
-              variant="tonal"
-              width="150px"
-              rounded="lg"
-              @click="isModalVisible = false"
-              >Ne</v-btn
-            >
+      <div class="mainInternshipDiv">
+        <div class="studentSearchInput" v-if="isRoleOne||isRoleTwo">
+          <div class="fieldDiv">
+            <div class="text-subtitle-1 text-bold-emphasis">
+              Filtruoti pagal:
+            </div>
+            <v-select
+              v-model="selectedFilter"
+              :items="filterBy"
+              label="Pasirinkite filtrą"
+            ></v-select>
           </div>
+
+          <div class="fieldDiv" v-if="showStudentInput">
+            <div class="text-subtitle-1 text-bold-emphasis">Vardas Pavardė</div>
+            <v-autocomplete
+              v-model="selectedStudent"
+              :items="students"
+              item-title="fullName"
+              item-value="id"
+              @input="onStudentInput"
+              return-object
+              label="Įrašykite vardą"
+              no-data-text="Nėra ieškomo studento"
+            ></v-autocomplete>
+          </div>
+
+          <group-search
+            v-if="showGroupInput"
+            @update:selectedGroupId="handleSelectedGroupId"
+            @group-selected="handleGroupSelection"
+          ></group-search>
         </div>
-      </div>
+        <v-checkbox
+          v-if="isRoleMentor"
+          label="Neįvertitos praktikos"
+          v-model="isCheckboxChecked"
+        ></v-checkbox>
 
-      <v-expansion-panels v-model="openedPanel">
-        <v-expansion-panel
-          v-for="internship in internships"
-          :key="internship.internshipId"
-        >
-          <div v-if="isEvaluationModalVisible" class="modal">
-            <div class="evaluation-modal-content">
-              <h1>Įvertinkite studento praktiką:</h1>
-              <div class="text-subtitle-1 text-bold-emphasis">Įvertinimas:</div>
-              <v-select
-                :items="['1', '2', '3', '4', '5', '6', '7', '8', '9', '10']"
-                v-model="evaluationGrade"
-                label="Įvertinimas"
-              ></v-select>
-              <div class="text-subtitle-1 text-bold-emphasis">Komentaras</div>
-              <v-textarea v-model="evaluationComment" label="Komentaras">
-              </v-textarea>
-
-              <div class="modalBtn">
-                <v-btn
-                  variant="tonal"
-                  width="150px"
-                  color="green"
-                  rounded="lg"
-                  @click="submitEvaluation"
-                  >Išsaugoti</v-btn
-                >
-                <v-btn
-                  variant="tonal"
-                  width="150px"
-                  rounded="lg"
-                  @click="isEvaluationModalVisible = false"
-                  >Atšaukti</v-btn
-                >
-              </div>
+        <div v-if="isModalVisible" class="modal">
+          <div class="modal-content">
+            <h1>Ar norite pašalinti šią praktiką?</h1>
+            <div class="modalBtn">
+              <v-btn
+                variant="tonal"
+                width="150px"
+                color="red"
+                rounded="lg"
+                @click="confirmDelete"
+                >Taip</v-btn
+              >
+              <v-btn
+                variant="tonal"
+                width="150px"
+                rounded="lg"
+                @click="isModalVisible = false"
+                >Ne</v-btn
+              >
             </div>
           </div>
-          <v-expansion-panel-title
-            class="panelHeader"
-            @click="handleInternshipClick(internship.internshipId)"
+        </div>
+
+        <v-expansion-panels v-model="openedPanel">
+          <v-expansion-panel
+            v-for="internship in internships"
+            :key="internship.internshipId"
           >
-            <v-container>
-              <v-row no-gutters>
-                <v-col cols="2">
-                  <div>
-                    <div><b>Studentas:</b></div>
-                    <br />
-                    <router-link
-                      :to="{
-                        name: 'StudentProfile',
-                        params: { userId: internship.student_id },
-                      }"
-                      @click="checkStudentId(internship.student_id)"
-                      class="student-name"
-                      >{{ internship.student_name }}</router-link
-                    >
-                  </div>
-                </v-col>
-                <v-col cols="2">
-                  <div><b>Įmonė: </b></div>
-                  <br />{{ internship.company_name }}
-                </v-col>
-                <v-col cols="2">
-                  <div>
-                    <div><b>Nuo: </b></div>
-                    <br />{{ internship.date_from }}
-                  </div>
-                </v-col>
-                <v-col cols="2">
-                  <div>
-                    <div><b>Iki: </b></div>
-                    <br />{{ internship.date_to }}
-                  </div>
-                </v-col>
-                <v-col cols="2"
-                  ><div><b>Valandos: </b></div>
-                  <br />{{ internship.loggedHours }}/{{
-                    internship.totalHours
-                  }}</v-col
-                >
-                <v-col v-if="!internship.isActive && isRoleFive" cols="2">
-                  <v-btn :disabled="internship.isSelfEvaluated === 1"  @click="evaluateInternship(internship.internshipId)"
-                    >Įsivertinti</v-btn
-                  >
-                </v-col>
+            <div v-if="isEvaluationModalVisible" class="modal">
+              <div class="evaluation-modal-content">
+                <h1>Įvertinkite studento praktiką:</h1>
+                <div class="text-subtitle-1 text-bold-emphasis">
+                  Įvertinimas:
+                </div>
+                <v-select
+                  :items="['1', '2', '3', '4', '5', '6', '7', '8', '9', '10']"
+                  v-model="evaluationGrade"
+                  label="Įvertinimas"
+                ></v-select>
+                <div class="text-subtitle-1 text-bold-emphasis">Komentaras</div>
+                <v-textarea v-model="evaluationComment" label="Komentaras">
+                </v-textarea>
 
-                <v-col v-if="!internship.isActive && isRoleMentor" cols="2">
+                <div class="modalBtn">
                   <v-btn
-                  @click="openEvaluationModal(internship.internshipId)"
-                    >Įvertinti</v-btn
+                    variant="tonal"
+                    width="150px"
+                    color="green"
+                    rounded="lg"
+                    @click="submitEvaluation"
+                    >Išsaugoti</v-btn
                   >
-                </v-col>
-                <v-col  cols="2">
-                  <div class="iconButtons">
-                    <button class="styleless-button" @click="handleUpload">
-                      <v-icon icon="mdi-upload"></v-icon>
-                    </button>
-
-                    <button
-                      v-if="isRoleOne"
-                      class="styleless-button"
-                      @click="handleEditInternship(internship.internshipId)"
+                  <v-btn
+                    variant="tonal"
+                    width="150px"
+                    rounded="lg"
+                    @click="isEvaluationModalVisible = false"
+                    >Atšaukti</v-btn
+                  >
+                </div>
+              </div>
+            </div>
+            <v-expansion-panel-title
+              class="panelHeader"
+              @click="handleInternshipClick(internship.internshipId)"
+            >
+              <v-container>
+                <v-row no-gutters>
+                  <v-col cols="2">
+                    <div>
+                      <div><b>Studentas:</b></div>
+                      <br />
+                      <router-link
+                        :to="{
+                          name: 'StudentProfile',
+                          params: { userId: internship.student_id },
+                        }"
+                        @click="checkStudentId(internship.student_id)"
+                        class="student-name"
+                        >{{ internship.student_name }}</router-link
+                      >
+                    </div>
+                  </v-col>
+                  <v-col cols="2">
+                    <div><b>Įmonė: </b></div>
+                    <br />{{ internship.company_name }}
+                  </v-col>
+                  <v-col cols="2">
+                    <div>
+                      <div><b>Nuo: </b></div>
+                      <br />{{ internship.date_from }}
+                    </div>
+                  </v-col>
+                  <v-col cols="2">
+                    <div>
+                      <div><b>Iki: </b></div>
+                      <br />{{ internship.date_to }}
+                    </div>
+                  </v-col>
+                  <v-col cols="2"
+                    ><div><b>Valandos: </b></div>
+                    <br />{{ internship.loggedHours }}/{{
+                      internship.totalHours
+                    }}</v-col
+                  >
+                  <v-col v-if="!internship.isActive && isRoleFive" cols="2">
+                    <v-btn
+                      :disabled="internship.isSelfEvaluated === 1"
+                      @click="evaluateInternship(internship.internshipId)"
+                      >Įsivertinti</v-btn
                     >
-                      <v-icon icon="mdi-pencil"></v-icon>
-                    </button>
+                  </v-col>
 
-                    <button
-                      v-if="isRoleOne"
-                      class="styleless-button"
-                      @click="openDeleteModal(internship.internshipId)"
+                  <v-col v-if="!internship.isActive && isRoleMentor" cols="2">
+                    <v-btn @click="openEvaluationModal(internship.internshipId)"
+                      >Įvertinti</v-btn
                     >
-                      <v-icon icon="mdi-delete"></v-icon>
-                    </button>
-                  </div>
-                </v-col>
-              </v-row>
-            </v-container>
-          </v-expansion-panel-title>
-          <v-expansion-panel-text>
-            <v-container v-if="isLoading">
-              Kraunama informacija...
-            </v-container>
+                  </v-col>
+                  <v-col cols="2">
+                    <div class="iconButtons">
+                      <button class="styleless-button" @click="handleUpload">
+                        <v-icon icon="mdi-upload"></v-icon>
+                      </button>
 
-            <v-container v-else>
-              <v-row v-if="selectedInternshipComments.length > 0">
-                <v-col
-                  v-for="comment in selectedInternshipComments"
-                  :key="comment.id"
-                  cols="12"
-                >
-                  <v-row>
-                    <v-col cols="4" class="comment-details">
-                      Nuo: {{ comment.date_from }}
-                    </v-col>
-                    <v-col cols="4" class="comment-details">
-                      Iki: {{ comment.date_to }}
-                    </v-col>
-                    <v-col cols="4" class="comment-details">
-                      Aprašymas: {{ comment.comment }}
-                    </v-col>
-                  </v-row>
-                </v-col>
-              </v-row>
-              <v-row v-else>
-                <v-col cols="12">Nėra įvestų komentarų.</v-col>
-              </v-row>
-            </v-container>
-          </v-expansion-panel-text>
-        </v-expansion-panel>
-      </v-expansion-panels>
+                      <button
+                        v-if="isRoleOne || isRoleMentor"
+                        class="styleless-button"
+                        @click="handleEditInternship(internship.internshipId)"
+                      >
+                        <v-icon icon="mdi-pencil"></v-icon>
+                      </button>
+
+                      <button
+                        v-if="isRoleOne || isRoleMentor"
+                        class="styleless-button"
+                        @click="openDeleteModal(internship.internshipId)"
+                      >
+                        <v-icon icon="mdi-delete"></v-icon>
+                      </button>
+                    </div>
+                  </v-col>
+                </v-row>
+              </v-container>
+            </v-expansion-panel-title>
+            <v-expansion-panel-text>
+              <v-container v-if="isLoading">
+                Kraunama informacija...
+              </v-container>
+
+              <v-container v-else>
+                <v-row v-if="selectedInternshipComments.length > 0">
+                  <v-col
+                    v-for="comment in selectedInternshipComments"
+                    :key="comment.id"
+                    cols="12"
+                  >
+                    <v-row>
+                      <v-col cols="4" class="comment-details">
+                        Nuo: {{ comment.date_from }}
+                      </v-col>
+                      <v-col cols="4" class="comment-details">
+                        Iki: {{ comment.date_to }}
+                      </v-col>
+                      <v-col cols="4" class="comment-details">
+                        Aprašymas: {{ comment.comment }}
+                      </v-col>
+                    </v-row>
+                  </v-col>
+                </v-row>
+                <v-row v-else>
+                  <v-col cols="12">Nėra įvestų komentarų.</v-col>
+                </v-row>
+              </v-container>
+            </v-expansion-panel-text>
+          </v-expansion-panel>
+        </v-expansion-panels>
+      </div>
     </div>
   </div>
-</div>
 </template>
 
 <script>
@@ -276,7 +280,7 @@ export default {
     isCheckboxChecked(newVal) {
       if (newVal) {
         this.fetchNotEvaluatedInternships();
-      }else{
+      } else {
         this.fetchInternshipsForMentors();
       }
     },
@@ -299,8 +303,8 @@ export default {
   },
 
   methods: {
-    handleGroupSelection(selectedGroup){
-      console.log('Group selected:', selectedGroup);
+    handleGroupSelection(selectedGroup) {
+      console.log("Group selected:", selectedGroup);
     },
 
     submitEvaluation() {
@@ -308,7 +312,7 @@ export default {
         grade: this.evaluationGrade,
         comment: this.evaluationComment,
         internship_id: this.selectedInternshipIdForEvaluation,
-        date:'2023-12-12',
+        date: "2023-12-12",
         is_final: true,
       };
 
@@ -316,13 +320,13 @@ export default {
         .post("/result/grade/create", payload)
         .then((response) => {
           console.log("Evaluation submitted successfully", response);
-          this.internships = this.internships.filter(internship => 
-      internship.internshipId !== this.selectedInternshipIdForEvaluation
-    );
+          this.internships = this.internships.filter(
+            (internship) =>
+              internship.internshipId !== this.selectedInternshipIdForEvaluation
+          );
 
-    this.selectedInternshipIdForEvaluation = null; 
-    this.isEvaluationModalVisible = false;
-
+          this.selectedInternshipIdForEvaluation = null;
+          this.isEvaluationModalVisible = false;
         })
         .catch((error) => {
           console.error("Error submitting evaluation:", error);
@@ -385,7 +389,7 @@ export default {
     },
 
     openEvaluationModal(internshipId) {
-      console.log("Opening evaluation modal for internship ID:", internshipId); 
+      console.log("Opening evaluation modal for internship ID:", internshipId);
       this.selectedInternshipIdForEvaluation = internshipId;
       this.isEvaluationModalVisible = true;
     },
@@ -396,8 +400,8 @@ export default {
         apiClient
           .delete(
             `/internship-delete`,
-           { params: { internshipId: this.internshipToDelete }
-           }, { withCredentials: true }
+            { params: { internshipId: this.internshipToDelete } },
+            { withCredentials: true }
           )
           .then((response) => {
             console.log("Internship deleted successfully");
@@ -523,7 +527,7 @@ export default {
                 loggedHours: internship.logged_hours,
                 totalHours: internship.duration_in_hours,
                 isActive: internship.is_active,
-                isSelfEvaluated:internship.is_self_evaluated,
+                isSelfEvaluated: internship.is_self_evaluated,
                 student_id: studentId,
                 student_name: studentName,
               };
@@ -669,6 +673,9 @@ export default {
     isRoleOne() {
       return this.getUser.role_id === 1;
     },
+    isRoleTwo() {
+      return this.getUser.role_id === 2;
+    },
     isRoleFive() {
       return this.getUser.role_id === 5;
     },
@@ -689,7 +696,7 @@ export default {
 </script>
 
 <style>
-@import '@/styles/InternshipStyle/userInternship';
+@import "@/styles/InternshipStyle/userInternship";
 
 .evaluation-modal-content {
   height: 450px;

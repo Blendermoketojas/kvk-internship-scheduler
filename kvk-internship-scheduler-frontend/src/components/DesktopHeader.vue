@@ -19,8 +19,8 @@
         </v-list>
       </v-menu>
     </div>
-    <div class="btn" id="menu-activator">
-      <router-link class="redirectText" to="/documents">Dokumentai</router-link>
+    <div class="btn"  v-if="this.userRoleId!=2" id="menu-activator">
+      <router-link class="redirectText"  to="/documents">Dokumentai</router-link>
       <v-menu open-on-hover activator="#menu-activator">
         <v-list>
           <v-list-item
@@ -36,7 +36,7 @@
         </v-list>
       </v-menu>
     </div>
-    <div class="btn" id="menu-activator-results">
+    <div class="btn"  v-if="this.userRoleId!=2" id="menu-activator-results">
       <router-link class="redirectText" to="/evaluation"
         >Mano rezultatai</router-link
       >
@@ -54,7 +54,7 @@
         </v-list>
       </v-menu>
     </div>
-    <div class="btn">
+    <div class="btn" v-if="this.userRoleId!=2">
       <router-link class="redirectText" to="/learning-materials"
         >Mokymosi medžiaga</router-link
       >
@@ -153,6 +153,10 @@ export default {
 
       items.push({ title: "Praktikos peržiūra", route: "/user-internships" });
 
+      if (this.userRoleId !== 5) {
+      items.push({ title: "Statistika", route: "/statistics" });
+    }
+
       if (this.userRoleId === 5) {
         items.push({ title: "Kalendorius", route: "/calendar" });
       }
@@ -245,7 +249,10 @@ img {
 }
 
 .btn:last-of-type {
-  margin-left: 25%;
+  position: absolute;
+  right: 0; 
+  top: 10;
+  margin-left: auto;
 }
 
 .btn:last-of-type img {

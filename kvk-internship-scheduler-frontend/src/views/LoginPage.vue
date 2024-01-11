@@ -163,7 +163,11 @@ export default {
       this.$router.push('/internship-management');
     } else if (role_id === 5) {
       this.$router.push('/calendar');
-    } else {
+      
+    } else if (role_id === 2) {
+      this.$router.push('/statistics');
+      
+    }else {
       this.$router.push('/');
     }
   },

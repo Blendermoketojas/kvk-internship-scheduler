@@ -1,13 +1,33 @@
 <template>
   <custom-header></custom-header>
   <div class="mainDiv">
+    <v-alert
+      v-if="showSuccessAlert"
+      color="success"
+      icon="$success"
+      title="Pavyko!"
+      text="Atsakėte į klausimus!"
+    ></v-alert>
+
+    <v-alert
+      v-if="showErrorAlert"
+      color="error"
+      icon="$error"
+      title="Kaida!"
+      text="Nepavyko išsaugoti klausimų!"
+    ></v-alert>
+
     <div class="pageDescription">
       <h1 class="heading">Įsivertinimas</h1>
       <h2>Čia galite atsakyti į užduotus klausimus</h2>
     </div>
     <div class="CreationDiv">
       <v-list>
-        <v-list-item v-for="template in templates" :key="template.id" @click="selectTemplate(template.id)">
+        <v-list-item
+          v-for="template in templates"
+          :key="template.id"
+          @click="selectTemplate(template.id)"
+        >
           <v-list-item-content>
             <v-list-item-title>{{ template.name }}</v-list-item-title>
           </v-list-item-content>
@@ -15,15 +35,20 @@
       </v-list>
       <div>
         <div class="TableDiv">
-          <table v-if="selectedTemplate" style="border-bottom: #dddddd 1px solid;">
+          <table
+            v-if="selectedTemplate"
+            style="border-bottom: #dddddd 1px solid"
+          >
             <!-- Header row for removing answer options -->
-            <tr style="border-right: #dddddd 1px solid;">
-            </tr>
+            <tr style="border-right: #dddddd 1px solid"></tr>
 
             <!-- Rows for answer options with remove icons -->
-            <tr style="border-right: #dddddd 1px solid; height: 40px;">
-              <td style="border: none; border-right: 1px #dddddd solid;"></td>
-              <td v-for="(option, index) in answerOptions" :key="'header-' + index">
+            <tr style="border-right: #dddddd 1px solid; height: 40px">
+              <td style="border: none; border-right: 1px #dddddd solid"></td>
+              <td
+                v-for="(option, index) in answerOptions"
+                :key="'header-' + index"
+              >
                 {{ option.answer }}
               </td>
             </tr>
@@ -34,15 +59,26 @@
                 {{ question.question }}
               </td>
               <td v-for="(option, oIndex) in answerOptions" :key="oIndex">
-                <input type="radio" :name="'question' + question.id" :value="option.id"
-                  v-model="selectedAnswers[question.id]" />
+                <input
+                  type="radio"
+                  :name="'question' + question.id"
+                  :value="option.id"
+                  v-model="selectedAnswers[question.id]"
+                />
               </td>
             </tr>
           </table>
         </div>
         <div class="confirmButton">
-          <v-btn @click="saveResults" v-if="selectedTemplate" width="200px" class="custom-gradient" rounded="xl"
-            variant="elevated">Išsaugoti</v-btn>
+          <v-btn
+            @click="saveResults"
+            v-if="selectedTemplate"
+            width="200px"
+            class="custom-gradient"
+            rounded="xl"
+            variant="elevated"
+            >Išsaugoti</v-btn
+          >
         </div>
       </div>
     </div>
@@ -51,7 +87,7 @@
 
 <script>
 import customHeader from "@/components/DesktopHeader.vue";
-import TS from "@/services/templates/templatesService"
+import TS from "@/services/templates/templatesService";
 
 export default {
   name: "EvaluationCreation",
@@ -73,7 +109,7 @@ export default {
   methods: {
     selectTemplate(templateId) {
       // TODO: kviesti tik kai skirtingas ID dabar nedariau nes pristatyms tuoj lol - as esu Tadas Andrijauskas
-      TS.getTemplate(templateId).then(response => {
+      TS.getTemplate(templateId).then((response) => {
         this.selectedTemplate = response.data;
         this.templateId = response.data.id;
         this.questionOptions = response.data.questions;
@@ -81,25 +117,36 @@ export default {
       });
     },
     getSelectedAnswersArray() {
-    return Object.entries(this.selectedAnswers).map(([questionId, answerId]) => ({
-      question_id: Number(questionId),
-      answer_id: Number(answerId),
-    }));
-  },
-  saveResults() {
-    TS.createTemplateResultService(
-      this.templateId,
-      this.internshipId,
-      this.getSelectedAnswersArray()
-    ).then(response => console.log("išsaugoti!"))
-  },
+      return Object.entries(this.selectedAnswers).map(
+        ([questionId, answerId]) => ({
+          question_id: Number(questionId),
+          answer_id: Number(answerId),
+        })
+      );
+    },
+    saveResults() {
+      TS.createTemplateResultService(
+        this.templateId,
+        this.internshipId,
+        this.getSelectedAnswersArray()
+      )
+        .then((response) => {
+          console.log("Saved successfully!", response);
+          this.showSuccessAlert = true;
+          setTimeout(() => (this.showSuccessAlert = false), 6000);
+        })
+        .catch((error) => {
+          console.error("Error saving results:", error);
+          this.showErrorAlert = true;
+          setTimeout(() => (this.showErrorAlert = false), 6000);        });
+    },
   },
   mounted() {
     this.internshipId = this.$route.params.internshipId;
-    TS.getInternshipTemplates(this.internshipId).then(response => {
+    TS.getInternshipTemplates(this.internshipId).then((response) => {
       this.templates = response.data;
-    })
-  }
+    });
+  },
 };
 </script>
 
@@ -130,7 +177,7 @@ th {
 }
 
 .custom-gradient {
-  background: linear-gradient(to top, #11257B, #048ACC);
+  background: linear-gradient(to top, #11257b, #048acc);
   color: white;
 }
 
@@ -142,7 +189,6 @@ th {
   display: flex;
   flex-direction: row;
   justify-content: space-between;
-
 }
 
 .question input {
@@ -213,16 +259,13 @@ h2 {
 .remove-option {
   cursor: pointer;
   color: red;
-
 }
-
 
 .TableDiv {
   display: flex;
 }
 
 .rotated-text-div {
-
   writing-mode: vertical-rl;
   text-orientation: mixed;
   transform: rotate(180deg);

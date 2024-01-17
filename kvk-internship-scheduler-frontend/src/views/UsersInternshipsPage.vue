@@ -606,7 +606,9 @@ export default {
           internshipId: this.selectedInternshipId,
         })
         .then((response) => {
-          this.selectedInternshipComments = response.data;
+          this.selectedInternshipComments = response.data.sort((a, b) => {
+        return new Date(b.date_from) - new Date(a.date_from);
+      });
           console.log(this.selectedInternshipComments.date_from);
           this.isLoading = false;
         })

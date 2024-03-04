@@ -1,5 +1,6 @@
 <template>
-  <header-nav></header-nav>
+  <header-nav v-if="isDesktop"/>
+  <mobile-nav v-if="!isDesktop" />
   <div class="bodyDiv">
     <div class="mainPageDiv">
       <div class="pageDescription">
@@ -232,6 +233,7 @@ import apiClient from "@/utils/api-client";
 import searchStudent from "@/components/StudentSearch.vue";
 import { mapGetters } from "vuex";
 import groupSearch from "@/components/GroupSearch.vue";
+import mobileNav from "@/components/MobileSidebar.vue";
 
 const debounce = (func, delay) => {
   let timeoutId;
@@ -247,6 +249,7 @@ export default {
   name: "UserInternships",
   data() {
     return {
+      isDesktop: window.innerWidth > 950,
       evaluationGrade: null,
       evaluationComment: "",
       evaluationDate: "",
@@ -270,6 +273,7 @@ export default {
     headerNav,
     searchStudent,
     groupSearch,
+    mobileNav,
   },
   watch: {
     selectedStudent(newVal) {
@@ -303,6 +307,10 @@ export default {
   },
 
   methods: {
+    handleResize() {
+      this.isDesktop = window.innerWidth > 950;
+    },
+
     handleGroupSelection(selectedGroup) {
       console.log("Group selected:", selectedGroup);
     },
@@ -694,6 +702,14 @@ export default {
       return this.selectedFilter === "Pagal grupę";
     },
   },
+  created() {
+    this.fetchInternships();
+    window.addEventListener("resize", this.handleResize);
+  },
+  beforeDestroy() {
+    window.removeEventListener("resize", this.handleResize);
+  },
+
 };
 </script>
 

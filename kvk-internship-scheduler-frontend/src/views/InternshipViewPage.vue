@@ -1,5 +1,6 @@
 <template>
-  <custom-header></custom-header>
+  <custom-header v-if="isDesktop" />
+  <mobile-nav v-if="!isDesktop" />
   <div class="mainDiv">
     <div class="pageDescription">
       <h1>Praktikos peržiūra</h1>
@@ -40,11 +41,13 @@
 import customHeader from "@/components/DesktopHeader.vue";
 import apiClient from "@/utils/api-client";
 import groupSearch from "@/components/GroupSearch.vue";
+import mobileNav from "@/components/MobileSidebar.vue";
 
 export default {
   name: "InternshipView",
   data() {
     return {
+      isDesktop: window.innerWidth > 950,
       internships: [],
 
       headers: [
@@ -64,9 +67,13 @@ export default {
   components: {
     customHeader,
     groupSearch,
+    mobileNav,
   },
   methods: {
-    
+    handleResize() {
+      this.isDesktop = window.innerWidth > 950;
+    },
+
     handleSelectedGroupId(groupId) {
       apiClient
         .post("/internships/student-group-active", { studentGroupId: groupId })
@@ -83,6 +90,13 @@ export default {
         });
       console.log(groupId);
     },
+  },
+  created() {
+    this.fetchInternships();
+    window.addEventListener("resize", this.handleResize);
+  },
+  beforeDestroy() {
+    window.removeEventListener("resize", this.handleResize);
   },
 
 };

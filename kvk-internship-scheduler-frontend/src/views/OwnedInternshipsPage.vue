@@ -1,5 +1,6 @@
 <template>
-<custom-header></custom-header>
+  <custom-header v-if="isDesktop" />
+  <mobile-nav v-if="!isDesktop" />
 <div class="mainPage">
 <h1>Priskirti studentai</h1>
 <h2>Čia galite matyti jusų priskirtų studentų sąrašą</h2>
@@ -26,7 +27,7 @@
 <script>
 import customHeader from "@/components/DesktopHeader.vue";
 import apiClient from "@/utils/api-client";
-
+import mobileNav from "@/components/MobileSidebar.vue";
 
   const FakeAPI = {
     async fetch ({ page, itemsPerPage, sortBy }) {
@@ -58,6 +59,7 @@ import apiClient from "@/utils/api-client";
 export default {
   data() {
     return {
+      isDesktop: window.innerWidth > 950,
         itemsPerPage: 5,
       headers: [
         { title: 'Vardas Pavardė', key: 'fullname', align: 'start' },
@@ -74,9 +76,12 @@ export default {
   },
   components: {
     customHeader,
-
+    mobileNav,
   },
   methods: {
+    handleResize() {
+      this.isDesktop = window.innerWidth > 950;
+    },
 
     loadItems ({ page, itemsPerPage, sortBy }) {
         this.loading = true
@@ -103,6 +108,13 @@ export default {
   },
   mounted() {
   //   this.loadItems({ page: 1, itemsPerPage: this.itemsPerPage, sortBy: [] });
+  },
+  created() {
+    this.fetchInternships();
+    window.addEventListener("resize", this.handleResize);
+  },
+  beforeDestroy() {
+    window.removeEventListener("resize", this.handleResize);
   },
 };
 </script>

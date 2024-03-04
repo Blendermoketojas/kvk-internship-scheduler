@@ -1,5 +1,6 @@
 <template>
-  <custom-header></custom-header>
+  <custom-header v-if="isDesktop" />
+  <mobile-nav v-if="!isDesktop" />
   <div class="mainDiv">
     <div class="pageDescription">
       <h1 class="heading">Klausimyno kūrimas</h1>
@@ -111,11 +112,13 @@
 <script>
 import customHeader from "@/components/DesktopHeader.vue";
 import apiClient from "@/utils/api-client";
+import mobileNav from "@/components/MobileSidebar.vue";
 
 export default {
   name: "EvaluationCreation",
   data() {
     return {
+      isDesktop: window.innerWidth > 950,
       formName: "",
       answerOptions: [],
       questionOptions: [],
@@ -126,9 +129,14 @@ export default {
   },
   components: {
     customHeader,
+    mobileNav,
   },
 
   methods: {
+    handleResize() {
+      this.isDesktop = window.innerWidth > 950;
+    },
+
     removeAnswerOption(index) {
       this.answerOptions.splice(index, 1);
 
@@ -179,6 +187,12 @@ export default {
       .then(response =>
       console.log(response));
     },
+  },
+  created() {
+    window.addEventListener('resize', this.handleResize);
+  },
+  beforeDestroy() {
+    window.removeEventListener('resize', this.handleResize);
   },
 };
 </script>

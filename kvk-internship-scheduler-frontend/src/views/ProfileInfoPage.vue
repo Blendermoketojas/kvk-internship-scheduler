@@ -1,5 +1,6 @@
 <template>
-  <custom-header></custom-header>
+  <custom-header v-if="isDesktop" />
+  <mobile-nav v-if="!isDesktop" />
   <div class="bodyDiv">
   <form @submit.prevent="saveChanges">
     <div class="mainProfile">
@@ -213,11 +214,13 @@ import customHeader from "@/components/DesktopHeader.vue";
 import apiClient from "@/utils/api-client";
 import { mapGetters } from "vuex";
 import groupSearch from "@/components/GroupSearch.vue";
+import mobileNav from "@/components/MobileSidebar.vue";
 
 export default {
   name: "ProfileInfo",
   data() {
     return {
+      isDesktop: window.innerWidth > 950,
       showErrorAlert:false,
       userIcon,
       userIdFromUrl: null,
@@ -238,6 +241,7 @@ export default {
   components: {
     customHeader,
     groupSearch,
+    mobileNav,
   },
   mounted() {
     this.handleDataFetching();
@@ -263,6 +267,9 @@ export default {
     }
   },
   methods: {
+    handleResize() {
+      this.isDesktop = window.innerWidth > 950;
+    },
     fetchInternshipData(userId) {
       apiClient
         .post(`/user/internships`, { userId: userId })
@@ -407,6 +414,8 @@ export default {
   created() {
     const userId = this.$route.query.userId;
     console.log("Received user ID:", userId);
+    this.fetchInternships();
+    window.addEventListener("resize", this.handleResize);
   },
   watch: {
     tab(newVal) {
@@ -431,6 +440,10 @@ export default {
     isRoleFour() {
       return this.getUser.role_id === 4;
     },
+  },
+
+  beforeDestroy() {
+    window.removeEventListener("resize", this.handleResize);
   },
 };
 </script>

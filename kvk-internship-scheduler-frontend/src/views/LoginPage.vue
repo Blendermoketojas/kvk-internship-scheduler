@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="bodyDiv">
     <div class="header">
       <img :src="kvkLogo" alt="KVK Logo" />
     </div>
@@ -176,6 +176,10 @@ export default {
 </script>
 
 <style scoped>
+
+.bodyDiv{
+  min-height: 620px;
+}
 .middleDiv {
   margin-top: 3%;
 }
@@ -252,4 +256,9 @@ h2,
   display: inline;
   color: white;
 }
+@media screen and (max-width: 600px) {
+  .footerLogo{
+  display: none;
+  }
+  }
 </style>

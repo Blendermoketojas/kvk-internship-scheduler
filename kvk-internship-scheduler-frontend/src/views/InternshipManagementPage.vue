@@ -1,5 +1,7 @@
 <template>
-  <custom-header></custom-header>
+  <custom-header v-if="isDesktop" />
+  <mobile-nav v-if="!isDesktop" />
+
   <div class="bodyDiv">
   <div class="mainManagement">
     <v-alert v-if="showSuccessAlert" color="success" icon="$success" title="Pavyko!" text="Praktika išsaugota!"></v-alert>
@@ -81,6 +83,7 @@
 import userIcon from "@/assets/Photos/UserIcon.png";
 import customHeader from "@/components/DesktopHeader.vue";
 import apiClient from "@/utils/api-client";
+import mobileNav from "@/components/MobileSidebar.vue";
 
 const debounce = (func, delay) => {
   let timeoutId;
@@ -96,6 +99,7 @@ export default {
   name: "ProfileInfo",
   data() {
     return {
+      isDesktop: window.innerWidth > 950,
       showErrorAlert:false,
       selectedForms: [],
       forms: [],
@@ -125,6 +129,7 @@ export default {
   },
   components: {
     customHeader,
+    mobileNav,
   },
 
   mounted() {
@@ -158,6 +163,10 @@ export default {
     }, 500);
   },
   methods: {
+    handleResize() {
+      this.isDesktop = window.innerWidth > 950;
+    },
+
     fetchInternshipData(internshipId) {
       apiClient
         .post(`/internship`, { internshipId: internshipId })
@@ -468,6 +477,13 @@ export default {
             setTimeout(() => (this.showErrorAlert = false), 6000);
       }
     },
+  },
+  created() {
+    this.fetchInternships();
+    window.addEventListener("resize", this.handleResize);
+  },
+  beforeDestroy() {
+    window.removeEventListener("resize", this.handleResize);
   },
 };
 </script>

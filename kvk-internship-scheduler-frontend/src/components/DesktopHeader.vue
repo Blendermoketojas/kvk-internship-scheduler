@@ -54,11 +54,11 @@
         </v-list>
       </v-menu>
     </div>
-    <div class="btn" v-if="this.userRoleId!=2">
+    <!-- <div class="btn" v-if="this.userRoleId!=2">
       <router-link class="redirectText" to="/learning-materials"
         >Mokymosi medžiaga</router-link
       >
-    </div>
+    </div> -->
     <div class="btn">
       <router-link class="redirectText" to="/chat">Pokalbiai</router-link>
     </div>
@@ -106,7 +106,6 @@ export default {
 
       documentItems: [
         { title: "Dokumentų peržiūra", route: "/documents" },
-        { title: "Dokumentų įkėlimas", route: "/document-upload" },
       ],
 
       resultItems: [

@@ -1,6 +1,8 @@
 <template>
   <div>
-    <custom-header></custom-header>
+    <custom-header v-if="isDesktop"></custom-header>
+    <mobile-nav v-if="!isDesktop"/>
+
     <main-content-container>
       <h1 class="mt-4">Dokumentai</h1>
       <p>Čia galite peržiūrėti įkeltus dokumentus</p>
@@ -17,6 +19,7 @@
 
 <script>
 import customHeader from "@/components/DesktopHeader.vue";
+import mobileNav from "@/components/MobileSidebar.vue";
 import MainContentContainer from "@/components/containers/MainContentContainer.vue";
 import DocumentContainer from "@/components/documents/DocumentContainer.vue";
 import IDS from "@/services/internship_documents/InternshipDocumentsService.js"
@@ -25,14 +28,23 @@ export default {
   components: {
     customHeader,
     MainContentContainer,
-    DocumentContainer
+    DocumentContainer,
+    mobileNav,
   },
   data() {
     return {
+      isDesktop: window.innerWidth > 950,
       internships: [],
       isLoading: true
     };
   },
+  methods:{
+    handleResize() {
+      this.isDesktop = window.innerWidth > 950;
+    },
+
+  },
+
   computed: {
   groupedInternships() {
     const grouped = {};
@@ -63,7 +75,15 @@ export default {
       console.error('Could not get documents', error);
       this.isLoading = false;
     });
-}
+},
+created() {
+
+    window.addEventListener('resize', this.handleResize);
+  },
+  beforeDestroy() {
+
+    window.removeEventListener('resize', this.handleResize);
+  },
 };
 </script>
 

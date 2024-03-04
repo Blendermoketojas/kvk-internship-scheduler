@@ -42,7 +42,7 @@ Route::middleware('api')->prefix('v2')->group(function () {
 
     // is server working test
     Route::get('/echo', function (Request $request) {
-        return "A jus dirbat? Dirbam dirbam dirbam";
+        return "Serveris dirba";
     });
 
     // auth

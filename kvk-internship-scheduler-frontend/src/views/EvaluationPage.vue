@@ -1,6 +1,7 @@
 <template>
   <div>
-    <custom-header></custom-header>
+    <custom-header v-if="isDesktop" />
+    <mobile-nav v-if="!isDesktop" />
     <div class="mainDiv">
       <div class="pageDescription">
         <h1 class="heading">Įvertinimai</h1>
@@ -52,12 +53,14 @@
 import customHeader from "@/components/DesktopHeader.vue";
 import internshipService from "@/services/internships/InternshipService";
 import { mapGetters } from "vuex";
+import mobileNav from "@/components/MobileSidebar.vue";
 
 export default {
-  components: { customHeader },
+  components: { customHeader, mobileNav },
 
   data() {
     return {
+      isDesktop: window.innerWidth > 950,
       noDataText: "Nėra informacijos",
       loadingText: "Kraunama, prašome palaukti",
       currentPage: 1,
@@ -74,6 +77,9 @@ export default {
   },
 
   methods: {
+    handleResize() {
+      this.isDesktop = window.innerWidth > 950;
+    },
     async fetchInternships() {
       try {
         let filteredInternships = [];
@@ -97,12 +103,11 @@ export default {
           // const internshipsArray = response.data.internships;
 
           this.internships = response.data;
-          
+
           filteredInternships = this.internships.filter(
             (internship) => internship.is_mentor_evaluated === 1
           );
           console.log(filteredInternships);
-
         } else if (this.userRoleId === 5) {
           const response = await internshipService.getCurrentUserInternships();
           const userIds = Object.keys(response.data);
@@ -201,6 +206,10 @@ export default {
 
   created() {
     this.fetchInternships();
+    window.addEventListener("resize", this.handleResize);
+  },
+  beforeDestroy() {
+    window.removeEventListener("resize", this.handleResize);
   },
 
   computed: {

@@ -1,5 +1,6 @@
 <template>
-  <custom-header></custom-header>
+  <custom-header v-if="isDesktop" />
+  <mobile-nav v-if="!isDesktop" />
   <div class="mainPage">
     <h1>Statistika</h1>
     <h2>Čia galite matyti statistiką</h2>
@@ -62,11 +63,14 @@
 import customHeader from "@/components/DesktopHeader.vue";
 import apiClient from "@/utils/api-client";
 import groupSearch from "@/components/GroupSearch.vue";
+import mobileNav from "@/components/MobileSidebar.vue";
+
 
 export default {
   name: "Statistics",
   data() {
     return {
+      isDesktop: window.innerWidth > 950,
       chartKey: 0,
       selectedGroupId: null,
       dateFrom: null,
@@ -103,6 +107,7 @@ export default {
   components: {
     customHeader,
     groupSearch,
+    mobileNav,
   },
   computed: {
     currentQuestion() {
@@ -114,6 +119,9 @@ export default {
   },
 
   methods: {
+    handleResize() {
+      this.isDesktop = window.innerWidth > 950;
+    },
 
     nextQuestion() {
       if (this.currentQuestionIndex < this.questions.length - 1) {
@@ -203,6 +211,13 @@ export default {
         this.fetchChartData();
       }
     },
+  },
+  created() {
+    this.fetchInternships();
+    window.addEventListener("resize", this.handleResize);
+  },
+  beforeDestroy() {
+    window.removeEventListener("resize", this.handleResize);
   },
 };
 </script>

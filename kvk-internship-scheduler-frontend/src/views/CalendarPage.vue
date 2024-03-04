@@ -1,5 +1,7 @@
 <template>
-  <header-nav />
+  <header-nav v-if="isDesktop" />
+  <mobile-nav v-if="!isDesktop" />
+
   <v-alert v-if="showErrorAlert" color="error" icon="$error" title="Kaida!" text="Komentaras nebuvo sukurtas!"></v-alert>
 
   <DxScheduler
@@ -25,6 +27,7 @@
 import "devextreme/dist/css/dx.light.css";
 import { DxScheduler } from "devextreme-vue/scheduler";
 import HeaderNav from "@/components/DesktopHeader.vue";
+import mobileNav from "@/components/MobileSidebar.vue";
 import { mapGetters } from "vuex";
 import apiClient from "@/utils/api-client";
 import { locale, loadMessages } from "devextreme/localization";
@@ -34,10 +37,12 @@ export default {
   components: {
     DxScheduler,
     HeaderNav,
+    mobileNav,
   },
   name: "CalendarComponent",
   data() {
     return {
+      isDesktop: window.innerWidth > 950,
       views: ["month", "week"],
       dataSource: [],
       internship_id: null,
@@ -45,6 +50,10 @@ export default {
     };
   },
   methods: {
+
+    handleResize() {
+      this.isDesktop = window.innerWidth > 950;
+    },
 
     onAppointmentAdding(e) {
     const { startDate } = e.appointmentData;
@@ -236,6 +245,10 @@ console.log('lol')
   created() {
     loadMessages(ltMessages);
     locale("lt");
+    window.addEventListener('resize', this.handleResize);
+  },
+  beforeDestroy() {
+    window.removeEventListener('resize', this.handleResize);
   },
 };
 </script>

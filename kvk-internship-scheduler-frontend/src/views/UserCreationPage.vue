@@ -1,5 +1,7 @@
 <template>
-  <custom-header></custom-header>
+  <custom-header v-if="isDesktop" />
+  <mobile-nav v-if="!isDesktop" />
+  
   <v-alert v-if="showSuccessAlert" color="success" icon="$success" title="Pavyko!" text="Vartotojas sukurtas!"></v-alert>
   <v-alert v-if="showErrorAlert" color="error" icon="$error" title="Kaida!" text="Vartotojas nebuvo sukurtas!"></v-alert>
 <div class="bodyDiv">
@@ -93,11 +95,13 @@ import customHeader from "@/components/DesktopHeader.vue";
 import groupSearch from "@/components/GroupSearch.vue";
 import apiClient from "@/utils/api-client";
 import { mapGetters } from "vuex";
+import mobileNav from "@/components/MobileSidebar.vue";
 
 export default {
   name: "UserCreation",
   data() {
     return {
+      isDesktop: window.innerWidth > 950,
       groupName:'',
       fieldOfStudy:'',
       companyName: '',
@@ -138,9 +142,13 @@ export default {
   components: {
     customHeader,
     groupSearch,
+    mobileNav,
   },
 
   methods: {
+    handleResize() {
+      this.isDesktop = window.innerWidth > 950;
+    },
 
     createCompany() {
     try {
@@ -240,6 +248,13 @@ export default {
     console.log("Selected Group ID changed:", newVal);
   }
 },
+created() {
+    this.fetchInternships();
+    window.addEventListener("resize", this.handleResize);
+  },
+  beforeDestroy() {
+    window.removeEventListener("resize", this.handleResize);
+  },
 };
 </script>
 

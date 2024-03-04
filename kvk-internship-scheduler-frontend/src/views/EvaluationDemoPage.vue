@@ -1,5 +1,6 @@
 <template>
-  <custom-header></custom-header>
+  <custom-header v-if="isDesktop" />
+  <mobile-nav v-if="!isDesktop" />
   <div class="mainDiv">
     <v-alert
       v-if="showSuccessAlert"
@@ -88,11 +89,13 @@
 <script>
 import customHeader from "@/components/DesktopHeader.vue";
 import TS from "@/services/templates/templatesService";
+import mobileNav from "@/components/MobileSidebar.vue";
 
 export default {
   name: "EvaluationCreation",
   data() {
     return {
+      isDesktop: window.innerWidth > 950,
       internshipId: null,
       templateId: null,
       answerOptions: [],
@@ -105,10 +108,14 @@ export default {
   },
   components: {
     customHeader,
+    mobileNav,
   },
   methods: {
+    handleResize() {
+      this.isDesktop = window.innerWidth > 950;
+    },
+
     selectTemplate(templateId) {
-      // TODO: kviesti tik kai skirtingas ID dabar nedariau nes pristatyms tuoj lol - as esu Tadas Andrijauskas
       TS.getTemplate(templateId).then((response) => {
         this.selectedTemplate = response.data;
         this.templateId = response.data.id;
@@ -146,6 +153,12 @@ export default {
     TS.getInternshipTemplates(this.internshipId).then((response) => {
       this.templates = response.data;
     });
+  },
+  created() {
+    window.addEventListener('resize', this.handleResize);
+  },
+  beforeDestroy() {
+    window.removeEventListener('resize', this.handleResize);
   },
 };
 </script>

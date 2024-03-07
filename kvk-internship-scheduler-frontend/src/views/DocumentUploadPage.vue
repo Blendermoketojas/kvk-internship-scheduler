@@ -25,30 +25,30 @@
   <div class="bodyDiv">
     <div class="mainDiv">
       <div class="pageDescription">
-        <div class="d-flex justify-content-between">
+        <div class="page-title">
           <h1>Dokumentų įkėlimas</h1>
-          <div style="width: 500px" class="d-flex">
-            <v-select
-              label="Katalogas"
-              v-model="selectedCatalog"
-              item-title="title"
-              item-value="id"
-              :items="catalogs"
-            ></v-select>
-
-            <v-btn @click="openDialog" color="#0D47A1" height="57px"
-              >Naujas</v-btn
-            >
-            <v-btn
-              v-if="selectedCatalog"
-              @click="deleteDocument"
-              color="red"
-              height="57px"
-              >Pašalinti</v-btn
-            >
-          </div>
+          <h2>Čia galite įkelti reikalingus dokumentus</h2>
         </div>
-        <h2>Čia galite įkelti reikalingus dokumentus</h2>
+        <div id="folderSelector" style="width: 500px">
+          <v-select
+            label="Katalogas"
+            v-model="selectedCatalog"
+            item-title="title"
+            item-value="id"
+            :items="catalogs"
+          ></v-select>
+
+          <v-btn @click="openDialog" color="#0D47A1" height="57px"
+            >Naujas</v-btn
+          >
+          <v-btn
+            v-if="selectedCatalog"
+            @click="deleteDocument"
+            color="red"
+            height="57px"
+            >Pašalinti</v-btn
+          >
+        </div>
         <h1>Įkelti dokumentai</h1>
         <h2>Paspauskite ant dokumento, norėdami pašalinti</h2>
       </div>
@@ -327,6 +327,16 @@ export default {
 <style scoped>
 @import "@/styles/DocumentsStyle/DocumentUpload.css";
 
+.page-title{
+  display: flex;
+  flex-direction: column;
+}
+
+#folderSelector{
+  display: flex;
+  
+}
+
 .modalBtn {
   display: flex;
   width: 100%;
@@ -424,4 +434,38 @@ h2 {
 ::v-deep .dx-fileuploader-files-container {
   display: none;
 }
+
+@media (max-width:950px){
+  .pageDescription{
+    margin: 10px 0;
+  }
+}
+
+
+@media (max-width:690px){
+.pageDescription #folderSelector{
+  width: 300px !important;
+}
+
+h1{
+  font-size: 30px;
+}
+
+}
+
+@media (max-width:480px){
+  h1{
+    font-size: 20px;
+  }
+  
+.bottomButtons{
+  flex-direction: column;
+  align-items: center
+}
+.bottomButtons .v-btn{
+margin: 5px 0;
+
+}
+
+  }
 </style>

@@ -236,6 +236,8 @@ export default {
 </script>
 
 <style>
+
+
 .mainDiv {
   padding: 0 100px;
 }
@@ -247,5 +249,11 @@ h2 {
   font-size: 15px;
   color: rgb(170, 167, 167);
   font-weight: 400;
+}
+
+@media (max-width:730px){
+  .mainDiv{
+    padding: 0 10px;
+  }
 }
 </style>

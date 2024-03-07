@@ -1,16 +1,90 @@
 .bodyDiv {
-  display: flex;
-  min-width: 1000px;
-  justify-content: center;
+  width: 100%;
+  padding: 0 25%;
 }
+.student-name {
+  z-index: 0;
+}
+
+#grade,
+#comment {
+  width: 800px;
+}
+
+.modal .evaluation-modal-content {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 50vw;
+  height: 50vh;
+  background: white;
+  padding: 20px;
+  border: 1px solid #888;
+}
+
+.v-row.v-row--no-gutters {
+  transform: translateX(0);
+}
+
 .mainPageDiv {
   max-width: 1200px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
 }
 .pageDescription {
   max-width: 1200px;
-  min-width: 1200px;
 }
 .mainInternshipDiv {
   padding-top: 50px;
   max-width: 1200px;
+  width: 100%;
+}
+
+
+
+
+@media (max-width: 1400px) {
+  .bodyDiv {
+    padding: 0 15%;
+  }
+}
+
+@media (max-width: 1000px) {
+  .bodyDiv {
+    padding: 0 10px;
+  }
+}
+
+@media (max-width: 600px) {
+  .v-col {
+    font-size: 10px;
+  }
+  .v-expansion-panel .v-expansion-panel-title {
+    padding: 16px 0;
+  }
+
+  /* .v-btn__content {
+    font-size: 9px;
+    width: 30px;
+    height: 40px;
+  } */
+  button .v-container {
+    padding: 0 5px;
+  }
+
+  .v-autocomplete .v-autocomplete__selection-text,
+  .v-select__selection-text,
+  .text-subtitle-1 {
+    font-size: 13px !important;
+  }
+}
+
+@media (max-width: 430px) {
+  .v-autocomplete .v-autocomplete__selection-text,
+  .v-select__selection-text {
+    font-size: 10px !important;
+  }
 }

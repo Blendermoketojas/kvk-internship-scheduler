@@ -1,9 +1,9 @@
 <template>
     <div class="document-row-body">
         <button @click="downloadFile" class="styleless-button d-flex direction-row">
-            <img style="width: 45px;" :src="imageUrl" />
-            <span class="ms-4 align-self-center fs-4">{{ fileName }}</span>
-            <span class="ms-4 align-self-center document-type-text">Failo tipas: {{ fileType }}</span>
+            <img class='fileTypeIcon' style="width: 45px;" :src="imageUrl" />
+            <span id="fileName" class="ms-4 align-self-center fs-4">{{ fileName }}</span>
+            <span id="fileType" class="ms-4 align-self-center document-type-text">Failo tipas: {{ fileType }}</span>
         </button>
     </div>
 </template>
@@ -69,5 +69,17 @@ export default {
 .document-type-text {
     color: grey;
     font-size: smaller;
+}
+
+@media (max-width:600px){
+    #fileName{
+        font-size: 10px !important;
+    }
+    #fileType{
+        font-size: 10px !important; 
+    }
+    .fileTypeIcon{
+        width: 30px !important;
+    }
 }
 </style>

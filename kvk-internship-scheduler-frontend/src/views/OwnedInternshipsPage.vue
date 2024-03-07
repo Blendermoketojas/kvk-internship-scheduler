@@ -30,7 +30,7 @@ import apiClient from "@/utils/api-client";
 import mobileNav from "@/components/MobileSidebar.vue";
 
   const FakeAPI = {
-    async fetch ({ page, itemsPerPage, sortBy }) {
+    async fetch ({ page, itemsPerPage }) {
       return new Promise(resolve => {
         setTimeout(() => {
           const start = (page - 1) * itemsPerPage
@@ -107,10 +107,10 @@ export default {
 
   },
   mounted() {
-  //   this.loadItems({ page: 1, itemsPerPage: this.itemsPerPage, sortBy: [] });
+     this.loadItems({ page: 1, itemsPerPage: this.itemsPerPage, sortBy: [] });
   },
   created() {
-    this.fetchInternships();
+
     window.addEventListener("resize", this.handleResize);
   },
   beforeDestroy() {
@@ -120,6 +120,8 @@ export default {
 </script>
 
 <style>
+@import "@/styles/InternshipStyle/ownedStudentList.css";
+
 .mainPage{
    padding:0 200px; 
 }

@@ -1,0 +1,29 @@
+@media (max-width:1300px){
+    .mainDiv .CreationDiv{
+        padding:0 0;
+    }
+}
+
+@media (max-width:800px){
+#app .mainDiv{
+    padding: 0 10px;
+}
+#app .custom-gradient{
+    width: 100px !important;
+}
+
+td[data-v-0a620a9b], th[data-v-0a620a9b] {
+font-size: 15px;
+}
+
+}
+
+@media (max-width:400px){
+    td[data-v-0a620a9b], th[data-v-0a620a9b] {
+        font-size: 10px;
+        }
+
+        .label{
+            font-size: 15px;
+        }
+}

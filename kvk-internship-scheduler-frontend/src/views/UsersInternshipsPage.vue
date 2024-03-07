@@ -42,7 +42,7 @@
         </div>
         <v-checkbox
           v-if="isRoleMentor"
-          label="Neįvertitos praktikos"
+          label="Neįvertintos praktikos"
           v-model="isCheckboxChecked"
         ></v-checkbox>
 
@@ -76,18 +76,23 @@
           >
             <div v-if="isEvaluationModalVisible" class="modal">
               <div class="evaluation-modal-content">
-                <h1>Įvertinkite studento praktiką:</h1>
-                <div class="text-subtitle-1 text-bold-emphasis">
+                <h1 class="modal-text">Įvertinkite studento praktiką:</h1>
+                
+                <div  class="text-subtitle-1 text-bold-emphasis">
                   Įvertinimas:
                 </div>
                 <v-select
+                id="grade"
                   :items="['1', '2', '3', '4', '5', '6', '7', '8', '9', '10']"
                   v-model="evaluationGrade"
                   label="Įvertinimas"
                 ></v-select>
+                
+                
                 <div class="text-subtitle-1 text-bold-emphasis">Komentaras</div>
-                <v-textarea v-model="evaluationComment" label="Komentaras">
+                <v-textarea id="comment" v-model="evaluationComment" label="Komentaras">
                 </v-textarea>
+                
 
                 <div class="modalBtn">
                   <v-btn
@@ -112,7 +117,7 @@
               class="panelHeader"
               @click="handleInternshipClick(internship.internshipId)"
             >
-              <v-container>
+              <v-container class="slidable-container">
                 <v-row no-gutters>
                   <v-col cols="2">
                     <div>
@@ -703,7 +708,7 @@ export default {
     },
   },
   created() {
-    this.fetchInternships();
+
     window.addEventListener("resize", this.handleResize);
   },
   beforeDestroy() {
@@ -716,18 +721,68 @@ export default {
 <style>
 @import "@/styles/InternshipStyle/userInternship";
 
-.evaluation-modal-content {
-  height: 450px;
-
-  background-color: #fefefe;
-  margin: 15% auto;
-  padding: 20px;
-  border: 1px solid #888;
-  width: 40%;
-  text-align: center;
-  border: 1px solid rgb(121, 119, 119);
-  align-items: center;
+@media (max-width: 1620px) {
+.studentSearchInput .fieldDiv{
+  width: 300px;
 }
+  
+}
+
+@media (max-width: 1100px) {
+.modal-text{
+  font-size: 25px;
+}
+}
+
+@media (max-width: 800px) {
+  .modal-text{
+    font-size: 20px;
+  }
+}
+
+@media (max-width: 650px) {
+  .studentSearchInput .fieldDiv{
+    width: 200px;
+  }
+  .modal .evaluation-modal-content{
+    width: 70vw;
+  }  
+  .v-btn--variant-elevated{
+    width: 10px;
+    height: 20px;
+  }
+
+  .v-btn__content {
+    font-size: 8px;
+  }
+  }
+  @media (max-width: 800px) {
+
+  }
+
+  @media (max-width: 430px) {
+    .modal .evaluation-modal-content{
+      width: 90vw;
+    }  
+  
+    .mainInternshipDiv .studentSearchInput {
+      flex-direction: column;
+    }
+    .studentSearchInput .fieldDiv{
+      width: 300px;
+    }
+      
+    }
+    @media (max-width: 320px) {
+      .mainInternshipDiv .studentSearchInput {
+        flex-direction: column;
+      }
+      .studentSearchInput .fieldDiv{
+        width: 200px;
+      }
+        
+      }
+
 .modalBtn {
   display: flex;
   width: 100%;

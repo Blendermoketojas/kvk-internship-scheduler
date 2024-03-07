@@ -67,11 +67,11 @@
 
 
 <table style="border-bottom: #dddddd 1px solid;">
-    <!-- Header row for removing answer options -->
+
     <tr style="border-right: #dddddd 1px solid;">
     </tr>
 
-    <!-- Rows for answer options with remove icons -->
+ 
     <tr style="border-right: #dddddd 1px solid; height: 40px;">
       <td style="border: none; border-right: 1px #dddddd solid;"></td>
       <td v-for="(option, index) in answerOptions" :key="'header-' + index">
@@ -80,7 +80,7 @@
       </td>
     </tr>
 
-    <!-- Rows for questions with radio buttons and remove icons -->
+
     <tr v-for="(question, qIndex) in questionOptions" :key="qIndex">
       <td>
         <span @click="removeQuestion(qIndex)" class="remove-option">X</span>
@@ -198,6 +198,7 @@ export default {
 </script>
 
 <style scoped>
+@import "@/styles/EvaluationStyle/evaluationCreationStyle.css";
 
 .bottomButtons{
   display: flex;

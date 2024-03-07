@@ -31,6 +31,8 @@
           item-value="template.id"
           item-title="template.name"
           v-model="selectedTemplateId"
+          :search-input.sync="searchTemplate"
+          @update:search-input="fetchTemplates"
           @update:modelValue="onTemplateSelected"
           label="Pasirinkite skalės pavadinimą"
         ></v-autocomplete>
@@ -46,14 +48,19 @@
         <p class="text-h6">{{ currentQuestion.name }}</p>
       </div>
 
-      <div class="rightArrow"  @click="nextQuestion">
+      <div class="rightArrow" @click="nextQuestion">
         <v-icon icon="mdi-chevron-right"></v-icon>
       </div>
-
     </div>
     <div class="graphs">
       <div id="chart">
-        <apexchart type="donut" :key="chartKey" :options="options" :series="chartSeries"></apexchart>
+        <apexchart
+          type="donut"
+          :key="chartKey"
+          :width="chartWidth.toString()"
+          :options="options"
+          :series="chartSeries"
+        ></apexchart>
       </div>
     </div>
   </div>
@@ -65,11 +72,12 @@ import apiClient from "@/utils/api-client";
 import groupSearch from "@/components/GroupSearch.vue";
 import mobileNav from "@/components/MobileSidebar.vue";
 
-
 export default {
   name: "Statistics",
   data() {
     return {
+      chartWidth: 500,
+      searchTemplate: "",
       isDesktop: window.innerWidth > 950,
       chartKey: 0,
       selectedGroupId: null,
@@ -80,16 +88,16 @@ export default {
       currentQuestionIndex: 0,
       templates: [],
       selectedTemplateId: null,
-
-
       options: {
         chart: {
           type: "donut",
+          width: 500,
         },
         plotOptions: {
           pie: {
-            customScale: 0.3,
-            offsetY: -450,
+            offsetX: 0,
+            offsetY: 25,
+            customScale: 1,
             donut: {
               size: "0%",
             },
@@ -98,7 +106,7 @@ export default {
         dataLabels: {
           enabled: true,
           style: {
-            fontSize: "60px",
+            fontSize: "30px",
           },
         },
       },
@@ -114,11 +122,17 @@ export default {
       return this.questions[this.currentQuestionIndex] || {};
     },
     chartSeries() {
-      return this.currentQuestion.answers ? this.currentQuestion.answers.map(a => a.filledAmount) : [];
-    }
+      return this.currentQuestion.answers
+        ? this.currentQuestion.answers.map((a) => a.filledAmount)
+        : [];
+    },
   },
 
   methods: {
+    updateChartWidth() {
+    this.chartWidth = window.innerWidth < 500 ? 300 : 500;
+  },
+
     handleResize() {
       this.isDesktop = window.innerWidth > 950;
     },
@@ -139,12 +153,12 @@ export default {
       this.questions = responseData;
       this.currentQuestionIndex = 0;
       const currentQuestion = this.questions[this.currentQuestionIndex];
-  this.series = currentQuestion.answers.map(a => a.filledAmount);
+      this.series = currentQuestion.answers.map((a) => a.filledAmount);
 
-  this.options.labels = currentQuestion.answers.map(a => a.answer);
-  this.chartKey++;
+      this.options.labels = currentQuestion.answers.map((a) => a.answer);
+      this.chartKey++;
     },
-    
+
     onTemplateSelected() {
       if (
         this.selectedGroupId &&
@@ -163,7 +177,7 @@ export default {
           .post("/charts/get", payload)
           .then((response) => {
             console.log("atsakymai:", response.data);
-            this.updateChartData(response.data); 
+            this.updateChartData(response.data);
           })
           .catch((error) => {
             console.error("Error fetching chart data:", error);
@@ -186,11 +200,9 @@ export default {
           .post("/charts/templates", payload)
           .then((response) => {
             this.templates = response.data;
-            // Process and display your chart data as needed
           })
           .catch((error) => {
             console.error("Error fetching chart data:", error);
-            // Handle error
           });
       }
     },
@@ -213,17 +225,29 @@ export default {
     },
   },
   created() {
-    this.fetchInternships();
     window.addEventListener("resize", this.handleResize);
   },
   beforeDestroy() {
     window.removeEventListener("resize", this.handleResize);
+  window.removeEventListener('resize', this.updateChartWidth);
+
   },
+
+  mounted() {
+  this.updateChartWidth(); 
+  window.addEventListener('resize', this.updateChartWidth);
+},
 };
 </script>
 
 <style scoped>
-.question{
+.vue-apexcharts{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.question {
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -273,17 +297,14 @@ input[type="date"]::-webkit-clear-button {
   display: none;
 }
 
-/* Removes the spin button */
 input[type="date"]::-webkit-inner-spin-button {
   display: none;
 }
 
-/* Always display the drop down caret */
 input[type="date"]::-webkit-calendar-picker-indicator {
   color: #2c3e50;
 }
 
-/* A few custom styles for date inputs */
 input[type="date"] {
   appearance: none;
   -webkit-appearance: none;
@@ -300,11 +321,55 @@ input[type="date"] {
   border-radius: 3px;
 }
 
+.questionText{
+  text-align: center;
+}
+
 input[type="date"],
 focus {
   color: #95a5a6;
   box-shadow: none;
   -webkit-box-shadow: none;
   -moz-box-shadow: none;
+}
+
+@media (max-width:1730px){
+.contentDiv{
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.searchDivs{
+  width: 100%;
+}
+.fieldDiv{
+  width: 100%;
+}
+}
+
+@media (max-width:1310px){
+.mainPage{
+  padding: 0 30px;
+}
+
+}
+
+@media (max-width:970px){
+.groupSearchDiv{
+  width: 300px;
+}
+
+.fieldDivDate{
+  width: 300px;
+
+}
+}
+@media (max-width:670px){
+.searchDivs{
+flex-direction: column;
+
+}
+
 }
 </style>

@@ -122,14 +122,17 @@
                   :disabled="isStudentProfilePage"
                 ></v-autocomplete>
               </div>
+              <div class="fieldDiv">
+                <div class="text-subtitle-1 text-bold-emphasis">Aprašas</div>
+                <v-textarea
+                  label="Aprašymas"
+                  v-model="userData.description"
+                  v-if="userData && userData.description !== undefined"
+                  :disabled="isStudentProfilePage"
+                ></v-textarea>
+              </div>
             </div>
-            <div class="text-subtitle-1 text-bold-emphasis">Aprašas</div>
-            <v-textarea
-              label="Aprašymas"
-              v-model="userData.description"
-              v-if="userData && userData.description !== undefined"
-              :disabled="isStudentProfilePage"
-            ></v-textarea>
+     
           </div>
           <div class="bottomButtons">
             <v-btn v-if="!isStudentProfilePage" color="#0D47A1" rounded="xl" variant="elevated" type="submit"
@@ -150,7 +153,7 @@
               >
                 <v-container>
                   <v-row no-gutters>
-                    <v-col cols="2">
+                    <v-col cols="3">
                       <div><b>Pavadinimas:</b></div><br>
                       {{ internship.title }}
                     </v-col>
@@ -329,8 +332,9 @@ export default {
           internshipId: this.selectedInternshipId,
         })
         .then((response) => {
-          this.selectedInternshipComments = response.data;
-          console.log(this.selectedInternshipComments.date_from);
+          this.selectedInternshipComments = response.data.sort((a, b) => {
+        return new Date(b.date_from) - new Date(a.date_from);
+      })
         })
         .catch((error) => {
           console.error("Error fetching internship details:", error);
@@ -414,7 +418,6 @@ export default {
   created() {
     const userId = this.$route.query.userId;
     console.log("Received user ID:", userId);
-    this.fetchInternships();
     window.addEventListener("resize", this.handleResize);
   },
   watch: {

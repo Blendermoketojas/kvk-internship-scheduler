@@ -175,7 +175,7 @@ export default {
 }
 
 table {
-  width: 80%;
+  width: 100%;
 }
 
 td,
@@ -284,5 +284,18 @@ h2 {
   transform: rotate(180deg);
   align-self: flex-end;
   margin-bottom: -1px;
+}
+
+@media (max-width:1300px){
+.CreationDiv{
+  padding: 0;
+}
+}
+
+@media (max-width:650px){
+.mainDiv{
+  padding: 0 10px;
+}
+
 }
 </style>

@@ -479,7 +479,6 @@ export default {
     },
   },
   created() {
-    this.fetchInternships();
     window.addEventListener("resize", this.handleResize);
   },
   beforeDestroy() {
@@ -495,41 +494,47 @@ export default {
 .multiple-divs {
   min-width: 220px;
 }
-
+@media (min-width:500px){
 .fieldDivDate {
   width: 450px;
   display: flex;
   justify-content: space-between;
   margin-bottom: 22px;
 }
-
-.dateInput {
-  width: 49%;
-}
-
 .fieldDiv {
   width: 450px;
   display: inline-block;
 }
 
+}
+
+.dateInput {
+  width: 49%;
+}
+
+
+@media (min-width: 950px){
 .inputDiv {
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
   align-items: center;
   justify-content: space-between;
+  margin: 0 10px
+}
+.bottomButtons .v-btn {
+  width: 200px;
+  margin: 0 10px;
 }
 
+}
 
 .bottomButtons {
   display: flex;
   justify-content: center;
 }
 
-.bottomButtons .v-btn {
-  width: 200px;
-  margin: 0 10px;
-}
+
 
 
 
@@ -544,17 +549,17 @@ input[type="date"]::-webkit-clear-button {
   display: none;
 }
 
-/* Removes the spin button */
+
 input[type="date"]::-webkit-inner-spin-button {
   display: none;
 }
 
-/* Always display the drop down caret */
+
 input[type="date"]::-webkit-calendar-picker-indicator {
   color: #2c3e50;
 }
 
-/* A few custom styles for date inputs */
+
 input[type="date"] {
   appearance: none;
   -webkit-appearance: none;

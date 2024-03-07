@@ -21,12 +21,19 @@
 
       <v-window v-model="tab">
         <v-window-item value="1">
+          <div class="fieldDiv">
           <div class="text-subtitle-1 text-bold-emphasis">Vardas</div>
           <v-text-field v-model="firstName" label="Vardenis"></v-text-field>
+        </div>
+        <div class="fieldDiv">
           <div class="text-subtitle-1 text-bold-emphasis">Pavardė</div>
           <v-text-field v-model="lastName" label="Pavardenis"></v-text-field>
+        </div>
+        <div class="fieldDiv">
           <div class="text-subtitle-1 text-bold-emphasis">El.paštas</div>
           <v-text-field v-model="email" label="elpastas@gmail.com"></v-text-field>
+        </div>
+        <div class="fieldDiv">
           <div class="text-subtitle-1 text-bold-emphasis">Naudotojo tipas</div>
           <v-select
             v-model="selectedRole"
@@ -35,10 +42,14 @@
             item-value="value"
             label="Pasirinkite naudotojo tipą"
           ></v-select>
+        </div>
           <div v-if="selectedRole === 5">
+            <div class="fieldDiv">
             <group-search  @update:selectedGroupId="selectedGroupId = $event"></group-search>
           </div>
+          </div>
           <div v-if="selectedRole === 4">
+            <div class="fieldDiv">
             <div class="text-subtitle-1 text-bold-emphasis">Įmonė</div>
             <v-autocomplete
               v-model="selectedCompanyId"
@@ -47,6 +58,7 @@
               :items="companies"
               label="Pasirinkite kompanija"
             ></v-autocomplete>
+          </div>
           </div>
 
           <div class="bottomButtons">
@@ -57,11 +69,12 @@
           </div>
         </v-window-item>
         <v-window-item value="2">
+          <div class="fieldDiv">
           <div class="text-subtitle-1 text-bold-emphasis">Įmonė</div>
           <v-text-field
           v-model="companyName"
           label="UAB 'Įmonė'"></v-text-field>
-
+</div>
           <div class="bottomButtons">
             <v-btn @click="createCompany" color="#0D47A1" rounded="xl" variant="elevated" type="submit">Išsaugoti</v-btn>
             <v-btn rounded="xl" variant="outlined">Atšaukti</v-btn>
@@ -69,16 +82,18 @@
         </v-window-item>
 
         <v-window-item value="3">
+          <div class="fieldDiv">
           <div class="text-subtitle-1 text-bold-emphasis">Grupė</div>
           <v-text-field
           v-model="groupName"
           ></v-text-field>
-
+</div>
+<div class="fieldDiv">
           <div class="text-subtitle-1 text-bold-emphasis">Mokslo sritis</div>
           <v-text-field
           v-model="fieldOfStudy"
           ></v-text-field>
-
+</div>
           <div class="bottomButtons">
             <v-btn @click="createGroup" color="#0D47A1" rounded="xl" variant="elevated" type="submit">Išsaugoti</v-btn>
             <v-btn rounded="xl" variant="outlined">Atšaukti</v-btn>
@@ -249,7 +264,7 @@ export default {
   }
 },
 created() {
-    this.fetchInternships();
+
     window.addEventListener("resize", this.handleResize);
   },
   beforeDestroy() {

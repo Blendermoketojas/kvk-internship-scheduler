@@ -2,9 +2,9 @@
     <div class="document-container mb-1">
         <div class="document-container-title">
             <button @click="toggleBody" class="styleless-button d-flex align-items-center">
-                <v-icon :icon="collapsed ? 'mdi-chevron-down' : 'mdi-chevron-up'" size="70"></v-icon>
+                <v-icon id="containerArrow" :icon="collapsed ? 'mdi-chevron-down' : 'mdi-chevron-up'" size="70"></v-icon>
                 <div class="text-container">
-                    <span class="fs-2">{{ containerName }}</span>
+                    <span id="containerName" class="fs-2">{{ containerName }}</span>
                 </div>
             </button>
         </div>
@@ -76,9 +76,6 @@ export default {
     font-weight: 700;
 }
 
-.document-container-body {}
-
-
 
 .accordion-enter-active,
 .accordion-leave-active {
@@ -98,4 +95,16 @@ export default {
     max-height: 1000px;
     /* Adjust as necessary for your content's actual height */
 }
+
+@media (max-width:600px){
+    #containerName{
+font-size: 15px !important;
+    }
+    #containerArrow{
+width: 45px !important;
+height: 45px !important;
+font-size: 45px !important;
+    }
+}
+
 </style>

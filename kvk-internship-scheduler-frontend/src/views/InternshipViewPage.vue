@@ -92,7 +92,7 @@ export default {
     },
   },
   created() {
-    this.fetchInternships();
+
     window.addEventListener("resize", this.handleResize);
   },
   beforeDestroy() {

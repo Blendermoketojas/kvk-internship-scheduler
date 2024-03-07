@@ -14,6 +14,7 @@
           class="user-name-item"
           :prepend-avatar="fullImagePath"
           :title="user.fullname"
+          to="/profile-info"
         >
         </v-list-item>
 
@@ -230,6 +231,12 @@ export default {
 @media (max-width: 600px) {
   .logo {
     max-width: 50%;
+  }
+}
+
+@media (max-width:400px){
+  .menu-button{
+    width: 45px;
   }
 }
 </style>

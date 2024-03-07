@@ -1,15 +1,66 @@
-.mainManagement {
-  max-width: 1500px;
-
-  
-}
-
-.bodyDiv{
+@media (max-width: 950px) {
+  .inputDiv {
     display: flex;
     flex-direction: column;
+    flex-wrap: wrap;
     align-items: center;
+    align-content: center;
+  }
+  .pageDescription {
+    padding: 10px 10px;
+  }
+
 }
 
-.managementInformation{
-    max-width: 1000px;
+@media (max-width: 500px) {
+  .bottomButtons{
+    display: flex;
+    justify-content: space-between;
+    flex-direction: column;
+    align-items: center;
+    padding: 3px 0;
+  }
+  .bottomButtons .v-btn {
+margin:3px;
+width: 200px;
+  }
+
+.v-combobox, .v-autocomplete{
+  width: 300px;
+}
+
+.fieldDivDate{
+  width: 300px;
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 22px;
+  flex-direction: column;
+  align-items: center;
+}
+.fieldDiv{
+  width: auto;
+}
+}
+
+.mainManagement {
+  max-width: 1500px;
+  width: 100%;
+  margin: 0 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.bodyDiv {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.managementInformation {
+  max-width: 1000px;
+}
+.pageDescription {
+ width: 100%;
+ padding: 10px 10px;
 }

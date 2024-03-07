@@ -1,7 +1,7 @@
 <template>
     <div class="document-section-container">
-        <span class="m-2 fs-5 font-bold">{{ sectionName }}</span>
-        <span class="text-break">{{ description }}</span>
+        <span id="sectionName" class="m-2 fs-5 font-bold">{{ sectionName }}</span>
+        <span id="sectionDescription" class="text-break">{{ description }}</span>
         <document-row v-for="file in files" :file-path="file.file_path" :file-name="resolveFileName(file)" :file-type="resolveFileType(file)"
             :key="file.id" :id="file.id"></document-row>
     </div>
@@ -45,5 +45,15 @@ export default {
     border: 2px solid black;
     border-radius: 5px;
     margin: 7px;
+}
+
+@media (max-width:600px){
+#sectionName{
+font-size:10px !important;
+}
+#sectionDescription{
+    font-size:10px !important;
+}
+
 }
 </style>

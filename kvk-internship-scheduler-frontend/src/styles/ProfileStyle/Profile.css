@@ -1,12 +1,75 @@
-
-.mainProfile{
-    max-width: 1000px;
-    min-width: 600px;
+.mainProfile {
+  max-width: 1000px;
+  min-width: 1000px;
+  padding: 0 10px;
 }
-.bodyDiv{
-    display: flex;
+.bodyDiv {
+  display: flex;
+  width: 100%;
+  flex-direction: column;
+  align-items: center;
+}
+@media (max-width: 1000px) {
+  form {
     width: 100%;
+  }
+  .mainProfile {
+    min-width: 0;
+  }
+}
+
+@media (max-width: 920px) {
+  .profileInformation .inputDiv {
     flex-direction: column;
     align-items: center;
+  }
+  .changePhotoDiv {
+    flex-direction: column;
+    align-items: center;
+  }
+  .changePhotoDiv .photoChangeBtn {
+    align-items: center;
+    margin: 5px 0;
+  }
+  .changePhotoDiv .photo {
+    margin-right: 0;
+  }
+  .v-btn {
+    margin-bottom: 10px;
+  }
+}
 
+@media (max-width: 750px) {
+  .v-col {
+    font-size: 10px;
+  }
+  .v-expansion-panel .v-expansion-panel-title {
+    padding: 16px 0;
+  }
+
+  button .v-container {
+    padding: 0 5px;
+  }
+}
+
+@media (max-width: 500px) {
+  .inputDiv .fieldDiv {
+    width: 300px;
+  }
+
+  .changePhotoDiv {
+    flex-direction: column;
+    align-items: center;
+  }
+  .changePhotoDiv .photoChangeBtn {
+    align-items: center;
+    margin: 5px 0;
+  }
+  .changePhotoDiv .photo {
+    margin-right: 0;
+  }
+
+  .v-btn {
+    margin-bottom: 10px;
+  }
 }

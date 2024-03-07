@@ -1,0 +1,12 @@
+@media (max-width:1500px){
+.mainPage .contentDiv{
+    padding: 0;
+}
+
+#app .mainPage{
+
+padding: 0 10px;
+
+}
+
+}

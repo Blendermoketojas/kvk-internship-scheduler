@@ -50,10 +50,11 @@
 </template>
 
 <script>
+import mobileNav from "@/components/MobileSidebar.vue";
 import customHeader from "@/components/DesktopHeader.vue";
 import internshipService from "@/services/internships/InternshipService";
 import { mapGetters } from "vuex";
-import mobileNav from "@/components/MobileSidebar.vue";
+
 
 export default {
   components: { customHeader, mobileNav },

@@ -7,7 +7,9 @@ use App\Services\BaseService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Validation\ValidationException;
 use App\Models\UserProfile;
+use App\Models\Conversation;
 use App\Models\Message;
+use Illuminate\Support\Facades\DB;
 
 class GetUserConversationsService extends BaseService
 {
@@ -46,26 +48,43 @@ class GetUserConversationsService extends BaseService
     }
 
     try {
-        // Assuming 'user_id' in the messages table corresponds to 'user_id' in the user profile
-        // and that your UserProfile model is correctly linked to the User model which is authenticated
-        $userProfileId = $this->user->id;
+        $userId = auth()->id(); // Assuming 'user_id' in 'userprofiles' matches Auth user ID
 
-        // Fetch conversations directly without needing to find the UserProfile again
-        $conversations = Message::where('user_id', $userProfileId)
-            ->with('conversation') // Assuming Message model has a 'conversation' relationship defined
-            ->get()
-            ->pluck('conversation')
-            ->unique('id');
+        // Get private conversations IDs for the logged-in user
+        $privateConversationsIds = DB::table('conversation_user')
+            ->join('conversations', 'conversation_user.conversation_id', '=', 'conversations.id')
+            ->where('conversations.type', 'private')
+            ->where('conversation_user.user_id', $userId)
+            ->pluck('conversation_id');
 
-        // Return the conversations in the response
+        $otherParticipants = collect();
+
+        foreach ($privateConversationsIds as $conversationId) {
+            // For each conversation, find the other user's IDs excluding the logged-in user
+            $otherUserIds = DB::table('conversation_user')
+                ->where('conversation_id', $conversationId)
+                ->where('user_id', '!=', $userId)
+                ->pluck('user_id');
+
+            // Fetch other participants' UserProfile information
+            $otherParticipantsInfo = UserProfile::whereIn('user_id', $otherUserIds)
+                ->get(['fullname', 'image_path']);
+
+            foreach ($otherParticipantsInfo as $participant) {
+                $otherParticipants->push([
+                    'conversation_id' => $conversationId,
+                    'fullname' => $participant->fullname,
+                    'image_path' => $participant->image_path,
+                ]);
+            }
+        }
+
         return response()->json([
-            'message' => 'Conversations fetched successfully',
-            'conversations' => $conversations
+            'success' => true,
+            'otherParticipants' => $otherParticipants
         ]);
     } catch (\Exception $e) {
-        // Log the error and return an error response
-       
-        return response()->json(['error' => 'Failed to fetch conversations'], 500);
+        return response()->json(['error' => 'Failed to fetch private conversations', 'exception' => $e->getMessage()], 500);
     }
 }
 }

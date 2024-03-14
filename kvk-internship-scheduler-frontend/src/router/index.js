@@ -87,6 +87,10 @@ const routes = [
     path: "/user-creation",
     component: () => import("@/views/UserCreationPage.vue"),
   },
+    {
+    path: "/chat-room",
+    component: () => import("@/views/ChatRoomPage.vue"),
+  },
   {
     path: "/testing",
     component: () => import("@/views/Testing.vue"),

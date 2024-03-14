@@ -186,10 +186,6 @@ export default {
     filteredDocumentItems() {
       let items = [{ title: "Dokumentų peržiūra", route: "/documents" }];
 
-      if (this.userRoleId !== 5) {
-        items.push({ title: "Dokumentų įkėlimas", route: "/document-upload" });
-      }
-
       return items;
     },
 

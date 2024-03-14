@@ -108,6 +108,7 @@ abstract class BaseService
         if (!$this->modelInstance) {
             $this->modelInstance = $this->retrieveModelInstance();
         }
+        
 
         Log::info($this->modelInstance->created_by);
 

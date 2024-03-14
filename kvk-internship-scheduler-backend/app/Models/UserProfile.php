@@ -64,4 +64,24 @@ class UserProfile extends Model
     {
         return $this->morphToMany(LearningMaterial::class, 'accessable', 'learning_materials_access');
     }
+    
+    public function messages()
+    {
+        return $this->hasMany(Message::class, 'user_id', 'user_id');
+    }
+   
+    public function conversations()
+    {
+        // return $this->hasManyThrough(
+        //     Conversation::class, 
+        //     Message::class,
+        //     'user_id',
+        //     'id', 
+        //     'user_id', 
+        //     'conversation_id',
+        // );
+
+        return $this->belongsToMany(Conversation::class, 'conversation_user', 'user_id', 'conversation_id');
+    }
+
 }

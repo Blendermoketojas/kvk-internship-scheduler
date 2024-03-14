@@ -19,6 +19,8 @@ use App\Http\Controllers\v2\ResultGradeController;
 use App\Http\Controllers\v2\StudentController;
 use App\Http\Controllers\v2\StudentGroupController;
 use App\Http\Controllers\v2\UserProfileController;
+use App\Http\Controllers\v2\ConversationController;
+use App\Http\Controllers\v2\MessageController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -69,9 +71,7 @@ Route::middleware('api')->prefix('v2')->group(function () {
         // User profiles
 
         Route::get('/profile', [UserProfileController::class, 'getProfile']);
-
         Route::put('/profile/update', [UserProfileController::class, 'update']);
-
         Route::post('/search-profiles-role', [UserProfileController::class, 'searchProfilesByRole']);
         Route::post('/search-profiles', [UserProfileController::class, 'searchUserProfiles']);
         Route::post('/profile/update-picture', [UserProfileController::class, 'updateProfilePicture']);
@@ -83,8 +83,10 @@ Route::middleware('api')->prefix('v2')->group(function () {
         Route::post('/search-students', [StudentController::class, 'searchStudents']);
 
         Route::get('/linked-students', [StudentController::class, 'getLinkedStudents']);
-        Route::get('/linked-students-internships-active', [StudentController::class,
-            'getLinkedStudentsActiveInternships']);
+        Route::get('/linked-students-internships-active', [
+            StudentController::class,
+            'getLinkedStudentsActiveInternships'
+        ]);
 
         Route::post('/get-student-group', [StudentGroupController::class, 'getStudentGroup']);
         Route::post('/update-student-group', [StudentGroupController::class, 'updateStudentGroup']);
@@ -95,19 +97,24 @@ Route::middleware('api')->prefix('v2')->group(function () {
 
         Route::get('/internship-active', [InternshipController::class, 'getActiveInternship']);
         Route::get('/internships', [InternshipController::class, 'getCurrentUserInternships']);
-
         Route::post('/internship', [InternshipController::class, 'getInternship']);
         Route::post('/internships', [InternshipController::class, 'createInternship']);
         Route::post('/user/internships', [InternshipController::class, 'getUserInternships']);
         Route::post('/internships/student-group', [InternshipController::class, 'getStudentGroupInternships']);
-        Route::post('/internships/student-group-active', [InternshipController::class,
-            'getStudentGroupActiveInternships']);
+        Route::post('/internships/student-group-active', [
+            InternshipController::class,
+            'getStudentGroupActiveInternships'
+        ]);
         Route::post('/search/internship/titles', [InternshipController::class, 'searchInternshipTitles']);
-        Route::get('/filter/not-evaluated-internships', [InternshipController::class,
-            'filterNotEvaluatedInternships']);
+        Route::get('/filter/not-evaluated-internships', [
+            InternshipController::class,
+            'filterNotEvaluatedInternships'
+        ]);
 
-        Route::get('/get-linked-students-inactive-internships', [InternshipController::class,
-            'getLinkedStudentsInactiveInternshipsService']);
+        Route::get('/get-linked-students-inactive-internships', [
+            InternshipController::class,
+            'getLinkedStudentsInactiveInternshipsService'
+        ]);
 
         Route::put('/internship-update', [InternshipController::class, 'updateInternship']);
 
@@ -147,31 +154,57 @@ Route::middleware('api')->prefix('v2')->group(function () {
         Route::post('/result/grade/delete', [ResultGradeController::class, 'deleteGrade']);
         Route::post('/result/grade/get', [ResultGradeController::class, 'getStudentGrades']);
 
+        //Chatting
+
+        Route::post('/conversations', [ConversationController::class, 'createConversation']);
+        Route::get('/getUsersConversations', [ConversationController::class, 'getUsersConversations']);
+        Route::get('/getConversationsMessages', [ConversationController::class, 'getConversationMessages']);
+
+        Route::post('/sendMessage', [MessageController::class, 'sendMessage']);
+        Route::delete('/deleteMessage', [MessageController::class, 'DeleteMessage']);
+
+
         // Internship File Management
 
-        Route::post('/internship/upload-document-with-files',
-            [InternshipFileManagementController::class, 'uploadDocumentWithFiles']);
+        Route::post(
+            '/internship/upload-document-with-files',
+            [InternshipFileManagementController::class, 'uploadDocumentWithFiles']
+        );
 
-        Route::post('/internship/delete-document-with-files',
-            [InternshipFileManagementController::class, 'deleteDocumentWithFiles']);
+        Route::post(
+            '/internship/delete-document-with-files',
+            [InternshipFileManagementController::class, 'deleteDocumentWithFiles']
+        );
 
-        Route::post('/internship/internship/update-document',
-            [InternshipFileManagementController::class, 'updateDocument']);
+        Route::post(
+            '/internship/internship/update-document',
+            [InternshipFileManagementController::class, 'updateDocument']
+        );
 
-        Route::get('/user/internship/documents', [InternshipFileManagementController::class,
-            'getAllUserInternshipDocuments']);
+        Route::get('/user/internship/documents', [
+            InternshipFileManagementController::class,
+            'getAllUserInternshipDocuments'
+        ]);
 
-        Route::post('/internship/document-download', [InternshipFileManagementController::class,
-            'downloadInternshipDocument']);
+        Route::post('/internship/document-download', [
+            InternshipFileManagementController::class,
+            'downloadInternshipDocument'
+        ]);
 
-        Route::post('/internship/documents', [InternshipFileManagementController::class,
-            'getInternshipDocuments']);
+        Route::post('/internship/documents', [
+            InternshipFileManagementController::class,
+            'getInternshipDocuments'
+        ]);
 
-        Route::post('/internship/documents-files', [InternshipFileManagementController::class,
-            'getInternshipDocumentsWithFiles']);
+        Route::post('/internship/documents-files', [
+            InternshipFileManagementController::class,
+            'getInternshipDocumentsWithFiles'
+        ]);
 
-        Route::post('/documents/internship-by-id', [InternshipFileManagementController::class,
-            'getDocumentsByInternshipId']);
+        Route::post('/documents/internship-by-id', [
+            InternshipFileManagementController::class,
+            'getDocumentsByInternshipId'
+        ]);
 
         // File Management
 

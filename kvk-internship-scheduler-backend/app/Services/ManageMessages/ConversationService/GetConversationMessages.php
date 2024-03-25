@@ -15,8 +15,9 @@ class GetConversationMessages extends BaseService
     public function rules(): array
     {
         return [
-            'conversation_id' => 'required|integer|exists:messages,id'
-
+            'conversation_id' => 'required|integer|exists:messages,id',
+            'offset' => 'integer|min:0',
+            'limit' => 'integer|min:1|max:50'
         ];
     }
 
@@ -41,19 +42,29 @@ class GetConversationMessages extends BaseService
     {
         $validator = Validator::make($this->request->all(), [
             'conversation_id' => 'required|integer|exists:conversations,id',
+            'offset' => 'integer|min:0',
+            'limit' => 'integer|min:1|max:50'
         ]);
-
+    
         if ($validator->fails()) {
             return response()->json(['error' => $validator->errors()], 400);
         }
-
+    
         $validated = $validator->validated();
         $conversationId = $validated['conversation_id'];
-
+        $offset = $validated['offset'] ?? 0;
+        $limit = $validated['limit'] ?? 10;
+    
         try {
             $conversation = Conversation::findOrFail($conversationId);
-            $messages = $conversation->messages()->with('userProfile')->get(); 
-
+            $messages = $conversation->messages()->with('userProfile')
+                        ->orderBy('created_at', 'desc') 
+                        ->skip($offset)
+                        ->take($limit)
+                        ->get();
+    
+            $messages = $messages->reverse();
+    
             return response()->json([
                 'message' => 'Messages fetched successfully',
                 'data' => $messages
@@ -61,5 +72,5 @@ class GetConversationMessages extends BaseService
         } catch (\Exception $e) {
             return response()->json(['error' => 'Failed to fetch messages for the conversation', 'exception' => $e->getMessage()], 500);
         }
-    }
+}
 }

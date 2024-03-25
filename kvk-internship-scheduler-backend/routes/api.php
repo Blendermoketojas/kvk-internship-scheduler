@@ -21,10 +21,13 @@ use App\Http\Controllers\v2\StudentGroupController;
 use App\Http\Controllers\v2\UserProfileController;
 use App\Http\Controllers\v2\ConversationController;
 use App\Http\Controllers\v2\MessageController;
+use App\Http\Controllers\v2\UserSearchController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 // dependencies
+use Illuminate\Support\Facades\Mail;
+use App\Mail\RegisterMail;
 
 /*
 |--------------------------------------------------------------------------
@@ -53,6 +56,16 @@ Route::middleware('api')->prefix('v2')->group(function () {
 
     // routes that are reachable only by authenticated users
     Route::middleware(['jwt.from.cookie', 'jwt.auth'])->group(function () {
+
+
+        //register mail sending
+
+        // Route::get('/sendmail', function () {
+        //     $tempPassword = 'YourRandomPassword123'; // Generate or define your temporary password
+        //     Mail::to('lakstinislukas@gmail.com')->send(new RegisterMail($tempPassword)); // Replace 'test@example.com' with the actual recipient's email address
+            
+        //     return 'Mail sent!';
+        // });
 
         // Register external
         Route::post('/register-external', [AuthController::class, 'registerExternalUser']);
@@ -158,11 +171,12 @@ Route::middleware('api')->prefix('v2')->group(function () {
 
         Route::post('/conversations', [ConversationController::class, 'createConversation']);
         Route::get('/getUsersConversations', [ConversationController::class, 'getUsersConversations']);
-        Route::get('/getConversationsMessages', [ConversationController::class, 'getConversationMessages']);
+        Route::get('/getGroupConversations', [ConversationController::class, 'getGroupConversations']);
+
+        Route::get('/conversations/{conversationId}/messages', [ConversationController::class, 'getConversationMessages']);
 
         Route::post('/sendMessage', [MessageController::class, 'sendMessage']);
-        Route::delete('/deleteMessage', [MessageController::class, 'DeleteMessage']);
-
+        Route::post('/deleteMessage', [MessageController::class, 'DeleteMessage']);
 
         // Internship File Management
 

@@ -77,37 +77,37 @@ export default {
       this.isDesktop = window.innerWidth > 950;
     },
 
-    loadItems({ page, itemsPerPage, sortBy }) {
+    fetchData() {
       this.loading = true;
-      this.currentPage = page;
-      this.itemsPerPage = itemsPerPage;
-      const start = (page - 1) * itemsPerPage;
-      const end = start + itemsPerPage;
-      this.serverItems = this.allItems.slice(start, end);
-      this.totalItems = this.allItems.length;
-
-
-      apiClient
-      apiClient.get(`/linked-students?`)
-      .then(response => {
-        this.allItems = response.data.map(item => ({
-          ...item,
-          group_identifier: item.student_group.group_identifier,
-          field_of_study: item.student_group.field_of_study,
-        }));
-        this.totalItems = this.allItems.length;
-        this.loadItems({ page: this.currentPage, itemsPerPage: this.itemsPerPage });
-      })
-      .catch(error => {
-        console.error("Error fetching data:", error);
+      apiClient.get(`/linked-students`)
+        .then(response => {
+          this.allItems = response.data.map(item => ({
+            ...item,
+            group_identifier: item.student_group.group_identifier,
+            field_of_study: item.student_group.field_of_study,
+          }));
+          this.totalItems = this.allItems.length;
+          this.loadItems({ page: this.currentPage, itemsPerPage: this.itemsPerPage, sortBy: [] });
+        })
+        .catch(error => {
+          console.error("Error fetching data:", error);
         })
         .finally(() => {
           this.loading = false;
         });
     },
+
+    loadItems({ page, itemsPerPage, sortBy }) {
+      this.currentPage = page;
+      this.itemsPerPage = itemsPerPage;
+      const start = (page - 1) * itemsPerPage;
+      const end = start + itemsPerPage;
+      this.serverItems = this.allItems.slice(start, end);
+    },
   },
+
   mounted() {
-    this.loadItems({ page: 1, itemsPerPage: this.itemsPerPage, sortBy: [] });
+    this.fetchData();
   },
   created() {
     window.addEventListener("resize", this.handleResize);

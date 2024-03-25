@@ -1,11 +1,13 @@
 <template>
 <mobile-sidebar></mobile-sidebar>
+
+<user-search></user-search>
   </template>
   
   <script>
 
 import MobileSidebar from '@/components/MobileSidebar.vue';
-
+import userSearch from '@/components/SearchUserProfile.vue'
 
   export default {
     name: "AppLayout",
@@ -16,7 +18,7 @@ import MobileSidebar from '@/components/MobileSidebar.vue';
       };
     },
     components: {
-
+userSearch,
 MobileSidebar,
   },
 

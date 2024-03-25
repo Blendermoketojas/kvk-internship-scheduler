@@ -68,11 +68,12 @@ class GetUserConversationsService extends BaseService
 
             // Fetch other participants' UserProfile information
             $otherParticipantsInfo = UserProfile::whereIn('user_id', $otherUserIds)
-                ->get(['fullname', 'image_path']);
+            ->get(['user_id', 'fullname', 'image_path']);
 
             foreach ($otherParticipantsInfo as $participant) {
                 $otherParticipants->push([
                     'conversation_id' => $conversationId,
+                    'user_id' => $participant->user_id, 
                     'fullname' => $participant->fullname,
                     'image_path' => $participant->image_path,
                 ]);

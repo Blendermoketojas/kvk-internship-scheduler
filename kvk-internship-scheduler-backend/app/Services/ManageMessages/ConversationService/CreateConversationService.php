@@ -25,7 +25,7 @@ class CreateConversationService extends BaseService
             'type' => 'required|in:private,group',
             'userProfileId' => 'required|array',
             'userProfileId.*' => 'exists:userprofiles,id',
-            'message' => 'required|string',
+            'message' => 'string|nullable',
         ];
     }
 
@@ -55,34 +55,36 @@ class CreateConversationService extends BaseService
         if ($validator->fails()) {
             return response()->json(['error' => $validator->errors()], 400);
         }
-    
+
         // Extract validated data
         $validated = $validator->validated();
-    
+
         // Create the conversation
         $conversation = new Conversation([
             'name' => $validated['name'],
             'type' => $validated['type']
         ]);
         $conversation->save();
-    
-        // Get unique user profile IDs from request, including the logged-in user's ID
+
+        // Associate conversation with user profiles
+        // Logic to include the initiator's user profile ID if not already included
         $userProfileIds = array_unique(array_merge($validated['userProfileId'], [$this->user->id]));
-    
-        // Associate conversation with user profiles, including the logged-in user
         $conversation->userProfiles()->attach($userProfileIds);
-        foreach ($userProfileIds as $userId) {
+
+        // Create a message only if a message content is provided
+        if (!empty($validated['message'])) {
             $message = new Message([
                 'conversation_id' => $conversation->id,
-                'user_id' => $userId,
+                'user_id' => $this->user->id, // Initiating user's ID
                 'message' => $validated['message'],
             ]);
             $message->save();
         }
-    
+
         return response()->json([
-            'message' => 'Conversation and messages created successfully',
+            'message' => 'Conversation created successfully' . (!empty($validated['message']) ? ' with initial message' : ''),
             'conversation' => $conversation
         ], 201);
     }
 }
+

@@ -60,7 +60,7 @@
       >
     </div> -->
     <div class="btn">
-      <router-link class="redirectText" to="/chat">Pokalbiai</router-link>
+      <router-link class="redirectText" to="/chat-room">Pokalbiai</router-link>
     </div>
     <div class="btn">
       <router-link class="redirectText" to="/help">Pagalba</router-link>

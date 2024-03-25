@@ -7,12 +7,9 @@ use Illuminate\Http\Request;
 use App\Services\ManageMessages\ConversationService\CreateConversationService;
 use App\Services\ManageMessages\ConversationService\GetUserConversationsService;
 use App\Services\ManageMessages\ConversationService\GetConversationMessages;
-use App\Models\Conversation;
-use App\Models\Message;
-use Illuminate\Support\Facades\Response;
+use App\Services\ManageMessages\ConversationService\GetGroupConversationsService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Validation\ValidationException;
-use Illuminate\Support\Facades\Log;
 
 class ConversationController extends Controller
 {
@@ -35,8 +32,16 @@ class ConversationController extends Controller
            /**
      * @throws ValidationException
      */
-    public function getConversationMessages(Request $request): JsonResponse
+    public function getConversationMessages(Request $request,  $conversationId): JsonResponse
     {
+        $request->merge(['conversation_id' => $conversationId]);
         return (new GetConversationMessages($request))->execute();
+    }      
+         /**
+     * @throws ValidationException
+     */
+    public function getGroupConversations(Request $request): JsonResponse
+    {
+        return (new GetGroupConversationsService($request))->execute();
     }
 }

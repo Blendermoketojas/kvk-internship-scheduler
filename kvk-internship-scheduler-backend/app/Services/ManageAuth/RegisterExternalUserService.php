@@ -6,9 +6,11 @@ use App\Contracts\Roles\Role;
 use App\Models\Company;
 use App\Models\User;
 use App\Services\BaseService;
+use App\Mail\RegisterMail;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\ValidationException;
+use Illuminate\Support\Facades\Mail;
 
 class RegisterExternalUserService extends BaseService
 {
@@ -50,7 +52,9 @@ class RegisterExternalUserService extends BaseService
         // logic execution
 
         $company = Company::find($this->data()['companyId']);
-        $password = fake()->password;
+       // $password = fake()->password;
+       $password = \Illuminate\Support\Str::random(10);
+
 
         $user = User::create([
             'email' => $this->data()['email'],
@@ -73,6 +77,7 @@ class RegisterExternalUserService extends BaseService
 
         $userProfile->company()->associate($company);
         $userProfile->save();
+       Mail::to($this->data()['email'])->send(new RegisterMail($password, $this->data()['email']));
 
         // response
         return response()->json(['success' => true, 'message' => 'External user registration is successful',

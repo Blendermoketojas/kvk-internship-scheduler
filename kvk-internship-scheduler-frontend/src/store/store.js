@@ -41,6 +41,12 @@ export default createStore({
     getRoleId(state) {
       return state.user ? state.user.role_id : null;
     },
+    getUserId(state) {
+      return state.user ? state.user.id : null;
+    },
+    getUserFullName(state) {
+      return state.user ? state.user.fullname : '';
+    },
   },
   actions: {},
 });

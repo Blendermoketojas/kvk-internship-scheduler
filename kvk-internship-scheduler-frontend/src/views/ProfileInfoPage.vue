@@ -110,6 +110,27 @@
                   label="Šalis"
                 ></v-text-field>
               </div>
+              <div class="fieldDiv">
+                <div
+                class="text-subtitle-1 text-medium-emphasis d-flex align-center justify-space-between"
+              >
+                Slaptažodis
+              </div>
+      
+              <v-text-field
+                :append-inner-icon="visible ? 'mdi-eye-off' : 'mdi-eye'"
+                :type="visible ? 'text' : 'password'"
+                density="compact"
+                placeholder="Pakeiskite slaptažodį"
+                prepend-inner-icon="mdi-lock-outline"
+                variant="outlined"
+                v-model="loginData.password"
+                @click:append-inner="visible = !visible"
+              ></v-text-field>
+      
+
+
+              </div>
               <div class="fieldDiv" v-if="isRoleFour">
                 <div class="text-subtitle-1 text-bold-emphasis">Įmonė</div>
                 <v-autocomplete
@@ -239,6 +260,13 @@ export default {
       selectedStudent: "",
       students: [],
       internshipsLoaded: false,
+      showErrorAlert:false,
+      visible: false,
+      isLoading: false,
+      loginData: {
+        email: "",
+        password: "",
+      },
     };
   },
   components: {
@@ -369,44 +397,48 @@ export default {
       if(this.userData.company_id===null){
         this.userData.company_id=32;
       }
-      const userDataWithPassword = {
-        ...this.userData,
-        email: this.userData.user.email,
-        password: "password",
-        company_id:this.userData.company_id,
-      };
+      let userDataToSend = {
+    ...this.userData,
+    email: this.userData.user.email,
+    company_id: this.userData.company_id,
+  };
 
-      apiClient
-        .put("/profile/update", userDataWithPassword, { withCredentials: true })
-        .then((response) => {
-          console.log("Changes saved:", response.data);
-          this.showSuccessAlert = true;
-          setTimeout(() => (this.showSuccessAlert = false), 6000);
-        })
-        .catch((error) => {
-          console.error("Error saving changes:", error);
-          this.showErrorAlert = true;
-          setTimeout(() => (this.showErrorAlert = false), 6000);
-        });
+  // Only add the password to userDataToSend if it's not empty
+  if (this.loginData.password.trim().length > 0) {
+    userDataToSend.password = this.loginData.password;
+  }
 
-      if (this.selectedImage) {
-        let formData = new FormData();
-        formData.append("image", this.selectedImage);
+  apiClient
+    .put("/profile/update", userDataToSend, { withCredentials: true })
+    .then((response) => {
+      console.log("Changes saved:", response.data);
+      this.showSuccessAlert = true;
+      setTimeout(() => (this.showSuccessAlert = false), 6000);
+    })
+    .catch((error) => {
+      console.error("Error saving changes:", error);
+      this.showErrorAlert = true;
+      setTimeout(() => (this.showErrorAlert = false), 6000);
+    });
 
-        apiClient
-          .post("/profile/update-picture", formData, {
-            withCredentials: true,
-            headers: {
-              "Content-Type": "multipart/form-data",
-            },
-          })
-          .then((response) => {
-            console.log("Image changes saved:", response.data);
-          })
-          .catch((error) => {
-            console.error("Error saving changes:", error);
-          });
-      }
+  if (this.selectedImage) {
+    let formData = new FormData();
+    formData.append("image", this.selectedImage);
+
+    apiClient
+      .post("/profile/update-picture", formData, {
+        withCredentials: true,
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      })
+      .then((response) => {
+        console.log("Image changes saved:", response.data);
+      })
+      .catch((error) => {
+        console.error("Error saving image changes:", error);
+      });
+  }
     },
     triggerFileInput() {
       this.$refs.fileInput.click();

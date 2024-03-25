@@ -68,14 +68,16 @@ class UpdateUserProfileService extends BaseService
         }
 
         // check if password has been changed
-        if ($isUpdated) {
+        if (!empty($this->data()['password'])) {
+            // Then, inside this block, you can check if the provided password is different from the current password
             if (!Hash::check($this->data()['password'], auth()->user()->getAuthPassword())) {
-                Validator::make([$this->data()['password']], ['password' => 'required|string|min:6']);
+                Validator::make([$this->data()], ['password' => 'required|string|min:6']);
                 $userCredentials->update([
                     'password' => Hash::make($this->data()['password']),
                 ]);
             }
         }
+
 
         // respond with email
         $this->user['user'] = $userCredentials;

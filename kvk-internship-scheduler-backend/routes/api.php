@@ -58,15 +58,6 @@ Route::middleware('api')->prefix('v2')->group(function () {
     Route::middleware(['jwt.from.cookie', 'jwt.auth'])->group(function () {
 
 
-        //register mail sending
-
-        // Route::get('/sendmail', function () {
-        //     $tempPassword = 'YourRandomPassword123'; // Generate or define your temporary password
-        //     Mail::to('lakstinislukas@gmail.com')->send(new RegisterMail($tempPassword)); // Replace 'test@example.com' with the actual recipient's email address
-            
-        //     return 'Mail sent!';
-        // });
-
         // Register external
         Route::post('/register-external', [AuthController::class, 'registerExternalUser']);
 

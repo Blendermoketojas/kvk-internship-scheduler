@@ -37,6 +37,14 @@
     
  
     }
+    .v-window__container {
+      display: flex;
+      flex-direction: column;
+      height: inherit;
+      position: relative;
+      transition: 0.3s cubic-bezier(0.25, 0.8, 0.5, 1);
+      align-items: center;
+    }
       .bottomButtons[data-v-e2f0d1e4] {
         display: flex;
         justify-content: center;

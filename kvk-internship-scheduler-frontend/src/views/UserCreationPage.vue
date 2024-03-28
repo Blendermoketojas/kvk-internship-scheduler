@@ -277,8 +277,6 @@ created() {
 @import '@/styles/InternshipStyle/userCreation.css';
 
 
-
-
 h2 {
   display: inline-block;
   font-size: 15px;
@@ -295,5 +293,7 @@ h2 {
   width: 200px;
   margin: 0 10px;
 }
+
+
 
 </style>

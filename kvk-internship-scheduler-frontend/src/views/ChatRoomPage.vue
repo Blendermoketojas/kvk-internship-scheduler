@@ -1,8 +1,8 @@
 <template>
   <custom-header v-if="isDesktop" />
   <mobile-nav v-if="!isDesktop" />
-  <div class="bodyDiv">
-    <div class="mainDiv">
+  <div class="body-div">
+    <div class="main-div">
       <v-dialog v-model="dialog" persistent max-width="300px">
         <v-card>
           <v-card-title class="text-h5">Žinutės ištrynimas</v-card-title>
@@ -25,7 +25,7 @@
             <v-text-field
               v-model="searchTerm"
               label="Įveskite naudotojo vardą"
-              @input="searchUsers"
+              @input="debouncedSearchUsers"
               outlined
               dense
               clearable
@@ -82,23 +82,31 @@
               title="Asmeninės žinutės"
               @click="fetchConversations"
             >
+         
               <v-expansion-panel-text id="contact-info">
+                <v-infinite-scroll :height="300">
+                  <v-btn
+                    v-for="participant in otherParticipants"
+                    :key="participant.conversation_id"
+                    class="chat-selection text-left"
+                    :id="`btn-${participant.conversation_id}`"
+                    @click="selectParticipant(participant)"
+                  >
+                    <img
+                      :src="getImagePath(participant.image_path)"
+                      alt="Profile Picture"
+                      class="profile-picture"
+                    />
+                    {{ participant.fullname }}
+                  </v-btn>
+                </v-infinite-scroll>
                 <v-btn
-                  v-for="participant in otherParticipants"
-                  :key="participant.conversation_id"
-                  class="chat-selection text-left"
-                  :id="`btn-${participant.conversation_id}`"
-                  @click="selectParticipant(participant)"
+                  @click="newChatModal = true"
+                  style="width: 100%; background-color: #cfcfcf"
+                  >Naujas pokalbis</v-btn
                 >
-                  <img
-                    :src="getImagePath(participant.image_path)"
-                    alt="Profile Picture"
-                    class="profile-picture"
-                  />
-                  {{ participant.fullname }}
-                </v-btn>
-                <v-btn @click="newChatModal = true">Naujas pokalbis</v-btn>
               </v-expansion-panel-text>
+         
             </v-expansion-panel>
             <v-expansion-panel
               style="background-color: #f8f9fa"
@@ -106,7 +114,7 @@
               @click="fetchGroupConversations"
             >
               <v-expansion-panel-text>
-                <v-btn @click="newGroupModal = true">Nauja grupė</v-btn>
+                <v-infinite-scroll :height="300">
                 <v-btn
                   v-for="group in groups"
                   :key="group.conversation_id"
@@ -115,6 +123,12 @@
                 >
                   {{ group.group_name }}
                 </v-btn>
+              </v-infinite-scroll>
+                <v-btn
+                  @click="newGroupModal = true"
+                  style="width: 100%; background-color: #cfcfcf"
+                  >Nauja grupė</v-btn
+                >
               </v-expansion-panel-text>
             </v-expansion-panel>
           </v-expansion-panels>
@@ -194,6 +208,7 @@ import customHeader from "@/components/DesktopHeader.vue";
 import apiClient from "@/utils/api-client";
 import { mapGetters } from "vuex";
 import userSearch from "@/components/SearchUserProfile.vue";
+import { debounce } from 'lodash';
 
 export default {
   components: { customHeader, mobileNav, userSearch },
@@ -229,6 +244,10 @@ export default {
   },
 
   methods: {
+    debouncedSearchUsers: debounce(function() {
+    this.searchUsers();
+  }, 300),
+
     selectGroup(conversationId) {
       const selectedGroup = this.groups.find(
         (group) => group.conversation_id === conversationId
@@ -344,11 +363,9 @@ export default {
         user.id
       );
 
-
       if (existingConversation) {
         this.selectConversation(existingConversation);
       } else {
-        // Add a check to ensure that the user object is not null or undefined
         if (user) {
           this.setupNewConversation(user);
           const payload = {
@@ -619,6 +636,18 @@ export default {
 </script>
 
 <style scoped>
+.v-infinite-scroll__side {
+display: none !important;
+}
+
+.v-expansion-panel-text__wrapper {
+  padding: 10px !important;
+  display: flex;
+  flex-direction: column;
+}
+.v-expansion-panel-text__wrapper .v-btn {
+  margin: 2px 0;
+}
 .message-sender {
   font-weight: bold;
   margin-bottom: 4px;
@@ -665,7 +694,7 @@ export default {
   margin-right: 8px;
   object-fit: cover;
 }
-.bodyDiv {
+.body-div {
   width: 100%;
 }
 h2 {
@@ -674,7 +703,7 @@ h2 {
   color: rgb(170, 167, 167);
   font-weight: 400;
 }
-.mainDiv {
+.main-div {
   padding: 0 200px;
   max-height: 100%;
 }
@@ -714,12 +743,50 @@ h2 {
 .chat-selection {
   width: 100%;
 }
-.contact #contact-info .v-expansion-panel-text__wrapper {
-  padding: 0 !important;
-}
+
 .delete-icon {
   float: right;
   cursor: pointer;
   color: #c00;
+}
+
+@media (max-width:1200px) {
+  .main-div {
+  padding: 10px;
+  }
+}
+@media (max-width: 600px) {
+  .main-div {
+    padding: 0;
+  }
+  
+  .contentDiv {
+    flex-direction: column;
+  }
+  
+  .contact, .chat-room {
+    width: 100%;
+    max-width: none;
+    padding: 0;
+  }
+  
+  .chat-room {
+    border-left: none;
+  }
+
+  .v-expansion-panel-text__wrapper {
+    padding: 5px;
+  }
+
+  .message-input {
+    padding: 0 10px;
+  }
+
+  .messages-container {
+    height: calc(100vh - 200px); /* Adjust the 200px based on other elements' heights */
+  }
+  .v-infinite-scroll__side {
+display: none !important;
+  }
 }
 </style>

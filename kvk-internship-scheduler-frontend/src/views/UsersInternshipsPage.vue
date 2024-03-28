@@ -718,7 +718,7 @@ export default {
 };
 </script>
 
-<style>
+<style scoped>
 @import "@/styles/InternshipStyle/userInternship";
 
 @media (max-width: 1620px) {
@@ -845,4 +845,6 @@ h2 {
   border-bottom: 1px rgb(234, 225, 225) solid;
   padding: 20px 0;
 }
+
+
 </style>

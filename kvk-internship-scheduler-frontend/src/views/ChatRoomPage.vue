@@ -307,10 +307,18 @@ export default {
       apiClient
         .post("/conversations", payload)
         .then((response) => {
-          console.log("Group created successfully:", response.data);
           this.groupInfo.name = "";
           this.groupInfo.selectedUsers = [];
           this.newGroupModal = false;
+          this.currentParticipant = {
+            conversation_id: response.data.conversation.id,
+            fullname: response.data.conversation.name,
+            image_path: "",
+          };
+          this.currentMessages = [];
+          this.messagesOffset = 0;
+          this.allMessagesLoaded = false;
+          this.fetchConversationMessages(true);
         })
         .catch((error) => {
           console.error("Error creating new group:", error);
@@ -324,7 +332,6 @@ export default {
         apiClient
           .post("/search-profiles", { fullName: this.searchTerm.trim() })
           .then((response) => {
-            console.log("Search results:", response.data);
             this.searchResults = response.data;
           })
           .catch((error) => {
@@ -337,15 +344,12 @@ export default {
         user.id
       );
 
-      console.log("useris ", user.id);
-      console.log("egzistuoja? ", existingConversation);
 
       if (existingConversation) {
         this.selectConversation(existingConversation);
       } else {
         // Add a check to ensure that the user object is not null or undefined
         if (user) {
-          console.log("useris ife ", user);
           this.setupNewConversation(user);
           const payload = {
             user_id: user.id,
@@ -366,22 +370,20 @@ export default {
     },
 
     selectConversation(conversation) {
-      // Update currentParticipant and other relevant states
       this.currentParticipant = conversation;
-      this.currentMessages = []; // Clear current messages before fetching new ones
+      this.currentMessages = [];
 
-      // Fetch messages for the selected conversation
       this.fetchConversationMessages(true);
     },
+
     //clears the messages of older conversations
     setupNewConversation(user) {
-      // Prepare the state for a new conversation with the selected user
       this.currentParticipant = {
         fullname: user.fullname,
         image_path: user.image_path,
         conversation_id: null,
       };
-      this.currentMessages = []; // Clear any previous messages shown
+      this.currentMessages = [];
     },
 
     selectParticipant(participant) {
@@ -429,9 +431,11 @@ export default {
         };
         const response = await apiClient.post("/conversations", newPayload);
         const conversationId = response.data.conversation.id;
-        const messageResponse = await apiClient.get(`/conversations/${conversationId}/messages`);
+        const messageResponse = await apiClient.get(
+          `/conversations/${conversationId}/messages`
+        );
         const newMessage = {
-          id:messageResponse.data.data[0].id,
+          id: messageResponse.data.data[0].id,
           text: this.message,
           timestamp: new Date().toLocaleTimeString([], {
             hour: "2-digit",
@@ -601,9 +605,6 @@ export default {
     icon() {
       return this.icons[this.iconIndex];
     },
-  },
-  mounted() {
-    console.log("Current User Fullname:", this.currentUserFullName);
   },
   watch: {
     currentMessages() {

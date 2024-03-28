@@ -179,6 +179,7 @@
               append-icon="mdi-send"
               @keyup.enter="sendMessage"
               @click:append="sendMessage"
+              :disabled="sendingMessage"
             ></v-text-field>
           </div>
         </div>
@@ -222,6 +223,8 @@ export default {
       limit: 10,
       allMessagesLoaded: false,
       shouldScrollToBottom: true,
+      newConversationPayload: null,
+      sendingMessage: false,
     };
   },
 
@@ -313,34 +316,6 @@ export default {
           console.error("Error creating new group:", error);
         });
     },
-    async startNewConversation(selectedProfile) {
-      try {
-        const combinedName = `${this.currentParticipant.fullname} and ${selectedProfile.fullname}`;
-        const payload = {
-          name: combinedName,
-          type: "private",
-          userProfileId: [this.currentUserId, selectedProfile.user_id],
-          message: this.message,
-        };
-
-        const response = await apiClient.post("/conversations", payload);
-        console.log("New conversation started:", response.data);
-
-        this.message = "";
-
-        this.startChatDialog = false;
-
-        this.fetchConversations();
-
-        this.selectParticipant({
-          conversation_id: response.data.conversation_id,
-          fullname: combinedName,
-          image_path: selectedProfile.image_path,
-        });
-      } catch (error) {
-        console.error("Error starting new conversation:", error);
-      }
-    },
 
     searchUsers() {
       this.searchResults = [];
@@ -362,23 +337,34 @@ export default {
         user.id
       );
 
+      console.log("useris ", user.id);
+      console.log("egzistuoja? ", existingConversation);
+
       if (existingConversation) {
         this.selectConversation(existingConversation);
       } else {
-        this.setupNewConversation(user).then(() => {
-          // After a new conversation is setup, fetch messages for it
-          this.fetchConversationMessages(true);
-        });
+        // Add a check to ensure that the user object is not null or undefined
+        if (user) {
+          console.log("useris ife ", user);
+          this.setupNewConversation(user);
+          const payload = {
+            user_id: user.id,
+            fullname: user.fullname,
+          };
+          this.newConversationPayload = payload;
+        } else {
+          console.log("User object is null or undefined.");
+        }
       }
       // Close the modal after handling the user selection
       this.newChatModal = false;
     },
-
     findExistingConversationWithUser(userId) {
       return this.otherParticipants.find(
         (participant) => participant.user_id === userId
       );
     },
+
     selectConversation(conversation) {
       // Update currentParticipant and other relevant states
       this.currentParticipant = conversation;
@@ -387,7 +373,7 @@ export default {
       // Fetch messages for the selected conversation
       this.fetchConversationMessages(true);
     },
-
+    //clears the messages of older conversations
     setupNewConversation(user) {
       // Prepare the state for a new conversation with the selected user
       this.currentParticipant = {
@@ -425,47 +411,69 @@ export default {
     },
 
     async sendMessage() {
-  if (!this.message.trim()) {
-    console.error("No message to send.");
-    return;
-  }
+      if (!this.message.trim()) {
+        console.error("No message to send.");
+        return;
+      }
+      this.sendingMessage = true;
 
-  let payload;
-  if (this.selectedUser && !this.currentParticipant?.conversation_id) {
-    payload = {
-      name: `${this.selectedUser.fullname}`, 
-      type: "private", 
-      userProfileIds: [this.currentUserId, this.selectedUser.id],
-      message: this.message,
-    };
-  } else {
-    payload = {
-      conversation_id: this.currentParticipant?.conversation_id,
-      message: this.message,
-    };
-  }
+      if (this.newConversationPayload) {
+        let newPayload = {
+          name:
+            this.currentUserFullName +
+            ", " +
+            this.newConversationPayload.fullname,
+          type: "private",
+          userProfileId: [this.newConversationPayload.user_id],
+          message: this.message,
+        };
+        const response = await apiClient.post("/conversations", newPayload);
+        const conversationId = response.data.conversation.id;
+        const messageResponse = await apiClient.get(`/conversations/${conversationId}/messages`);
+        const newMessage = {
+          id:messageResponse.data.data[0].id,
+          text: this.message,
+          timestamp: new Date().toLocaleTimeString([], {
+            hour: "2-digit",
+            minute: "2-digit",
+          }),
+          isOutgoing: true,
+          user_profile: {
+            fullname: this.currentUserFullName,
+          },
+        };
+        this.currentMessages.push(newMessage);
+        this.newConversationPayload = null;
+        this.sendingMessage = false;
+      } else {
+        let payload = {
+          conversation_id: this.currentParticipant?.conversation_id,
+          message: this.message,
+        };
 
-  try {
-    const response = await apiClient.post("/sendMessage", payload);
-    const newMessage = {
-      id: response.data.data.id, 
-      text: this.message,
-      timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-      isOutgoing: true,
-      user_profile: {
-        fullname: this.currentUserFullName, 
-      },
-    };
-    this.currentMessages.push(newMessage);
-
-  } catch (error) {
-    console.error("Error sending message:", error);
-  }
-
-  // Reset the message input field
-  this.message = "";
-},
-
+        try {
+          const response = await apiClient.post("/sendMessage", payload);
+          const newMessage = {
+            id: response.data.data.id,
+            text: this.message,
+            timestamp: new Date().toLocaleTimeString([], {
+              hour: "2-digit",
+              minute: "2-digit",
+            }),
+            isOutgoing: true,
+            user_profile: {
+              fullname: this.currentUserFullName,
+            },
+          };
+          this.currentMessages.push(newMessage);
+        } catch (error) {
+          console.error("Error sending message:", error);
+        }
+      }
+      // Reset the message input field
+      this.message = "";
+      this.sendingMessage = false;
+    },
 
     deleteMessage(messageId) {
       this.selectedMessageId = messageId;

@@ -67,7 +67,7 @@ class UpdateUserProfileService extends BaseService
             ]);
         }
 
-        // check if password has been changed
+        // check if password is not empty
         if (!empty($this->data()['password'])) {
             // Then, inside this block, you can check if the provided password is different from the current password
             if (!Hash::check($this->data()['password'], auth()->user()->getAuthPassword())) {

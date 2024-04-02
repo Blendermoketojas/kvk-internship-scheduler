@@ -80,6 +80,7 @@ Route::middleware('api')->prefix('v2')->group(function () {
         Route::post('/search-profiles', [UserProfileController::class, 'searchUserProfiles']);
         Route::post('/profile/update-picture', [UserProfileController::class, 'updateProfilePicture']);
         Route::post('/profile/id', [UserProfileController::class, 'getUserProfileById']);
+        Route::post('/get-group-users-profile', [UserProfileController::class, 'getGroupUsersProfile']);
 
         // StudentGroups
 

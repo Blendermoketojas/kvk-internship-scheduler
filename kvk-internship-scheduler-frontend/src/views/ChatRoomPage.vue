@@ -783,7 +783,7 @@ h2 {
   }
 
   .messages-container {
-    height: calc(100vh - 200px); /* Adjust the 200px based on other elements' heights */
+    height: calc(100vh - 200px);
   }
   .v-infinite-scroll__side {
 display: none !important;

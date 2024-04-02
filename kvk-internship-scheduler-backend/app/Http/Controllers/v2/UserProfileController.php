@@ -8,6 +8,7 @@ use App\Services\ManageUserProfile\SearchUserProfilesByRoleService;
 use App\Services\ManageUserProfile\SearchUserProfilesService;
 use App\Services\ManageUserProfile\UpdateUserProfilePictureService;
 use App\Services\ManageUserProfile\UpdateUserProfileService;
+use App\Services\ManageUserProfile\GetGroupUsersService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -59,5 +60,12 @@ class UserProfileController extends Controller
     public function getUserProfileById(Request $request): JsonResponse
     {
         return (new GetUserProfileByIdService($request))->execute();
+    } 
+      /**
+     * @throws ValidationException
+     */
+    public function getGroupUsersProfile(Request $request): JsonResponse
+    {
+        return (new GetGroupUsersService($request))->execute();
     }
 }

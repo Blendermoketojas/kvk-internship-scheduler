@@ -8,6 +8,7 @@ use App\Services\ManageMessages\ConversationService\CreateConversationService;
 use App\Services\ManageMessages\ConversationService\GetUserConversationsService;
 use App\Services\ManageMessages\ConversationService\GetConversationMessages;
 use App\Services\ManageMessages\ConversationService\GetGroupConversationsService;
+use App\Services\ManageMessages\ConversationService\AddUserToGroupService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Validation\ValidationException;
 
@@ -43,5 +44,12 @@ class ConversationController extends Controller
     public function getGroupConversations(Request $request): JsonResponse
     {
         return (new GetGroupConversationsService($request))->execute();
+    }  
+     /**
+     * @throws ValidationException
+     */
+    public function addUserToGroup(Request $request): JsonResponse
+    {
+        return (new AddUserToGroupService($request))->execute();
     }
 }

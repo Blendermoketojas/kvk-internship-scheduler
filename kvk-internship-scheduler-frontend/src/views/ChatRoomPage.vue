@@ -3,6 +3,20 @@
   <mobile-nav v-if="!isDesktop" />
   <div class="body-div">
     <div class="main-div">
+      <v-dialog v-model="showAddMemberModal" persistent max-width="550px">
+        <v-card>
+          <v-card-title>Pasirinkite norimą naudotoją</v-card-title>
+          <v-card-text>
+            <user-search @send-student-id="handleNewGroupMember"></user-search>
+          </v-card-text>
+          <v-card-actions>
+            <v-spacer></v-spacer>
+            <v-btn text @click="showAddMemberModal = false">Atšaukti</v-btn>
+            <v-btn color="primary" @click="addMemberToGroup">Pridėti</v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-dialog>
+
       <v-dialog v-model="dialog" persistent max-width="300px">
         <v-card>
           <v-card-title class="text-h5">Žinutės ištrynimas</v-card-title>
@@ -62,6 +76,9 @@
             ></v-text-field>
 
             <user-search @send-student-id="handleSelectedStudent"></user-search>
+            <group-search
+              @update:selectedGroupId="handleSelectedGroupId"
+            ></group-search>
           </v-card-text>
           <v-card-actions>
             <v-spacer></v-spacer>
@@ -82,7 +99,6 @@
               title="Asmeninės žinutės"
               @click="fetchConversations"
             >
-         
               <v-expansion-panel-text id="contact-info">
                 <v-infinite-scroll :height="300">
                   <v-btn
@@ -106,7 +122,6 @@
                   >Naujas pokalbis</v-btn
                 >
               </v-expansion-panel-text>
-         
             </v-expansion-panel>
             <v-expansion-panel
               style="background-color: #f8f9fa"
@@ -115,15 +130,15 @@
             >
               <v-expansion-panel-text>
                 <v-infinite-scroll :height="300">
-                <v-btn
-                  v-for="group in groups"
-                  :key="group.conversation_id"
-                  class="group-button"
-                  @click="selectGroup(group.conversation_id)"
-                >
-                  {{ group.group_name }}
-                </v-btn>
-              </v-infinite-scroll>
+                  <v-btn
+                    v-for="group in groups"
+                    :key="group.conversation_id"
+                    class="group-button"
+                    @click="selectGroup(group.conversation_id)"
+                  >
+                    {{ group.group_name }}
+                  </v-btn>
+                </v-infinite-scroll>
                 <v-btn
                   @click="newGroupModal = true"
                   style="width: 100%; background-color: #cfcfcf"
@@ -139,14 +154,25 @@
             indeterminate
             color="primary"
           ></v-progress-circular>
-          <div class="chat-name" v-if="currentParticipant">
-            <img
-              v-if="currentParticipant.image_path"
-              :src="getImagePath(currentParticipant.image_path)"
-              alt="Profile Picture"
-              class="profile-picture"
-            />
-            <h3>{{ currentParticipant ? currentParticipant.fullname : "" }}</h3>
+          <div class="chat-name-div">
+            <div class="chat-name" v-if="currentParticipant">
+              <img
+                v-if="currentParticipant.image_path"
+                :src="getImagePath(currentParticipant.image_path)"
+                alt="Profile Picture"
+                class="profile-picture"
+              />
+              <h3>
+                {{ currentParticipant ? currentParticipant.fullname : "" }}
+              </h3>
+            </div>
+
+            <v-btn
+              v-if="currentParticipant && currentParticipant.type === 'group'"
+              density="compact"
+              icon="mdi-plus"
+              @click="showAddMemberModal = true"
+            ></v-btn>
           </div>
 
           <div
@@ -206,15 +232,17 @@
 import mobileNav from "@/components/MobileSidebar.vue";
 import customHeader from "@/components/DesktopHeader.vue";
 import apiClient from "@/utils/api-client";
+import groupSearch from "@/components/GroupSearch.vue";
 import { mapGetters } from "vuex";
 import userSearch from "@/components/SearchUserProfile.vue";
-import { debounce } from 'lodash';
+import { debounce } from "lodash";
 
 export default {
-  components: { customHeader, mobileNav, userSearch },
+  components: { customHeader, mobileNav, userSearch, groupSearch },
 
   data() {
     return {
+      showAddMemberModal: false,
       groups: [],
       newGroupModal: false,
       groupInfo: {
@@ -222,7 +250,6 @@ export default {
         selectedUsers: [],
       },
       searchResults: [],
-      selectedGroupUsers: [],
       newChatModal: false,
       selectedUser: null,
       message: "",
@@ -240,13 +267,49 @@ export default {
       shouldScrollToBottom: true,
       newConversationPayload: null,
       sendingMessage: false,
+      selectedUserIdToAdd: null,
     };
   },
 
   methods: {
-    debouncedSearchUsers: debounce(function() {
-    this.searchUsers();
-  }, 300),
+    debouncedSearchUsers: debounce(function () {
+      this.searchUsers();
+    }, 300),
+
+    addMember() {
+    console.log("Add member functionality goes here.");
+    this.showAddMemberModal = false; 
+  },
+
+  handleNewGroupMember(selectedUserId) {
+      this.selectedUserIdToAdd = selectedUserId;
+    },
+    addMemberToGroup() {
+      if (!this.currentParticipant || !this.currentParticipant.conversation_id || !this.selectedUserIdToAdd) {
+        console.error("No current conversation selected or no user selected.");
+        return;
+      }
+      if (!this.selectedUserIdToAdd) {
+    console.error("No user selected to add.");
+    return;
+  }
+
+      const payload = {
+        conversation_id: this.currentParticipant.conversation_id,
+        user_id: this.selectedUserIdToAdd,
+      };
+
+      apiClient.post('/add-user-to-group', payload)
+        .then(response => {
+          console.log("User added to group successfully", response);
+          this.selectedUserIdToAdd = null;
+          this.showAddMemberModal = false;
+        })
+        .catch(error => {
+          console.error("Failed to add user to group", error);
+          this.selectedUserIdToAdd = null;
+        });
+    },
 
     selectGroup(conversationId) {
       const selectedGroup = this.groups.find(
@@ -256,6 +319,7 @@ export default {
       this.currentParticipant = {
         conversation_id: conversationId,
         fullname: selectedGroup.group_name,
+        type: "group",
         image_path: "",
       };
 
@@ -314,6 +378,21 @@ export default {
 
     handleSelectedStudent(selectedIds) {
       this.groupInfo.selectedUsers = selectedIds;
+    },
+    handleSelectedGroupId(groupId) {
+      // this.selectedGroupId = groupId;
+
+      apiClient
+        .post(`/get-group-users-profile`, { groupId: groupId })
+        .then((response) => {
+          const userIds = response.data.map((user) => user.id);
+          console.log(userIds);
+          this.groupInfo.selectedUsers = userIds;
+        })
+        .catch((error) => {
+          console.error("Error fetching group users:", error);
+          this.selectedGroupId = null;
+        });
     },
 
     createGroup() {
@@ -636,8 +715,19 @@ export default {
 </script>
 
 <style scoped>
+
+.chat-name-div .v-btn{
+  margin: 0 10px;
+}
+
+.chat-name-div{
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
 .v-infinite-scroll__side {
-display: none !important;
+  display: none !important;
 }
 
 .v-expansion-panel-text__wrapper {
@@ -750,26 +840,33 @@ h2 {
   color: #c00;
 }
 
-@media (max-width:1200px) {
+.fieldDiv{
+  width: auto;
+}
+
+@media (max-width: 1200px) {
   .main-div {
-  padding: 10px;
+    padding: 10px;
   }
 }
 @media (max-width: 600px) {
+
+
   .main-div {
     padding: 0;
   }
-  
+
   .contentDiv {
     flex-direction: column;
   }
-  
-  .contact, .chat-room {
+
+  .contact,
+  .chat-room {
     width: 100%;
     max-width: none;
     padding: 0;
   }
-  
+
   .chat-room {
     border-left: none;
   }
@@ -786,7 +883,7 @@ h2 {
     height: calc(100vh - 200px);
   }
   .v-infinite-scroll__side {
-display: none !important;
+    display: none !important;
   }
 }
 </style>

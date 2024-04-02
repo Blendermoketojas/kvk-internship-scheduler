@@ -162,6 +162,7 @@ Route::middleware('api')->prefix('v2')->group(function () {
         //Chatting
 
         Route::post('/conversations', [ConversationController::class, 'createConversation']);
+        Route::post('/add-user-to-group', [ConversationController::class, 'addUserToGroup']);
         Route::get('/getUsersConversations', [ConversationController::class, 'getUsersConversations']);
         Route::get('/getGroupConversations', [ConversationController::class, 'getGroupConversations']);
 

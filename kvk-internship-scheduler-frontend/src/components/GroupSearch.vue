@@ -48,11 +48,6 @@ export default {
         this.debouncedSearchGroups(groupName);
       }
     },
-    // onGroupChange(value) {
-    //   if (value && value.id) {
-    //     this.$emit("update:selectedGroupId", value.id);
-    //   }
-    // },
 
     searchGroups(groupName) {
       if (typeof groupName !== "string") {
@@ -93,4 +88,6 @@ export default {
 };
 </script>
 
-<style></style>
+<style>
+
+</style>

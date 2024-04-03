@@ -141,7 +141,7 @@ footer {
   height: 4rem;
   margin: 1% 1%;
   right: 0;
-  bottom: -6px;
+
   width: 10%;
 }
 

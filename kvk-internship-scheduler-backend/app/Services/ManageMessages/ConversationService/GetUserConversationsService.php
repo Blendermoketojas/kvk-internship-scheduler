@@ -48,7 +48,7 @@ class GetUserConversationsService extends BaseService
     }
 
     try {
-        $userId = auth()->id(); // Assuming 'user_id' in 'userprofiles' matches Auth user ID
+        $userId = auth()->id();
 
         // Get private conversations IDs for the logged-in user
         $privateConversationsIds = DB::table('conversation_user')
@@ -88,4 +88,6 @@ class GetUserConversationsService extends BaseService
         return response()->json(['error' => 'Failed to fetch private conversations', 'exception' => $e->getMessage()], 500);
     }
 }
+
+
 }

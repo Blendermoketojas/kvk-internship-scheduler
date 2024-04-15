@@ -17,6 +17,7 @@ return new class extends Migration
             $table->id();
             $table->integer('internship_id');
             $table->integer('user_id');
+            $table->string('comment_name');
             $table->string('comment');
             $table->dateTime('date_from')->index();
             $table->dateTime('date_to')->index();

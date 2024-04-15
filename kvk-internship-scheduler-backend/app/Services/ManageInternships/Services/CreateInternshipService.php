@@ -53,7 +53,7 @@ class CreateInternshipService extends BaseService
 
         $userIds = $this->data()['users'];
 
-        if (!$this->user->role_id != Role::PRODEKANAS->value) {
+        if ($this->user->role_id != Role::PRODEKANAS->value) {
             if (!in_array($this->user->id, $this->data()['users'])) {
                 return response()->json(['success' => false, 'message' => 'Head of internships user'.
                  ' does not match or is not present']);

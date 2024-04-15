@@ -10,7 +10,8 @@ use Illuminate\Database\Eloquent\Relations\MorphToMany;
 class Role extends Model
 {
     use HasFactory;
-
+    public $timestamps = false;
+    
     protected $fillable = [
         'role_title',
     ];

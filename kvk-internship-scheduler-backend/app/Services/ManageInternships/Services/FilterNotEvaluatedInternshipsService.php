@@ -70,4 +70,5 @@ class FilterNotEvaluatedInternshipsService extends BaseService
         // response
         return response()->json($sharedInternships);
     }
+    
 }

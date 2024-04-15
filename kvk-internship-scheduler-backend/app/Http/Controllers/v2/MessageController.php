@@ -17,7 +17,15 @@ class MessageController extends Controller
      */
     public function sendMessage(Request $request): JsonResponse
     {
-        return (new SendMessagesService($request))->execute();
+        $response = (new SendMessagesService($request))->execute();
+
+    // Assuming the response includes the message data and was successful
+    $message = $response->getData(); // Adjust based on actual response structure
+
+    // Broadcast the message
+    broadcast(new \App\Events\MessageSent($message));
+
+    return $response;
     }
     
     public function DeleteMessage(Request $request): JsonResponse

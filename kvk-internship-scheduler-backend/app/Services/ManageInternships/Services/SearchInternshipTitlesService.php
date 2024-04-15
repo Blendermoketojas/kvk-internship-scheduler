@@ -39,8 +39,6 @@ class SearchInternshipTitlesService extends BaseService
 
         // logic execution
 
-        // TODO: implement permission verification
-
         $titles = Internship::select('title')
             ->where('title', 'like', '%' . $this->data()['searchString'] . '%')
             ->orderBy('created_at', 'desc')

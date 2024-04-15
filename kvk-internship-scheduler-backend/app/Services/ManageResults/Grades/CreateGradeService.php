@@ -17,7 +17,6 @@ class CreateGradeService extends BaseService
         return [
             'grade' => 'required|numeric',
             'comment' => 'required|string',
-            // TODO: DATE WAS REQUIRED AND PROBABLY HAS TO BE (TEMPORARY SOLUTION)
             'date' => 'nullable|string',
             'internship_id' => 'required|integer'
         ];

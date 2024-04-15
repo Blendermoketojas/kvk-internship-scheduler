@@ -58,6 +58,7 @@ Route::middleware('api')->prefix('v2')->group(function () {
     Route::middleware(['jwt.from.cookie', 'jwt.auth'])->group(function () {
 
 
+
         // Register external
         Route::post('/register-external', [AuthController::class, 'registerExternalUser']);
 

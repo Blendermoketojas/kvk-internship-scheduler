@@ -33,7 +33,6 @@ abstract class BaseService
     function __construct(Request $request)
     {
         if ($this->authentication) $this->user = auth()->user()->userProfile;
-
         $this->request = $request;
     }
 

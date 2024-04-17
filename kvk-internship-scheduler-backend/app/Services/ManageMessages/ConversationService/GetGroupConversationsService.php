@@ -71,7 +71,6 @@ class GetGroupConversationsService extends BaseService
                     ];
                 });
 
-                // Merge participants of each group into the main collection
                 $groupParticipants = $groupParticipants->merge($participants);
             }
 

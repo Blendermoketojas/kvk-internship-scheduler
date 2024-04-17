@@ -166,7 +166,6 @@ Route::middleware('api')->prefix('v2')->group(function () {
         Route::post('/add-user-to-group', [ConversationController::class, 'addUserToGroup']);
         Route::get('/getUsersConversations', [ConversationController::class, 'getUsersConversations']);
         Route::get('/getGroupConversations', [ConversationController::class, 'getGroupConversations']);
-
         Route::get('/conversations/{conversationId}/messages', [ConversationController::class, 'getConversationMessages']);
 
         Route::post('/sendMessage', [MessageController::class, 'sendMessage']);

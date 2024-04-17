@@ -10,7 +10,7 @@ use Illuminate\Validation\ValidationException;
 use Illuminate\Support\Facades\Validator;
 
 
-class GetConversationMessages extends BaseService
+class GetConversationMessagesService extends BaseService
 {
     public function rules(): array
     {

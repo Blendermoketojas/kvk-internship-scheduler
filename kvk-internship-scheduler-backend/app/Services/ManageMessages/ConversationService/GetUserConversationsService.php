@@ -56,9 +56,7 @@ class GetUserConversationsService extends BaseService
             ->where('conversations.type', 'private')
             ->where('conversation_user.user_id', $userId)
             ->pluck('conversation_id');
-
         $otherParticipants = collect();
-
         foreach ($privateConversationsIds as $conversationId) {
             // For each conversation, find the other user's IDs excluding the logged-in user
             $otherUserIds = DB::table('conversation_user')
@@ -79,7 +77,6 @@ class GetUserConversationsService extends BaseService
                 ]);
             }
         }
-
         return response()->json([
             'success' => true,
             'otherParticipants' => $otherParticipants

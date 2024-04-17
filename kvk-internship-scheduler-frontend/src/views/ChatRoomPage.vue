@@ -100,7 +100,7 @@
               @click="fetchConversations"
             >
               <v-expansion-panel-text id="contact-info">
-                <v-infinite-scroll :height="300">
+                <v-infinite-scroll :height="300"  :loading="loadingMessages" @load="load">
                   <v-btn
                     v-for="participant in otherParticipants"
                     :key="participant.conversation_id"
@@ -115,6 +115,7 @@
                     />
                     {{ participant.fullname }}
                   </v-btn>
+      
                 </v-infinite-scroll>
                 <v-btn
                   @click="newChatModal = true"
@@ -129,7 +130,7 @@
               @click="fetchGroupConversations"
             >
               <v-expansion-panel-text>
-                <v-infinite-scroll :height="300">
+                <v-infinite-scroll  :loading="loadingMessages" @load="load" :height="300">
                   <v-btn
                     v-for="group in groups"
                     :key="group.conversation_id"
@@ -268,6 +269,7 @@ export default {
       newConversationPayload: null,
       sendingMessage: false,
       selectedUserIdToAdd: null,
+      totalCount: 0,
     };
   },
 
@@ -280,6 +282,50 @@ export default {
     console.log("Add member functionality goes here.");
     this.showAddMemberModal = false; 
   },
+
+  load({ done }) {
+  // Start by setting loadingMessages to true when loading begins
+  this.loadingMessages = true;
+
+  // If the current offset is greater than or equal to totalCount, we're done
+  if (this.messagesOffset >= this.totalCount) {
+    done('empty');
+    this.loadingMessages = false; // End loading
+    return;
+  }
+
+  apiClient.get("/getUsersConversations", {
+    params: {
+      offset: this.messagesOffset,
+      limit: this.limit
+    }
+  })
+  .then(response => {
+    // If we receive data and it's an array with length
+    if (response.data.success && response.data.otherParticipants.length > 0) {
+      // Push the new data into the array
+      this.otherParticipants.push(...response.data.otherParticipants);
+      // Update offset and totalCount
+      this.messagesOffset += response.data.otherParticipants.length;
+      this.totalCount = response.data.totalCount;
+      // Successfully done
+      done('ok');
+    } else {
+      // No new data means we've loaded everything
+      this.allMessagesLoaded = true;
+      done('empty');
+    }
+  })
+  .catch(error => {
+    // Handle any errors
+    console.error("Error fetching conversations:", error);
+    done('error');
+  })
+  .finally(() => {
+    // Whether successful or not, we're no longer loading
+    this.loadingMessages = false;
+  });
+},
 
   handleNewGroupMember(selectedUserId) {
       this.selectedUserIdToAdd = selectedUserId;

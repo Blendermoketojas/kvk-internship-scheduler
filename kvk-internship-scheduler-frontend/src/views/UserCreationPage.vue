@@ -213,7 +213,7 @@ export default {
       roleId: this.selectedRole,
       companyId: this.selectedCompanyId,
     };
-  } else if (this.selectedRole === 4) {
+  } else if (this.selectedRole === 5) {
     userData = {
       firstName: this.firstName,
       lastName: this.lastName,

@@ -1,11 +1,15 @@
 <template>
   <div class="header">
-    <v-btn color="primary" class="menu-button" style="height:100%" @click.stop="drawer = !drawer">
+    <v-btn
+      color="primary"
+      class="menu-button"
+      style="height: 100%"
+      @click.stop="drawer = !drawer"
+    >
       <v-icon icon="mdi-menu" size="x-large"></v-icon>
     </v-btn>
-   
-      <img class="logo" :src="layoutLogo" alt="KVK Logo" />
 
+    <img class="logo" :src="layoutLogo" alt="KVK Logo" />
   </div>
   <v-card style="position: static">
     <v-layout>
@@ -60,7 +64,14 @@
           <v-list-item
             prepend-icon="mdi-message-text"
             title="Pokalbiai"
+            to="/chat-room"
           ></v-list-item>
+          <v-list-item
+            prepend-icon="mdi-exit-to-app"
+            title="Atsijungti"
+            to="/"
+          >
+          </v-list-item>
         </v-list>
       </v-navigation-drawer>
     </v-layout>
@@ -174,10 +185,6 @@ export default {
       this.user = JSON.parse(userStored);
     }
   },
-  mounted() {
-    console.log(this.userRoleId);
-    console.log(this.user);
-  },
 };
 </script>
 
@@ -208,7 +215,6 @@ export default {
   width: 10%;
 }
 
-
 .header {
   display: flex;
   align-items: center;
@@ -234,8 +240,8 @@ export default {
   }
 }
 
-@media (max-width:400px){
-  .menu-button{
+@media (max-width: 400px) {
+  .menu-button {
     width: 45px;
   }
 }

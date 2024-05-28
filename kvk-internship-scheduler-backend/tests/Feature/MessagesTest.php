@@ -35,10 +35,8 @@ public function user_can_create_a_conversation()
     $user = User::factory()->create();
     $userProfile = UserProfile::factory()->create(['user_id' => $user->id]);
 
-    // Authenticate the user and get a JWT token
     $token = JWTAuth::fromUser($user);
 
-    // Prepare the data for creating a conversation
     $data = [
         'name' => 'Test Conversation',
         'type' => 'private', // or 'group'
@@ -46,13 +44,11 @@ public function user_can_create_a_conversation()
         'message' => 'Hello World',
     ];
 
-    // Make a POST request to the specific API endpoint
     $response = $this->withHeaders([
         'Authorization' => 'Bearer ' . $token,
         'Accept' => 'application/json',
     ])->json('POST', '/api/v2/conversations', $data);
 
-    // Assertions
     $response->assertStatus(201)
         ->assertJson([
             'message' => 'Conversation created successfully with initial message',
@@ -61,34 +57,27 @@ public function user_can_create_a_conversation()
             ],
         ]);
 }
+
 /** @test */
 public function user_can_send_a_message_in_a_conversation() {
     // Create a user and authenticate
     $user = User::factory()->create();
     $userProfile = UserProfile::factory()->create(['user_id' => $user->id]);
 
-    // Authenticate the user using Laravel's built-in methods, appropriate for your auth setup
     $token = JWTAuth::fromUser($user);
 
-    // Create a conversation
     $conversation = Conversation::factory()->create([
         'name' => 'Test Conversation',
         'type' => 'private'
     ]);
-
-    // Prepare the data for sending a message
     $data = [
         'conversation_id' => $conversation->id,
         'message' => 'Hello from the test!'
     ];
-
-    // Make the API request to the actual route responsible for sending messages
     $response = $this->withHeaders([
         'Authorization' => 'Bearer ' . $token,
         'Accept' => 'application/json',
     ])->json('POST', '/api/v2/sendMessage', $data);
-
-    // Assertions to check the response status and data structure
     $response
         ->assertStatus(200)
         ->assertJson([
@@ -98,12 +87,10 @@ public function user_can_send_a_message_in_a_conversation() {
                 'conversation_id' => $conversation->id
             ]
         ]);
-
-    // Further assertions to verify database entries
     $this->assertDatabaseHas('messages', [
         'conversation_id' => $conversation->id,
         'message' => $data['message'],
-        'user_id' => $user->id  // Ensure that the user ID is correct in the database
+        'user_id' => $user->id  
     ]);
 }
 

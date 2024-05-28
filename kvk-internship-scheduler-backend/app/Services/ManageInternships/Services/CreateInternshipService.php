@@ -27,6 +27,10 @@ class CreateInternshipService extends BaseService
 
     public function data(): array
     {
+        $forms = isset($this->request['forms']) ? array_map(function($form) {
+            return is_array($form) ? $form['id'] : $form;
+        }, $this->request['forms']) : [];
+    
         return [
             'title' => $this->request['title'],
             'company_id' => $this->request['companyId'],
@@ -34,7 +38,7 @@ class CreateInternshipService extends BaseService
             'date_from' => $this->request['dateFrom'],
             'date_to' => $this->request['dateTo'],
             'is_active' => 1,
-            'forms' => $this->request['forms'],
+            'forms' => $forms,
         ];
     }
 

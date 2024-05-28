@@ -433,12 +433,13 @@ export default {
           dateFrom: this.dateFrom,
           dateTo: this.dateTo,
           title: internshipName,
-          forms: this.selectedForms.id,
-          ...(this.$route.path.includes("/students-internship") && {
+         // forms: this.selectedForms.id,
+         forms: this.selectedForms.map(form => form.id), 
+         ...(this.$route.path.includes("/students-internship") && {
             internshipId: this.$route.params.internshipId,
           }),
         };
-
+console.log(payload);
         const apiEndpoint = this.$route.path.includes("/students-internship")
           ? "/internship-update"
           : "/internships";
@@ -450,15 +451,10 @@ export default {
           .then((response) => {
             this.isLoading = false;
             this.isError = false;
-// if(response.data.success){
             console.log("Internship saved:", response.data);
             this.showSuccessAlert = true;
             setTimeout(() => (this.showSuccessAlert = false), 6000);
-// }else{
-//   console.log("Internship not saved:", response.data);
-//             this.showErrorAlert = true;
-//             setTimeout(() => (this.showErrorAlert = false), 6000);
-// }
+
           })
           .catch((error) => {
             this.isLoading = false;

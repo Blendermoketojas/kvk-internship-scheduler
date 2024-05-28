@@ -53,50 +53,45 @@ class GetStudentGradesService extends BaseService
         }
 
         // response
+        return $response->withHeaders([
+            'Content-Type' => 'application/json',
+            'Access-Control-Allow-Origin' => '*'
+        ]);
+    }
+    private function getStudent() : JsonResponse
+    {
+        $internship = Internship::find($this->data()['internship_id']);
+        if (!$internship) {
+            return response()->json("Internship not found", 404);
+        }
+
+        $grades = $internship->grades()->get();
+        $users = $grades->pluck('created_by')->unique()->values()->all();
+        $userProfiles = UserProfile::whereIn('user_id', $users)->get()->keyBy('user_id');
+        $response = [];
+
+        foreach ($grades as $grade) {
+            $userId = $grade->created_by;
+            $roleId = $userProfiles[$userId]->role_id ?? null;
+            if ($roleId) {
+                if (!isset($response[$roleId])) {
+                    $response[$roleId] = [];
+                }
+                array_push($response[$roleId], $grade->toArray());
+            }
+        }
+
         return response()->json($response);
     }
 
-    private function getStudent() {
-        $grades = Internship::find($this->data())[0]->grades()->get();
-        $users = [];
-        foreach ($grades as $grade) {
-            if (sizeof($users) > 0) {
-                if ($users[0] != $grade['created_by']) {
-                    $users[1] = $grade['created_by'];
-                    break;
-                }
-            } else {
-                $users[0] = $grade['created_by'];
-            }
+    private function getOther() : JsonResponse
+    {
+        $internship = Internship::find($this->data()['internship_id']);
+        if (!$internship) {
+            return response()->json("Internship not found", 404);
         }
 
-        $userRoles = UserProfile::whereIn('user_id', $users)->get();
-
-        if (sizeof($userRoles) == 0) {
-            return response()->json(null);
-        }
-
-        if (sizeof($userRoles) == 1) {
-            $response[$userRoles[0]->role_id] = array();
-        }
-
-        if (sizeof($userRoles) == 2) {
-            $response[$userRoles[0]->role_id] = array();
-            $response[$userRoles[1]->role_id] = array();
-        }
-
-        foreach ($grades as $grade) {
-            if ($userRoles[0]->user_id == $grade->created_by) {
-                array_push($response[$userRoles[0]->role_id], $grade);
-            } else if (sizeof($userRoles) == 2) {
-                array_push($response[$userRoles[1]->role_id], $grade);
-            }
-        }
-        return $response;
-    }
-
-    private function getOther() {
-        $grades = Internship::find($this->data())[0]->grades()->where('created_by', $this->user->user_id)->get();
-        return $grades;
+        $grades = $internship->grades()->where('created_by', $this->user->user_id)->get();
+        return response()->json($grades);
     }
 }

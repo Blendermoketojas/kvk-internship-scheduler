@@ -18,7 +18,6 @@ class SendMessagesService extends BaseService
         return [
             'conversation_id' => 'required|integer|exists:messages,id',
             'message' => 'required|string',
-
         ];
     }
 
@@ -27,7 +26,6 @@ class SendMessagesService extends BaseService
         return [
             'conversation_id' => $this->request['conversation_id'],
             'message' => $this->request['message']
-
         ];
     }
 

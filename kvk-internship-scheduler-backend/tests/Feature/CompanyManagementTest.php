@@ -14,7 +14,7 @@ class CompanyManagementTest extends TestCase
 
     protected function authenticate()
     {
-        $user = User::factory()->withProfile()->create(); // Ensure your UserFactory sets up roles correctly.
+        $user = User::factory()->withProfile()->create(); 
         $token = JWTAuth::fromUser($user);
 
         return ['Authorization' => 'Bearer ' . $token];
@@ -24,11 +24,9 @@ class CompanyManagementTest extends TestCase
     public function it_creates_company_successfully()
     {
         $headers = $this->authenticate();
-
         $response = $this->withHeaders($headers)->postJson('/api/v2/create-company', [
             'companyName' => 'New Company',
         ]);
-
         $response->assertStatus(200)
                  ->assertJson([
                      'success' => true,

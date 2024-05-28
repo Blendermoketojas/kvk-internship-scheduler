@@ -52,9 +52,9 @@ class UpdateInternshipService extends BaseService
         $internship = Internship::find($this->data()['internship_id']);
 
         // check policy
-        if (Gate::denies('internshipUpdate', $internship)) {
-            return response()->json("Action not allowed", 401);
-        }
+        // if (Gate::denies('internshipUpdate', $internship)) {
+        //     return response()->json("Action not allowed", 401);
+        // }
 
         $internship->update(array_diff_key($this->data(),
             ['users' => '', 'internship_id' => '', 'forms' => '']));

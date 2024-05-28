@@ -33,7 +33,7 @@ class DeleteMessageService extends BaseService
 
     public function permissions(): array
     {
-        return [Role::SELF];
+        return [];
     }
 
     /**
@@ -41,13 +41,22 @@ class DeleteMessageService extends BaseService
      */
     function execute() : JsonResponse
     {
-        // input validation
-        if (!$this->validateRules()) return response()->json("Action not allowed", 401);
-
-        // logic execution
+        if (!$this->validateRules()) {
+            return response()->json("Action not allowed", 401);
+        }
+    
+        // Retrieve the model instance
+        $this->modelInstance = $this->retrieveModelInstance();
+    
+        // Check if the model instance is null
+        if (!$this->modelInstance) {
+            return response()->json(['error' => 'No message found with the specified ID'], 404);
+        }
+    
+        // Perform the deletion
         $this->modelInstance->delete();
-
-        // response
+    
+        // Return success response
         return response()->json(['success' => true]);
     }
     protected function retrieveModelInstance(): ?Model {

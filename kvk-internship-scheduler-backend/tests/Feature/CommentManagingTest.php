@@ -30,6 +30,7 @@ class CreateCommentTest extends TestCase
 
         return ['user' => $user, 'token' => $token];
     }
+
     private function authenticateUserWithRoleSelf()
     {
         $user = User::factory()->create();
@@ -74,11 +75,9 @@ class CreateCommentTest extends TestCase
         $data = $this->createInternship();
         $user = $data['user'];
         $internshipId = $data['internshipId'];
-    
-        // Authenticate the user for the application, aligning with how the service retrieves the user
+
         $this->actingAs($user, 'api'); 
-    
-        // Prepare the data for creating a comment
+
         $commentData = [
             'internshipId' => $internshipId,
             'comment_name' => 'Weekly Update',
@@ -86,16 +85,13 @@ class CreateCommentTest extends TestCase
             'dateFrom' => '2021-01-02',
             'dateTo' => '2021-05-01',
         ];
-    
-        // Assuming the service internally uses Auth::user() or similar to obtain the user context
+
         $request = new Request($commentData);
-        
-        // Resolve the service from the container to implicitly use the authenticated user
+
         $service = resolve(CreateCommentService::class, ['request' => $request]);
         
         $response = $service->execute();
-    
-        // Assertions
+
         $responseArray = json_decode($response->getContent(), true);
         $this->assertDatabaseHas('comments', [
             'internship_id' => $internshipId,

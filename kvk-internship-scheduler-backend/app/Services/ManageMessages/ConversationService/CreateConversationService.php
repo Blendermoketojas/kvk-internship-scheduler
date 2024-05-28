@@ -67,7 +67,6 @@ class CreateConversationService extends BaseService
         $conversation->save();
 
         // Associate conversation with user profiles
-        // Logic to include the initiator's user profile ID if not already included
         $userProfileIds = array_unique(array_merge($validated['userProfileId'], [$this->user->id]));
         $conversation->userProfiles()->attach($userProfileIds);
 
@@ -75,7 +74,7 @@ class CreateConversationService extends BaseService
         if (!empty($validated['message'])) {
             $message = new Message([
                 'conversation_id' => $conversation->id,
-                'user_id' => $this->user->id, // Initiating user's ID
+                'user_id' => $this->user->id, 
                 'message' => $validated['message'],
             ]);
             $message->save();
